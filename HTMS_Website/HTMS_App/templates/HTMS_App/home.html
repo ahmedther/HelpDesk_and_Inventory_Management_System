@@ -1,0 +1,356 @@
+{% extends "HTMS_APP/index.html" %} 
+
+{% block content %}
+
+{% load static %} 
+
+<link rel='stylesheet' href={% static 'HTMS_App/home.css' %}>
+
+  <section class="page">
+    <div class="sub-nav">
+      <div class="tick-header">
+        <h2>Tickets</h2>
+        
+          <a class='new-ticket-btn' href="{% url 'new_incident'%}{% if non_it %}?non_it=True{% endif %}" >
+              <span class='btn--add btn--text'>Add Tickets</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="30"
+                height="30"
+                fill="currentColor"
+                class="bi bi-arrow-right-short btn--add btn--icon"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+                />
+                </svg
+              >
+
+          </a>
+        
+      </div>
+
+      <form id='search-box-id' class = 'search-box' method='get' 
+      {% if non_it %}
+      action= "{% url 'home_non_it' %}"
+      {% else %}
+        action= "{% url 'home' %}"
+      {% endif %}
+      >
+        <img  src={% static 'HTMS_App/search_icon.png' %} alt="Search Icon">
+        <button type='submit'><img src="{% static 'HTMS_App/enter_key.png' %}" alt="Entery Key logo"></button>
+        <input autofocus class='search-box-input' type="text" name='search_ticket' placeholder= 'Search in all tickets...'
+        {%if search_ticket %}
+        value={{ search_ticket }}
+        {% endif %}
+        
+        >
+       
+      </form>
+    
+      <ul class='ticket-link-container'>
+        <li class='ticket-heading'><span>Navigate Tickets</span></li>
+        
+        <li class="ticket-links-listing
+        {% if link_active_status_all_tickets %}
+        {{  link_active_status_all_tickets }}
+        {% endif %}"
+        > 
+          <img src="{% static 'HTMS_App/all_icon.png' %}" alt="all icon logo">
+          <a class='ticket-links' href={% url 'home' %}>
+            <span>All Tickets</span>
+          </a>
+        </li>
+
+        <li class="ticket-links-listing
+        {% if link_active_status_tickets_to_handle %}
+        {{  link_active_status_tickets_to_handle }}
+        {% endif %}
+        
+        ">
+          <img src="{% static 'HTMS_App/todo_icon.png' %}" alt="Todo icon logo">
+          <a class='ticket-links' href="?tickets_to_handle=open"
+            <span>Tickets to handle</span>
+          </a>
+        </li>
+
+        <li class="ticket-links-listing
+        {% if link_active_status_my_open_ticket %}
+        {{  link_active_status_my_open_ticket }}
+        {% endif %}
+        ">
+          <img src="{% static 'HTMS_App/open-sign_icon.png' %}" alt="Open Sign icon logo">
+          <a class='ticket-links' href="?my_open_ticket=open"
+            <span>My open tickets</span>
+          </a>
+        </li>
+
+        <li class='ticket-heading'><span>My Views</span></li>
+
+        <li class="ticket-links-listing
+        {% if link_active_status_my_tick_seven_days %}
+        {{  link_active_status_my_tick_seven_days }}
+        {% endif %}
+        ">
+          <img src="{% static 'HTMS_App/my_view_icon.png' %}" alt="Open Sign icon logo">
+          <a class='ticket-links' href="?my_tick_svn_days=True"
+            <span>My tickets in last 7 days</span>
+          </a>
+        </li>
+
+      
+        <li class='ticket-heading'><span>STATUSES</span></li>
+
+        <li class="ticket-links-listing
+        {% if link_active_status_open %}
+        {{  link_active_status_open }}
+        {% endif %}
+        ">
+          <img src="{% static 'HTMS_App/open_icon1.png' %}" alt="Open Sign icon logo">
+          <a class='ticket-links' href="?open=True">
+            <span>Open</span>
+          </a>
+        </li>
+
+        <li class="ticket-links-listing
+        {% if link_active_status_assigned %}
+        {{  link_active_status_assigned }}
+        {% endif %}
+        ">
+          <img src="{% static 'HTMS_App/assigned_icon.png' %}" alt="Assigned icon logo">
+          <a class='ticket-links' href="?assigned=true">
+            <span>Assigned</span>
+          </a>
+        </li>
+
+
+        <li class="ticket-links-listing
+        {% if link_active_status_closed %}
+        {{  link_active_status_closed }}
+        {% endif %}
+        ">
+          <img src="{% static 'HTMS_App/close_icon.png' %}" alt="Closed icon logo">
+          <a class='ticket-links' href="?closed=true">
+            <span>Closed</span>
+          </a>
+        </li>
+
+        <li class="ticket-links-listing
+        {% if link_active_status_on_hold %}
+        {{  link_active_status_on_hold }}
+        {% endif %}
+        ">
+          <img src="{% static 'HTMS_App/on_hold_icon.png' %}" alt="Hold Sign icon logo">
+          <a class='ticket-links' href="?on_hold=true">
+            <span>On hold</span>
+          </a>
+        </li>
+
+        <li class="ticket-links-listing
+        {% if link_active_status_wait_for_fback %}
+        {{  link_active_status_wait_for_fback }}
+        {% endif %}
+        ">
+          <img src="{% static 'HTMS_App/wating_icon.png' %}" alt="Waiting For Feedback icon logo">
+          <a class='ticket-links' href="?wait_for_fback=true">
+            <span>Waiting For Feedback</span>
+          </a>
+        </li>
+
+        <li class="ticket-links-listing
+        {% if link_active_status_resolved %}
+        {{  link_active_status_resolved }}
+        {% endif %}
+        ">
+          <img src="{% static 'HTMS_App/solved_icon.png' %}" alt="Resolved Sign icon logo">
+          <a class='ticket-links' href="?resolved=true">
+            <span>Resolved</span>
+          </a>
+        </li>
+
+      </ul>
+      
+    </div>
+
+
+    
+    <div class="ticket-main">
+      {% block new_incident %}{% endblock %}
+      <div class="ticket-main-header">
+         
+        <span class='all-ticket' >
+          
+          {% if header %}
+          {{ header|title }}
+          {% endif %}
+        </span>
+
+      </div>
+      
+      {% if error %}
+      <section class='error-container'>
+        <img src="{% static 'HTMS_App/error.svg' %}" alt="Error Logo" class="error-logo">
+
+        <ul>
+          <li><h3 class="error-text">{{error.0|title}} </h3></li>
+          <li><h3 class="error-text">{{error.1|title}}   </h3></li>
+        </ul>
+        
+        
+      </section>
+      {% endif %}
+
+
+      {% if ticket_objects %}
+        <div class="ticket-main-row ticket-display-header ">
+          <div class='requester-profile-container mar-top-1'>
+            Requester Name
+          </div>
+  
+          <div class="display-ticket-number mar-top-1">
+            Ticket Number
+          </div>
+  
+  
+          <div class="display-ticket-subject-header mar-top-1">
+            Subject
+          </div>
+  
+  
+          <div class="display-ticket-agent mar-top-1">
+            Assigned To
+          </div>
+  
+          <div class="display-ticket-status-header mar-top-1">
+            Status
+          </div>
+  
+          <div class="display-ticket-date mar-top-1">
+            Created Date
+          </div>
+  
+          <div class="display-ticket-priority mar-top-1">
+            Priority
+          </div>
+  
+          <div class="display-ticket-category mar-top-1">
+            Category
+          </div>
+  
+        </div>
+
+
+
+
+
+      
+      
+      {% for tickets in ticket_objects %}
+      
+      <a href="{% url 'update_incident' tickets.id %}{% if non_it %}?non_it=True{% endif %}" data-id="{{ tickets.id }}" class="ticket-main-row">
+        <div class='requester-profile-container'>
+          <div class="requester-profile-photo">
+            <div class="requester-profile-text">
+              {{ tickets.requester_name.0 |title }}
+            </div>
+          </div>
+          <div class="requester-profile-name-container">
+            <div class="requester-profile-name">{{ tickets.requester_name |title }}</div>
+            <div class="requester-profile-pr_numer">{{ tickets.requester_pr_number }}</div>
+            <div class="requester-profile-pr_numer">{{ tickets.requester_department }}</div>
+          </div>
+        </div>
+
+        <div class="display-ticket-number">
+          <div class="display display-center">{{ tickets.id }}</div>
+        </div>
+
+
+        <div class="display-ticket-subject mar-top-1">
+          <div class='display-ticket-subject-icon'>&#8226</div>
+          <div class="display display-subject">{{ tickets.subject |title }}</div>
+        </div>
+
+
+        <div class="display-ticket-agent">
+          <div class="display display-center">{{ tickets.request_technician |title  }}</div>
+        </div>
+
+        <div class="display-ticket-status  wid-100 hit-100 {% if non_it %} non_it {% endif %}">
+          <div class="display-status-{{ tickets.request_status|slugify }}">
+            <div class='display-status-text'>{{ tickets.request_status|title  }}</div>
+          </div>
+        </div>
+
+        <div class="display-ticket-date">
+          <div class="display display-center">{{ tickets.request_creation_date|date:"d-M-Y   g:i a"   }}</div>
+        </div>
+
+        <div class="display-ticket-priority">
+          <div class="display display-center">{{ tickets.request_priority |title }}</div>
+        </div>
+
+        <div class="display-ticket-category">
+          <div class="display">{{ tickets.request_category |title }}</div>
+        </div>
+
+      </a>
+
+      {% endfor %}
+      {% endif %}
+
+      {% if ticket_objects.has_other_pages %}
+
+      <div class="paginator-container">
+
+          <ul class='paginator-ui'>
+            {% if ticket_objects.has_previous %}
+            <a class='paginator-previous pagi-link' href="?{{page_href}}&page={{ticket_objects.previous_page_number}}">
+              <li class="paginator-link">
+                <img src={% static 'HTMS_App/arrow.png' %} alt="Arror Icon">
+                <span>Prev</span> 
+              </li>
+            </a>
+            {%endif%}
+            
+              {% for page in custom_page_range %}
+              <a class="paginator-page-number pagi-link
+              {% if page == ticket_objects.number %}
+              page-active
+              {%  endif %}"  
+              href="?{{page_href}}&page={{page}}"
+              > 
+                <li class='paginator-link '>{{ page }}</li>
+              </a>
+              {% endfor %}
+
+              {% if ticket_objects.has_next %}
+              <a class='paginator-next pagi-link'  href="?{{page_href}}&page={{ticket_objects.next_page_number}}" >
+                <li class="paginator-link">
+                <span>Next</span>  
+                <img src={% static 'HTMS_App/arrow.png' %} alt="Arror Icon">
+               </li>
+              </a>
+              {% endif%}
+
+            
+            {% comment %} page-active {% endcomment %}
+           
+          </ul>
+
+      </div>
+
+      {% endif %}
+
+
+    </div>
+
+
+
+  </section>
+
+
+
+{% endblock %} 

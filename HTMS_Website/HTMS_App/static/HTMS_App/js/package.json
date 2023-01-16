@@ -1,0 +1,35 @@
+{
+  "name": "htms",
+  "version": "1.2.0",
+  "description": "Helpdesk Ticket Management System",
+  "main": "controller.js",
+  "scripts": {
+    "start:js": "webpack",
+    "build:js": "webpack --mode production",
+    "watch:sass": "sass ./src/scss/home.scss ../home.css -w",
+    "watch1:sass": "sass ./src/scss/new_incident.scss ../new_incident.css -w",
+    "watch2:sass": "sass ./src/scss/index.scss ../index.css -w",
+    "start:sass": "npm-run-all --parallel watch:sass watch1:sass watch2:sass",
+    "compile:sass": "sass ./src/scss/home.scss ./src/css/home.compile.css",
+    "prefix:css": "postcss --use autoprefixer -b 'last 10 versions' ./src/css/home.compile.css -o ./src/css/home.prefix.css",
+    "compress:css": "sass ./src/css/home.prefix.css ../home.css --style compressed",
+    "build:css": "npm-run-all compile:sass prefix:css compress:css",
+    "start": "npm-run-all --parallel start:js start:sass"
+  },
+  "author": "Ahmed Qureshi",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.20.5",
+    "@babel/preset-env": "^7.20.2",
+    "autoprefixer": "^10.4.13",
+    "babel-loader": "^9.1.0",
+    "npm-run-all": "^4.1.5",
+    "postcss-cli": "^10.1.0",
+    "sass": "^1.56.1",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.0"
+  },
+  "dependencies": {
+    "slugify": "^1.6.5"
+  }
+}

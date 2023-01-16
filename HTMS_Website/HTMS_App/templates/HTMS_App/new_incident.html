@@ -1,0 +1,436 @@
+{% extends "HTMS_APP/home.html" %} 
+{% block new_incident %}
+
+
+{% load static %} 
+<link rel='stylesheet' href={% static 'HTMS_App/new_incident.css' %}>
+
+<form class= 'new-incident-form'method="post" >
+  {% csrf_token %}
+
+    <div class="new-incident-header">
+      <span for="header">
+        {% if incident_header %}
+        {{ incident_header }}
+        {%endif%}
+      </span>
+    </div>
+
+
+    <section class='new-incident-container'>
+      <ul class="requester-form">
+        <li>
+          <header>Requester Details</header> 
+        </li>
+
+        <li class='requester-input'>
+            <label for="name">Requester Name<span class='required-field'>*</span></label>
+            <input type="text" name="requester_name" id="name" placeholder="Name" required 
+            {% if ticket_edit_objects.requester_name %}
+            value="{{ ticket_edit_objects.requester_name }}" readonly
+            {% endif%}
+            
+            {% if non_it %}
+            value="{{ user_fullname }}" readonly
+            {% endif%}
+
+            />
+        </li>
+
+        <li class="requester-input">
+          <label for="requester_pr_number">PR Number<span class='required-field'>*</span></label>
+          <input type="number" name="requester_pr_number" id="requester_pr_number" placeholder="PR Number"  required
+            {% if ticket_edit_objects.requester_pr_number %}
+            value="{{ ticket_edit_objects.requester_pr_number }}" readonly  
+            {% endif%}
+
+            {% if non_it %}
+            value="{{ user_data.pr_number }}" readonly  
+            {% endif%}
+          />
+        </li>
+
+        <li class="requester-input">
+          <label for="requester_designation">Designation</label>
+          <input type="text" name="requester_designation" id="requester_designation" placeholder="Designation" 
+          {% if ticket_edit_objects.requester_designation %}
+          value="{{ ticket_edit_objects.requester_designation }}" readonly  
+          {% endif%}
+
+          {% if non_it %}
+          value="{{ user_data.designation }}" readonly  
+          {% endif%}
+          />
+        </li>
+
+        <li class="requester-input">
+          <label for="requester_department">Department<span class='required-field'>*</span> </label>
+          <input type="text" name="requester_department" id="requester_department" placeholder="Department Name" required
+          {% if ticket_edit_objects.requester_department %}
+          value="{{ ticket_edit_objects.requester_department }}" readonly 
+          {% endif%}
+
+          {% if non_it %}
+          value="{{ user_data.department }}" readonly 
+          {% endif%}
+          />
+        </li>
+
+        <li class="requester-input">
+          <label for="requester_email">Email</label>
+          <input type="email" name="requester_email" id="requester_email" placeholder="Email ID" 
+          {% if ticket_edit_objects.requester_email %}
+          value="{{ ticket_edit_objects.requester_email }}" readonly  
+          {% endif%}
+
+          {% if non_it %}
+          value="{{ user.email }}" readonly 
+          {% endif%}
+          />
+        </li>
+        
+        <li class="requester-input">
+          <label for="requester_extension">Extention</label>
+          <input type="number" name="requester_extension" id="requester_extension" placeholder="33333" 
+          {% if ticket_edit_objects.requester_extension %}
+          value="{{ ticket_edit_objects.requester_extension }}" readonly  
+          {% endif%}
+
+          {% if non_it %}
+          value="{{ user_data.extension_number }}" readonly 
+          {% endif%}
+          />
+        </li>
+        
+        <li class="requester-input">
+          <label for="requester_phone_number">Phone Number</label>
+          <input type="number" name="requester_phone_number" id="requester_phone_number" placeholder="9800000000" 
+          {% if ticket_edit_objects.requester_phone_number %}
+          value="{{ ticket_edit_objects.requester_phone_number }}" readonly 
+          {% endif%}
+
+          {% if non_it %}
+          value="{{ user_data.mobile_number }}" readonly  
+          {% endif%}
+          />
+        </li>
+
+      </ul>
+
+
+
+      <ul class="incident-form">
+        <li>
+          <header class='incident-header'>Incident Details</header> 
+        </li>
+
+        {% if new_inc_req_type %}
+        <li class='requester-input'>
+          <label for="request_type">Request Type <span class='required-field'>*</span></label>
+          <select  {% if ticket_edit_objects.request_type %} disabled {% endif %} name="request_type" class="select" id="request_type" required>
+          
+            
+              {% if ticket_edit_objects.request_type %}
+              <option 
+                value="{{ ticket_edit_objects.request_type }}" selected hidden>
+                {{ ticket_edit_objects.request_type }}
+                {% else %}
+              <option 
+                disabled selected hidden value="">
+                -- Select Request Type --     
+              {% endif%}
+              
+            </option>
+            
+            
+            {% for new_inc in new_inc_req_type %}
+    
+            <option value="{{ new_inc.request_name }}">
+              {{ new_inc.request_name }}
+            </option>
+            {% endfor %}
+          </select>
+        </li>
+        {% endif %}
+
+
+        {% if new_inc_status %}
+        <li class='requester-input'>
+          <label for="request_status">Status <span class='required-field'>*</span></label>
+          <select disabled name="request_status" class="select" id="request_status">
+                       
+            
+            {% if ticket_edit_objects.request_status %}
+            <option 
+            value="{{ ticket_edit_objects.request_status }}"  selected hidden
+            >
+            {{ ticket_edit_objects.request_status }}
+            </option>
+            {% else %}
+            <option 
+             disabled selected hidden value="">
+             -- Select Status --
+           </option>
+            {% endif%}
+            
+
+            {% for stats in new_inc_status %}
+            <option value="{{ stats.status_name }}">
+              {{ stats.status_name }}
+            </option>
+            {% endfor %}
+          </select>
+        </li>
+        {% endif %}
+
+        {% if new_inc_mode %}
+        <li class='requester-input'>
+          <label for="request_mode">Mode <span class='required-field'>*</span> </label>
+          {% if non_it %}
+          <input type="hidden" name="request_mode" value="Web Form">
+          {% endif %}
+          <select {% if ticket_edit_objects.request_mode %} disabled {% elif non_it %} disabled {% endif %}  name="request_mode" class="select" id="request_mode">
+            {% if non_it %}
+            <option value="Web Form" selected hidden>Web Form
+            {% elif ticket_edit_objects.request_mode %}
+            <option 
+            value="{{ ticket_edit_objects.request_mode }}"  selected hidden
+            >
+            {{ ticket_edit_objects.request_mode }}
+            </option>
+
+            
+            {% else  %}
+            <option 
+             disabled selected hidden value="">
+             -- Select Mode --
+           </option>
+            {% endif%}
+
+
+
+            {% for mode in new_inc_mode %}
+            <option value="{{ mode.mode_name }}">
+              {{ mode.mode_name }}
+            </option>
+            {% endfor %}
+          </select>
+
+        </li>
+        {% endif %}
+
+        {% if new_inc_priority %}
+        <li class='requester-input'>
+          <label for="request_priority">Priority <span class='required-field'>*</span></label>
+
+          {% if non_it %}
+          <input type="hidden" name="request_priority" value="Medium">
+          {% endif %}
+
+          <select {% if ticket_edit_objects.request_priority %} disabled {% endif %} 
+          {% if non_it %} disabled {% endif%} required name="request_priority" class="select" id="request_priority">
+            
+            {% if ticket_edit_objects.request_priority %}
+            <option 
+            value="{{ ticket_edit_objects.request_priority }}"  selected hidden
+            >
+            {{ ticket_edit_objects.request_priority }}
+            </option>
+            {% elif non_it %}
+            <option 
+            value="Medium"  selected hidden
+            >
+            Medium
+          </option>
+            {% else %}
+            <option 
+             disabled selected hidden value="">
+             -- Select Priority --
+           </option>
+            {% endif%}
+    
+            {% for priority in new_inc_priority %}
+            <option value="{{ priority.priority_name }}">
+              {{ priority.priority_name }}
+            </option>
+            {% endfor %}
+          </select>
+
+        </li>
+        {% endif %}
+
+
+        {% if new_inc_category %}
+        <li class='requester-input'>
+
+          <label for="request_category">Category <span class='required-field'>*</span></label>
+          <select {% if ticket_edit_objects.request_category %} disabled {% endif %}  required name="request_category" class="select" id="request_category">
+            
+             
+            {% if ticket_edit_objects.request_category %}
+            <option
+            value="{{ ticket_edit_objects.request_category }}"  selected hidden
+            >
+            {{ ticket_edit_objects.request_category }}
+            </option>
+            {% else %}
+            <option
+             disabled selected hidden value="">
+             -- Select Category --
+           </option>
+            {% endif%}
+            
+
+            {% for category in new_inc_category %}
+            <option value="{{ category.category_name }} - {{ category.subcategory_name }}">
+              {{ category.category_name }} - {{ category.subcategory_name }}
+            </option>
+            {% endfor %}
+          </select>
+
+        </li>
+        {% endif %}
+
+
+        {% if technician %}
+        <li class='requester-input'>
+          <label for="request_technician">Technician</label>
+          <select {% if ticket_edit_objects.request_technician %} disabled {% endif %} 
+          {% if non_it %} disabled {% endif%} name="request_technician" class="select" id="request_technician">
+
+             
+            {% if ticket_edit_objects.request_technician %}
+            <option
+            value="{{ ticket_edit_objects.request_technician.id }}"  selected hidden
+            >
+            {{ ticket_edit_objects.request_technician.first_name }} {{ ticket_edit_objects.request_technician.last_name }} ({{ ticket_edit_objects.request_technician.username }} )
+            </option>
+            {% else %}
+            <option
+             disabled selected hidden >
+             -- Select Technician --
+           </option>
+            {% endif%}
+
+
+            {% for tech in technician %}
+            <option value={{tech.id}}>
+              {{ tech.first_name }} {{ tech.last_name }} ({{ tech.username }})
+            </option>
+            {% endfor %}
+          </select>
+
+        </li>
+        {% endif %}
+
+        <li class='requester-input'>
+          <label for="subject">Subject <span class='required-field'>*</span></label>
+          <input class='incident-input' type="text" name="subject" id="subject" placeholder="Subject" required 
+          {% if ticket_edit_objects.subject %}
+          value="{{ ticket_edit_objects.subject }}" disabled
+          {% endif%}
+          />
+        </li>
+
+        <li><input type="text" name='ticket_pk' hidden value="{{ ticket_edit_objects.id }}">
+      </ul>
+      
+      
+      
+
+      <div class="incident-description">
+        <label  class='incident-description-header' for='description'>Description</label>
+        <textarea {% if ticket_edit_objects.description %} disabled {% endif%} class='incident-description-textarea' rows="5" cols="33" type="text" name="description" id="description"
+          placeholder="Details about this Incident">{% if ticket_edit_objects.description %}{{ ticket_edit_objects.description }}{% endif%}</textarea>
+        <button type='submit' class='submit-button'>
+            <span class='btn--add btn--text'>Submit</span>
+        </button>
+
+      </div>
+
+      <div class="drop-body">
+        <div class="drop-contrainer">
+          <div class="drop-effect">
+            <span class="detail-card-header"
+            >Submit Details</span>
+            <ul class="detail-card-format detail-card-head            
+            {% if ticket_edit_objects.request_submitter %}
+            {% else %}
+            pad-lef-0rem 
+            {% endif %}"
+            >
+              <li>
+                <ul class='detail-card---listing'>
+                  <li class='detail-card--label'>Submit Type</li>
+                  <li class='detail-card--colon'>:</li>
+                  <li class='detail-card--info'>
+                    {% if submit_type %}
+                    {{submit_type|title}}
+                    {% endif %}
+                  </li>
+                </ul>
+
+                
+              </li>
+
+              {% if ticket_edit_objects.request_submitter %}
+              <li>
+                <ul class='detail-card---listing'>
+                  <li class='detail-card--label'>Submited By</li>
+                  <li class='detail-card--colon'>:</li>
+                  <li class='detail-card--info'>
+                    {{ ticket_edit_objects.request_submitter.first_name|title }} {{ ticket_edit_objects.request_submitter.last_name|title  }} ({{ ticket_edit_objects.request_submitter.username }} )
+                  </li>
+                </ul>
+                
+              </li>
+              {% endif%}
+              
+              {% if ticket_edit_objects.request_creation_date %}
+              <li>
+                <ul class='detail-card---listing'>
+                  <li class='detail-card--label'>Submited On</li>
+                  <li class='detail-card--colon'>:</li>
+                  <li class='detail-card--info'>
+                    {{ ticket_edit_objects.request_creation_date|date:"d-M-Y   g:i a"  }}
+                  </li>
+                </ul>
+                
+              </li>
+              {% endif%}
+
+              {% if ticket_edit_objects.last_modified_by %}          
+              <li>
+                <ul class='detail-card---listing'>
+                  <li class='detail-card--label'>Last Updated By</li>
+                  <li class='detail-card--colon'>:</li>
+                  <li class='detail-card--info'>
+                    {{ ticket_edit_objects.last_modified_by.first_name|title }} {{ ticket_edit_objects.last_modified_by.last_name|title }} ({{ ticket_edit_objects.last_modified_by.username }} )
+                  </li>
+                </ul>   
+              </li>
+              {% endif%}
+              {% if ticket_edit_objects.last_modified_date %}
+              <li>
+                <ul class='detail-card---listing'>
+                  <li class='detail-card--label'>Last Updated On</li>
+                  <li class='detail-card--colon'>:</li>
+                  <li class='detail-card--info'>
+                    {{ ticket_edit_objects.last_modified_date|date:"d-M-Y   g:i a" }}
+                  </li>
+                </ul>   
+              </li>
+              {% endif%}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+</form>
+
+{% endblock new_incident %}
+
+
+              
+                

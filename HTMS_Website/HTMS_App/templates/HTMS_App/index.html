@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel='stylesheet' href={% static 'HTMS_App/index.css' %}>
+    <link rel="shortcut icon" href={% static 'HTMS_App/htms_icon.ico' %} type="image/x-icon">
+    <title>HTMS</title>
+  </head>
+
+  <body>
+    <header>
+      <nav class="navbar">
+        <ul class="navbar-nav">
+          <li class="logo">
+            <a href="#" class="nav-link">
+              <span class="link-text">HelpDesk T.M.S</span>
+              <img src={% static 'HTMS_App/laser_gun.png' %} alt="Laser Gun Icon">
+            </a>
+          </li>
+
+          {% if user_fullname %}
+          <li class="nav-item">
+            <a href='#' class="nav-link">
+              <img class='greyscale' src={% static 'HTMS_App/favicon.png' %} alt="Ticket Icon">
+              <span data-user={{ user_fullname }} class="link-text">{{ user_fullname }} </span>
+            </a>
+          </li>
+          {% endif %}
+
+          <li class="nav-item">
+            <a href={% url 'home' %} class="nav-link">
+              <img class='greyscale' src={% static 'HTMS_App/ticket.png' %} alt="Ticket Icon">
+              <span class="link-text">Tickets</span>
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href={% url 'home' %} class="nav-link">
+              <img class='greyscale' src={% static 'HTMS_App/inventory_logo.png' %} alt="Inventory Icon">
+              <span class="link-text">Inventory</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="{% url 'logout_user' %}" class="nav-link">
+              <img class='greyscale' src={% static "HTMS_App/logout.png" %} alt="Logout Icon">
+              <span class="link-text">Logout</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="progressbar"></div>
+      <div class="scrollPath"></div>
+    </header>
+
+    <main>{% block content %}{% endblock %}</main>
+
+
+      <footer>
+        <div class="company"><span>Copyright &copy; Kokilaben Hospital</span></div>
+        <div class="profile"><span>Designed and Developed by <a href="https://github.com/ahmedther" class="developer">Ahmed Qureshi</a></span></div>
+      </footer>
+
+
+    <script src={% static 'HTMS_App/index.js' %} type='module'></script>
+  </body>
+
+
+</html>

@@ -1,0 +1,139 @@
+{% load static %}
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>HTMS Sign Up 🔱</title>
+        <link rel="stylesheet" href="{% static 'HTMS_App/sign_up.css' %}">
+        <link rel="shortcut icon" href={% static 'HTMS_App/htms_icon.ico' %} type="image/x-icon">
+    </head>
+    <body>
+        <main class="main-card">
+            <section class='left-card'>
+                <div class='left-card-heading'>
+                    <h3>
+                        New User Registration
+                    </h3>
+                </div>
+                <img class='left-card-img'src="{% static 'HTMS_App/left-card-bg.jpg' %}" alt="Back Ground Image">
+            </section>
+
+            <section class='right-card'>
+                <form action="" class="user-info" method="post" >
+                    {% csrf_token %}
+                    <ul class='user-info-ul'>
+                        <li class='user-info-input'>
+                            <label for="user_first_name">First Name<span class='required-field'>*</span></label>
+                            <input  type="text" name="user_first_name" id="user_first_name" placeholder="John"  style="text-transform:capitalize" required>
+                        </li>
+
+                        <li class='user-info-input'>
+                            <label for="user_last_name">Last Name<span class='required-field'>*</span></label>
+                            <input  type="text" name="user_last_name" id="user_last_name" placeholder="Doe"  style="text-transform:capitalize" required>
+                        </li>
+
+                        <li class='user-info-input'>
+                            <label for="requester_department">Department<span class='required-field'>*</span></label>
+                            <input  type="text" name="requester_department" id="requester_department" placeholder="Department Name"  style="text-transform:capitalize" required>
+                        </li>
+
+                        <li class='user-info-input'>
+                            <label for="requester_designation">Designation<span class='required-field'>*</span></label>
+                            <input  type="text" name="requester_designation" id="requester_designation" placeholder="Your Designation"  style="text-transform:capitalize" required>
+                        </li>
+
+                        <li class='user-info-input'>
+                            <label for="requester_email">Email ID</label>
+                            <input  type="email" name="requester_email" id="requester_email" placeholder="example@kokilabenhospitals.com" >
+                        </li>
+
+                        <li class='user-info-input'>
+                            <label for="requester_pr_number">PR Number<span class='required-field'>*</span></label>
+                            <input  type="number" name="requester_pr_number" id="requester_pr_number" placeholder="5100000"  minlength="4" required >
+                        </li>
+
+                        <li class='user-info-input'>
+                            <label for="requester_phone_number">Mobile Number</label>
+                            <input  type="number" name="requester_phone_number" id="requester_phone_number" placeholder="9870161216"  maxlength="10"  minlength="10" >
+                        </li>
+
+                        <li class='user-info-input'>
+                            <label for="requester_extension">Extension Number</label>
+                            <input  type="number" name="requester_extension" id="requester_extension" placeholder="33000" >
+                        </li>
+
+                        <li class='user-info-input'>
+                            <label for="user_gender">Gender<span class='required-field'>*</span></label>
+                            <select class="select-tag"   name="user_gender"  id="user_gender" required>
+                                <option 
+                                 disabled selected hidden value="">
+                                 -- Select Gender -- 
+                               </option>
+
+                               <option value="Male">
+                                Male
+                              </option>
+
+                              <option value="Female">
+                                Female
+                              </option>
+                            </select>
+                        </li>
+
+                        <li class='user-info-input'>
+                            <label for="user_facility">Facility<span class='required-field'>*</span></label>
+                            <select class="select-tag"   name="user_facility"  id="user_facility" required>
+                                <option 
+                                 disabled selected hidden value="">
+                                 -- Select Facility -- 
+                               </option>
+                               {% for fac in facility %}
+                               <option value="{{ fac.id }}">
+                                {{  fac.facility_name }}
+                                </option>
+                                {% endfor %} 
+                            </select>
+                        </li>
+
+                        <li class='submit-button-li'>
+                            <button type='submit' class='submit-button'>
+                                <span class='btn--add btn--text'>Submit &#9757;</span>
+                            </button>
+                        </li>  
+                        {% comment %} <li class='user-info-input'>
+                            <label for="request_type">Request Type <span class='required-field'>*</span></label>
+                            <select    name="request_type" class="select" id="request_type" required>
+                              <option  
+                              
+                               disabled selected hidden value="">
+                               -- Select Request Type -- 
+                             </option>
+                              
+                              <option value="Incident">
+                                Incident
+                              </option>
+                              
+                              <option value="Service Request">
+                                Service Request
+                              </option>
+                              
+                            </select> {% endcomment %}
+                        </li>
+                    </ul>
+                </form>
+            </section>
+        </main>
+
+        <script>
+            const selectEL = document.querySelectorAll('.select-tag')
+            selectEL.forEach(function(el){
+                el.addEventListener('change', function() {
+                    this.style.color = '#535368'
+                })})
+
+        </script>
+    </body>
+
+</html>

@@ -1,0 +1,20 @@
+docker build -t image_name .                                                                                            #note -t means --tag and . means courrent directory
+
+docker image                                                                                                            #note to check all images
+
+docker rm container_name                                                                                                #note to remove container not image both are very different things
+
+docker run --name htms_docker_container -p 8000:8000 -d -v D:\docker\htms_website:/htms_website  htms_docker_image      #note this will create a new container  --name is to give new name  -p is port from_port:to_port
+                                                                                                                        #note -d means detached mode this will make container run in background and no updates will be displayed in the terminal
+                                                                                                                        #note -v mean volume mode to map location from our machine to the location of the project in the container
+
+docker stop container_name  -                                                                                           #note to stop the container
+
+docker ps                                                                                                               #note  to check running containers (in the background)
+
+
+docker-compose up                                                                                                       #note after creating and configuring docker-compose-file 
+docker-compose up --build -d                                                                                            #note this up the container and build the image form scratch and -d is --detached which will run it in background
+docker-compose down
+
+

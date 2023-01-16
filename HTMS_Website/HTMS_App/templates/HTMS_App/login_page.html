@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href={% static 'HTMS_App/favicon.ico' %} type="image/x-icon">
+    <link rel='stylesheet' href={% static 'HTMS_App/login_page.css' %}>
+    <title>HTMS Login</title>
+  </head>
+
+  <body>
+
+    <header>
+
+      <a href="#"><span>HelpDesk Ticket Management System</span><i></i></a>
+
+    </header>
+
+    <section>
+      {% if error %}
+      <div class="error">
+        <h6 data-text="{{ error }}">{{ error }}</h6>
+      </div>
+      {% endif %}
+    </section>
+
+    <main>
+
+      <div class="box">
+        <form method="POST" class="form">
+          {% csrf_token %}
+          <h2>Sign In</h2>
+          <div class="inputBox">
+            <input name="username" type="text" required='required' autocomplete="on" title="You PR Number is Your Username (Without 'KH') eg: 5100XXXX">
+            <span>Username</span>
+            <i></i>
+          </div>
+
+          <div class="inputBox">
+            <input name="password" type="password" required='required' autocomplete="on" title="You PR Number is Your Password (Without 'KH') eg: 5100XXXX">
+            <span>Password</span>
+            <i></i>
+          </div>
+
+          <div class="btn-cont">
+            <input type="submit" value="Login">
+
+            <a href="{% url 'sign_up' %}" class="sign-up">
+              <div class="sign-up-text">Sign Up</div>
+            </a>
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <footer>
+      <div class="company"><span>Copyright &copy; Kokilaben Hospital</span></div>
+      <div class="profile"><span>Designed and Developed by Ahmed Qureshi</span></div>
+
+    </footer>
+
+    <div class="progressbar"></div>
+    <div class="scrollPath"></div>
+
+    <script src={% static 'HTMS_App/login_page.js' %}></script>
+  </body>
+
+</html>
