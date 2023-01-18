@@ -1,0 +1,128 @@
+{% extends "HTMS_APP/inventory.html" %} 
+{% block new_assest %}
+
+
+{% load static %} 
+<link rel='stylesheet' href={% static 'HTMS_App/new_assest.css' %}>
+
+<form class= 'new-incident-form'method="post" >
+  {% csrf_token %}
+
+  <div class="new-incident-header">
+    <span for="header">
+      {% if assest_header %}
+      {{ assest_header }}
+      {%endif%}
+    </span>
+  </div>
+
+    {% if create_assest %}
+    <section class='create_assest-container'>
+        <ul class="create_assest-form">
+          <li>
+            <header>Requester Details</header> 
+          </li>
+  
+          <li class='requester-input'>
+              <label for="name">Requester Name<span class='required-field'>*</span></label>
+              <input type="text" name="requester_name" id="name" placeholder="Name" required 
+              {% if ticket_edit_objects.requester_name %}
+              value="{{ ticket_edit_objects.requester_name }}" readonly
+              {% endif%}
+              
+              {% if non_it %}
+              value="{{ user_fullname }}" readonly
+              {% endif%}
+  
+              />
+          </li>
+  
+          <li class="requester-input">
+            <label for="requester_pr_number">PR Number<span class='required-field'>*</span></label>
+            <input type="number" name="requester_pr_number" id="requester_pr_number" placeholder="PR Number"  required
+              {% if ticket_edit_objects.requester_pr_number %}
+              value="{{ ticket_edit_objects.requester_pr_number }}" readonly  
+              {% endif%}
+  
+              {% if non_it %}
+              value="{{ user_data.pr_number }}" readonly  
+              {% endif%}
+            />
+          </li>
+  
+          <li class="requester-input">
+            <label for="requester_designation">Designation</label>
+            <input type="text" name="requester_designation" id="requester_designation" placeholder="Designation" 
+            {% if ticket_edit_objects.requester_designation %}
+            value="{{ ticket_edit_objects.requester_designation }}" readonly  
+            {% endif%}
+  
+            {% if non_it %}
+            value="{{ user_data.designation }}" readonly  
+            {% endif%}
+            />
+          </li>
+  
+          <li class="requester-input">
+            <label for="requester_department">Department<span class='required-field'>*</span> </label>
+            <input type="text" name="requester_department" id="requester_department" placeholder="Department Name" required
+            {% if ticket_edit_objects.requester_department %}
+            value="{{ ticket_edit_objects.requester_department }}" readonly 
+            {% endif%}
+  
+            {% if non_it %}
+            value="{{ user_data.department }}" readonly 
+            {% endif%}
+            />
+          </li>
+  
+          <li class="requester-input">
+            <label for="requester_email">Email</label>
+            <input type="email" name="requester_email" id="requester_email" placeholder="Email ID" 
+            {% if ticket_edit_objects.requester_email %}
+            value="{{ ticket_edit_objects.requester_email }}" readonly  
+            {% endif%}
+  
+            {% if non_it %}
+            value="{{ user.email }}" readonly 
+            {% endif%}
+            />
+          </li>
+          
+          <li class="requester-input">
+            <label for="requester_extension">Extention</label>
+            <input type="number" name="requester_extension" id="requester_extension" placeholder="33333" 
+            {% if ticket_edit_objects.requester_extension %}
+            value="{{ ticket_edit_objects.requester_extension }}" readonly  
+            {% endif%}
+  
+            {% if non_it %}
+            value="{{ user_data.extension_number }}" readonly 
+            {% endif%}
+            />
+          </li>
+          
+          <li class="requester-input">
+            <label for="requester_phone_number">Phone Number</label>
+            <input type="number" name="requester_phone_number" id="requester_phone_number" placeholder="9800000000" 
+            {% if ticket_edit_objects.requester_phone_number %}
+            value="{{ ticket_edit_objects.requester_phone_number }}" readonly 
+            {% endif%}
+  
+            {% if non_it %}
+            value="{{ user_data.mobile_number }}" readonly  
+            {% endif%}
+            />
+          </li>
+  
+        </ul>
+  </section>
+  {%endif%}
+
+</form>
+
+{% endblock new_assest %}
+
+
+              
+                

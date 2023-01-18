@@ -163,10 +163,10 @@ class Support:
         return context
 
     def display_all_data(request):
-        user_full_name = request.user.get_full_name()
+
         ticket_objects = Requests.objects.all()
         context = {
-            "user_fullname": user_full_name,
+            "user_fullname": request.user.get_full_name(),
             "ticket_objects": ticket_objects,
             "header": "All Tickets",
             "link_active_status_all_tickets": "link--active",
@@ -516,3 +516,23 @@ class Support:
         technician = Technician.objects.get(user=request.user)
         ticket_objects = ticket_objects.filter(requester_pr_number=technician.pr_number)
         return ticket_objects
+
+    def get_assest_creation_context(self, request):
+        context = {
+            "user_fullname": request.user.get_full_name(),
+            "link_active_status_create_new_asset": "link--active",
+            "assest_header": "Create A New Asset",
+            "create_assest": True,
+        }
+        return context
+
+    def create_new_assest_type(request):
+        date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        new_assest = Assets(
+            assest_name=request.POST.get("new_assest_name"),
+            assest_type=request.POST.get("new_assest_type"),
+            assest_description=request.POST.get("description"),
+            assest_creation_date=date_now,
+            asset_creator=User.objects.get(id=request.user.id),
+        )
+        new_assest.save()

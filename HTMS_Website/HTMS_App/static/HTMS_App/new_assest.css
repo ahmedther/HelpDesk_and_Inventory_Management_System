@@ -1,0 +1,423 @@
+.ticket-main-header,
+.ticket-display,
+.ticket-display-header,
+.ticket-link-container {
+  display: none;
+  visibility: hidden;
+  width: 0%;
+}
+
+.link--active {
+  filter: grayscale(100%) opacity(1);
+}
+
+.link--active > .ticket-links {
+  color: #5f5f5f;
+  font-weight: 400;
+  font-size: 1.6rem;
+}
+
+.new-incident-header {
+  text-align: center;
+  padding: 2rem;
+  border: solid 0.1rem rgba(35, 35, 46, 0.4235294118);
+  font-size: 2rem;
+  font-weight: 600;
+  color: rgba(35, 35, 46, 0.8156862745);
+  height: 6rem;
+  grid-column: 1/-1;
+}
+.new-incident-header span {
+  font: inherit;
+  font-size: 2rem;
+  font-weight: 600;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.new-incident-form {
+  grid-area: 1;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.new-incident-container {
+  grid-column: 1/-1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/********************************
+/* Requester Details FOrm */
+/********************************/
+.requester-form, .create_assest-form {
+  min-width: 50rem;
+  grid-column: 1;
+  list-style: none;
+  padding: 5rem;
+  margin: 2rem;
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  flex-direction: column;
+}
+
+.requester-form header, .create_assest-form header {
+  font-size: 1.8rem;
+  color: #45f3ff;
+  text-align: center;
+  padding-bottom: 3rem;
+  font-weight: 600;
+}
+
+.requester-input {
+  padding: 1rem 0rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.requester-input label {
+  font-size: 1.6rem;
+  color: rgba(35, 35, 46, 0.8156862745);
+  font-weight: 400;
+}
+
+.requester-input input {
+  padding: 1.3rem;
+  color: rgba(35, 35, 46, 0.8156862745);
+  font-size: 1.6rem;
+  font-weight: 600;
+  font-size: 1.6rem;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 0.1rem solid var(--text-color-primary);
+}
+
+.required-field {
+  color: red;
+}
+
+.requester-input input::placeholder {
+  font-weight: 600;
+  font-size: 1.4rem;
+  opacity: 0.3;
+  color: rgba(35, 35, 46, 0.8156862745);
+}
+
+.requester-input input:focus {
+  outline: none;
+  color: rgba(35, 35, 46, 0.8156862745);
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 0.1rem solid var(--text-color-seconday);
+}
+
+.requester-input input:hover {
+  outline: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 0.1rem solid var(--text-color-seconday);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/*******************
+* Incident FOrm
+********************/
+.incident-form {
+  grid-column: 2;
+  list-style: none;
+  padding: 5rem;
+  margin: 2rem;
+  min-width: 50rem;
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  flex-direction: column;
+}
+
+.incident-form li .incident-header {
+  font-size: 1.8rem;
+  text-align: center;
+  padding-bottom: 3rem;
+  font-weight: 600;
+  color: var(--text-color-seconday);
+}
+
+.incident-form select {
+  padding: 1.3rem;
+  color: rgba(35, 35, 46, 0.8156862745);
+  font-size: 1.6rem;
+  font-weight: 600;
+  font-size: 1.6rem;
+  border-radius: 1rem;
+  border: 0.1rem solid var(--text-color-seconday);
+}
+
+.incident-form select:hover,
+.incident-form select:focus,
+.incident-form select::selection {
+  outline: none;
+  border: 0.1rem solid var(--text-color-primary);
+  color: rgba(35, 35, 46, 0.8156862745);
+}
+
+.incident-form .incident-input {
+  border-bottom: 0.1rem solid var(--text-color-seconday);
+}
+
+.incident-form .incident-input:focus,
+.incident-form .incident-input:hover {
+  border-bottom: 0.1rem solid var(--text-color-primary);
+}
+
+.submit-button {
+  background: var(--primary-gradient);
+  transition: all 500ms;
+  box-shadow: 0px 0px 0.7rem 0.1rem #b1c2c3;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  cursor: pointer;
+  border-radius: 2rem;
+  width: 14rem;
+  height: 3.5rem;
+  justify-content: space-evenly;
+  text-decoration: none;
+  align-items: center;
+  animation: 500ms ease-in moveUpFromBottom;
+}
+.submit-button:hover {
+  transform: translateY(-0.5rem);
+  background: var(--primary-gradient-reverse);
+  box-shadow: 0px 0px 0.7rem 0.1rem #f969c1;
+}
+.submit-button:active {
+  transform: translateY(0.1rem);
+  box-shadow: 0px 0px 0.5rem 0.1rem rgba(249, 105, 194, 0.5254901961);
+}
+.submit-button::after {
+  content: "";
+  display: inline-block;
+  height: 100%;
+  width: 100%;
+  background: var(--primary-gradient);
+  border-radius: 2rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  transition: all 500ms;
+}
+.submit-button:hover::after {
+  transform: scaleX(1.5) scaleY(1.6);
+  opacity: 0;
+}
+.submit-button span {
+  padding: 0;
+}
+
+/*******************
+* Description text Box. Textarea attributes are in home.scss
+********************/
+.incident-description {
+  margin: 2rem;
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 2rem;
+  grid-column: 1;
+  padding: 3rem;
+  gap: 2rem;
+}
+
+.incident-description-header {
+  font-size: 1.8rem;
+  color: #45f3ff;
+  text-align: center;
+  font-weight: 600;
+}
+
+.incident-description-textarea {
+  border-top: 0.1rem solid var(--text-color-primary);
+  border-left: 0.1rem solid var(--text-color-primary);
+  border-right: 0.1rem solid var(--text-color-seconday);
+  border-bottom: 0.1rem solid var(--text-color-seconday);
+  font-size: 1.8rem;
+  color: rgba(35, 35, 46, 0.8156862745);
+  font-weight: 900;
+  width: 100%;
+  height: 20rem;
+  padding: 2rem;
+}
+
+.incident-description-textarea:hover,
+.incident-description-textarea:active,
+.incident-description-textarea:focus {
+  outline: none;
+  border-top: 0.1rem solid var(--text-color-primary);
+  border-left: 0.1rem solid var(--text-color-primary);
+  border-right: 0.1rem solid var(--text-color-seconday);
+  border-bottom: 0.1rem solid var(--text-color-seconday);
+}
+
+.incident-description-textarea::selection {
+  background: var(--text-color-seconday);
+}
+
+/* *****************
+* Detail Card
+*******************/
+.detail-card {
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(4px);
+  border-radius: 10px;
+  margin: 2rem;
+  grid-column: 2;
+  padding: 3rem;
+  display: grid;
+  grid-template-columns: 4fr 1fr 4fr;
+  grid-template-rows: inherit;
+}
+
+.detail-card-colon {
+  grid-column: 2;
+  align-items: center;
+}
+
+.detail-card-info {
+  grid-column: 3;
+  padding-left: 3rem;
+}
+
+.drop-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #fbfbfd;
+  grid-column: 2;
+  user-select: none;
+}
+
+.drop-contrainer {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.drop-contrainer .drop-effect {
+  position: relative;
+  padding-top: 4rem;
+  width: 55rem;
+  height: 30rem;
+  box-shadow: inset 2rem 2rem 2rem rgba(0, 0, 0, 0.05), 2.5rem 3.5rem 2rem rgba(0, 0, 0, 0.05), 2.5rem 3rem 3rem rgba(0, 0, 0, 0.05), inset -2rem -2rem 2.5rem rgba(255, 255, 255, 0.9);
+  transition: 0.5s;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+  border-radius: 52% 48% 33% 67%/38% 45% 55% 62%;
+  transition: all 400ms;
+}
+.drop-contrainer .drop-effect:hover {
+  border-radius: 50%;
+}
+.drop-contrainer .drop-effect::before {
+  content: "";
+  position: absolute;
+  top: 5rem;
+  left: 7.5rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0.9;
+}
+.drop-contrainer .drop-effect::after {
+  content: "";
+  position: absolute;
+  top: 9.5rem;
+  left: 11rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0.9;
+}
+
+.detail-card-header {
+  grid-column: 1/-1;
+  font-size: 1.8rem;
+  color: var(--text-color-seconday);
+  text-align: center;
+  font-weight: 600;
+}
+
+.detail-card-format {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  font-size: 1.6rem;
+  color: rgba(35, 35, 46, 0.8156862745);
+  font-weight: 600;
+  gap: 2rem;
+}
+
+.detail-card-head {
+  grid-column: 1;
+  padding-left: 7rem;
+}
+
+.detail-card---listing {
+  display: flex;
+  gap: 1rem;
+  list-style: none;
+  color: #DFE0DF;
+}
+.detail-card---listing .detail-card--label {
+  width: 14rem;
+}
+.detail-card---listing .detail-card--colon {
+  padding-left: 3rem;
+  width: 0.5rem;
+}
+.detail-card---listing .detail-card--info {
+  padding-left: 3rem;
+}
+
+.pad-lef-0rem {
+  padding-left: 0rem;
+}
+
+.create_assest-container {
+  grid-column: 1/-1;
+  margin: auto;
+}
+
+/*# sourceMappingURL=new_assest.css.map */

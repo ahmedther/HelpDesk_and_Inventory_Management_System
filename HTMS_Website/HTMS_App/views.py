@@ -180,3 +180,45 @@ def home_non_it(request):
 
     elif request.method == "POST":
         return render(request, "HTMS_App/home.html")
+
+
+@login_required(login_url="login_page")
+@allowed_users
+def inventory(request):
+
+    if request.method == "GET":
+        context = {
+            "user_fullname": request.user.get_full_name(),
+            "header": "Assets Summary",
+            "link_active_status_all_assests": "link--active",
+        }
+        return render(request, "HTMS_App/inventory.html", context)
+
+    if request.method == "POST":
+        return render(request, "HTMS_App/inventory.html", context)
+
+
+@login_required(login_url="login_page")
+@allowed_users
+def new_assest(request):
+    sup = Support()
+    if request.method == "GET":
+        filters = {
+            "assest_creation": sup.get_assest_creation_context,
+        }
+
+        for filter_name, filter_func in filters.items():
+            if request.GET.get("arg") == filter_name:
+                context = filter_func(request)
+                return render(request, "HTMS_App/new_assest.html", context)
+
+    if request.method == "POST":
+        submit_type = {
+            "create_assest": Support.create_new_assest_type,
+        }
+
+        for submit_name, submit_func in submit_type.items():
+            if request.POST.get(submit_name):
+                submit_func(request)
+
+        return redirect("inventory")

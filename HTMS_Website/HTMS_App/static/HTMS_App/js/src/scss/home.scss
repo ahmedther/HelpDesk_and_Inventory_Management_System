@@ -56,6 +56,32 @@
 // - Spacing system (px)
 // 2 / 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 80 / 96 / 128
 // */
+// "#fca311", //yellow
+// "#FFDD00", // yellow light
+// "#FF4301", //orange dark
+// "#F66B0E", //orange light
+// "#ff006e", // dark pink
+// "#F806CC", // light pink
+// "#31E1F7", // sky blue
+// "#0096FF", // blue
+// "#00B7A8", // aqua blue teal
+// "#3DB2FF",//light blue
+// "#113CFC", // cco blue
+// "#3B44F6", // indigo
+// "#000000", //dark black
+// "#4C0070", // dark purple
+// "#8200FF", // light purple
+// "#45046A",//violet
+// "#FF0000", //red
+// "#379237",//dark green
+// "#49FF00", // light green
+// "#A6CB12", //off green
+// '#864000', //brown
+// "#290001", // dark brown
+// "#6A492B", //chikku brown
+// "#696464",//grey dark
+// "#414141",//grey light
+// "#FF7F5B", // peach
 
 @mixin main-header {
 
@@ -261,6 +287,7 @@ body {
     align-items: center;
     border: solid 0.1rem #23232e6c;
     height: 6rem;
+
 
 }
 

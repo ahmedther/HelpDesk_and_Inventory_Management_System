@@ -1,0 +1,195 @@
+{% extends "HTMS_APP/index.html" %} 
+
+{% block content %}
+
+{% load static %} 
+
+<link rel='stylesheet' href={% static 'HTMS_App/inventory.css' %}>
+
+  <section class="page">
+    <div class="sub-nav">
+        <div class="tick-header">
+            <h2>Inventory</h2>
+            
+              {% comment %} <a class='new-ticket-btn' href="{% url 'new_incident'%}{% if non_it %}?non_it=True{% endif %}" >
+                  <span class='btn--add btn--text'>Create Asset</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="30"
+                    height="30"
+                    fill="currentColor"
+                    class="bi bi-arrow-right-short btn--add btn--icon"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+                    />
+                    </svg
+                  >
+    
+              </a> {% endcomment %}
+            
+          </div>
+    
+          <form id='search-box-id' class = 'search-box' method='get' action= "{% url 'home' %}">
+            <img  src={% static 'HTMS_App/search_icon.png' %} alt="Search Icon">
+            <button type='submit'><img src="{% static 'HTMS_App/enter_key.png' %}" alt="Entery Key logo"></button>
+            <input autofocus class='search-box-input' type="text" name='search_ticket' placeholder= 'Search in all Inventory...'
+            {%if search_ticket %}
+            value={{ search_ticket }}
+            {% endif %}
+            
+            >
+           
+          </form>
+
+          <ul class='ticket-link-container'>
+            <li class='ticket-heading'><span>Assets</span></li>
+            
+            <li class="ticket-links-listing
+            {% if link_active_status_all_assests%}
+            {{  link_active_status_all_assests}}
+            {% endif %}"
+            > 
+              <img src="{% static 'HTMS_App/inventory_all_logo.png' %}" alt="All Assest logo">
+              <a class='ticket-links' href={% url 'inventory' %}>
+                <span>All Assest Summary</span>
+              </a>
+            </li>
+
+            <li class="ticket-links-listing
+            {% if link_active_status_create_new_asset %}
+            {{  link_active_status_create_new_asset }}
+            {% endif %}"
+            > 
+              <img src="{% static 'HTMS_App/new_assest_logo.png' %}" alt="New Assest logo">
+              <a class='ticket-links' href="{% url 'new_assest' %}?arg=assest_creation">
+                <span>Create A New Assest</span>
+              </a>
+            </li>
+    
+           
+    
+    
+          
+            <li class='ticket-heading'><span>STATUSES</span></li>
+    
+            <li class="ticket-links-listing
+            {% if link_active_status_open %}
+            {{  link_active_status_open }}
+            {% endif %}
+            ">
+              <img src="{% static 'HTMS_App/open_icon1.png' %}" alt="Open Sign icon logo">
+              <a class='ticket-links' href="?open=True">
+                <span>Open</span>
+              </a>
+            </li>
+    
+            <li class="ticket-links-listing
+            {% if link_active_status_assigned %}
+            {{  link_active_status_assigned }}
+            {% endif %}
+            ">
+              <img src="{% static 'HTMS_App/assigned_icon.png' %}" alt="Assigned icon logo">
+              <a class='ticket-links' href="?assigned=true">
+                <span>Assigned</span>
+              </a>
+            </li>
+    
+    
+            <li class="ticket-links-listing
+            {% if link_active_status_closed %}
+            {{  link_active_status_closed }}
+            {% endif %}
+            ">
+              <img src="{% static 'HTMS_App/close_icon.png' %}" alt="Closed icon logo">
+              <a class='ticket-links' href="?closed=true">
+                <span>Closed</span>
+              </a>
+            </li>
+    
+            <li class="ticket-links-listing
+            {% if link_active_status_on_hold %}
+            {{  link_active_status_on_hold }}
+            {% endif %}
+            ">
+              <img src="{% static 'HTMS_App/on_hold_icon.png' %}" alt="Hold Sign icon logo">
+              <a class='ticket-links' href="?on_hold=true">
+                <span>On hold</span>
+              </a>
+            </li>
+    
+            <li class="ticket-links-listing
+            {% if link_active_status_wait_for_fback %}
+            {{  link_active_status_wait_for_fback }}
+            {% endif %}
+            ">
+              <img src="{% static 'HTMS_App/wating_icon.png' %}" alt="Waiting For Feedback icon logo">
+              <a class='ticket-links' href="?wait_for_fback=true">
+                <span>Waiting For Feedback</span>
+              </a>
+            </li>
+    
+            <li class="ticket-links-listing
+            {% if link_active_status_resolved %}
+            {{  link_active_status_resolved }}
+            {% endif %}
+            ">
+              <img src="{% static 'HTMS_App/solved_icon.png' %}" alt="Resolved Sign icon logo">
+              <a class='ticket-links' href="?resolved=true">
+                <span>Resolved</span>
+              </a>
+            </li>
+    
+          </ul>
+        
+    </div>
+
+
+    
+        <div class="ticket-main">
+        {% block new_assest %}{% endblock %}
+        <div class="ticket-main-header">
+            
+            <span class='all-ticket' >
+            
+            {% if header %}
+            {{ header|title }}
+            {% endif %}
+            </span>
+
+        </div>
+        
+        {% if error %}
+        <section class='error-container'>
+            <img src="{% static 'HTMS_App/error.svg' %}" alt="Error Logo" class="error-logo">
+
+            <ul>
+            <li><h3 class="error-text">{{error.0|title}} </h3></li>
+            <li><h3 class="error-text">{{error.1|title}}   </h3></li>
+            </ul>
+            
+            
+        </section>
+        {% endif %}
+
+
+        
+        
+        
+
+        </div>
+
+
+
+
+    </div>
+
+
+
+  </section>
+
+
+
+{% endblock %} 
