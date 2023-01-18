@@ -165,7 +165,7 @@ input[type=number] {
   color: var(--text-color-seconday);
 }
 
-.incident-form select {
+.select {
   padding: 1.3rem;
   color: rgba(35, 35, 46, 0.8156862745);
   font-size: 1.6rem;
@@ -175,9 +175,9 @@ input[type=number] {
   border: 0.1rem solid var(--text-color-seconday);
 }
 
-.incident-form select:hover,
-.incident-form select:focus,
-.incident-form select::selection {
+.select:hover,
+.select:focus,
+.select::selection {
   outline: none;
   border: 0.1rem solid var(--text-color-primary);
   color: rgba(35, 35, 46, 0.8156862745);

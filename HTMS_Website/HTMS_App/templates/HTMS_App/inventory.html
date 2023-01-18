@@ -64,8 +64,8 @@
             {% endif %}"
             > 
               <img src="{% static 'HTMS_App/new_assest_logo.png' %}" alt="New Assest logo">
-              <a class='ticket-links' href="{% url 'new_assest' %}?arg=assest_creation">
-                <span>Create A New Assest</span>
+              <a class='ticket-links' href="{% url 'new_assets' %}?arg=asset_creation">
+                <span>Create A New Asset</span>
               </a>
             </li>
     
@@ -149,7 +149,7 @@
 
     
         <div class="ticket-main">
-        {% block new_assest %}{% endblock %}
+        {% block new_assets %}{% endblock %}
         <div class="ticket-main-header">
             
             <span class='all-ticket' >

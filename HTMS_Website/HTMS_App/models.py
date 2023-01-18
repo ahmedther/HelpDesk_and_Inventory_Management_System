@@ -110,12 +110,12 @@ class NewIncidentCategory(models.Model):
 
 
 class Assets(models.Model):
-    assest_name = models.CharField(
+    asset_name = models.CharField(
         max_length=100, null=False, unique=True, db_index=True
     )
-    assest_creation_date = models.DateTimeField(auto_now_add=True, db_index=True)
-    assest_type = models.CharField(max_length=100, null=True, db_index=True)
-    assest_description = models.TextField(max_length=99999999, null=True, db_index=True)
+    asset_creation_date = models.DateTimeField(auto_now_add=True, db_index=True)
+    asset_type = models.CharField(max_length=100, null=True, db_index=True)
+    asset_description = models.TextField(max_length=99999999, null=True, db_index=True)
     asset_creator = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -124,12 +124,12 @@ class Assets(models.Model):
     )
 
     def __str__(self):
-        return f"{self.assest_name} - {self.assest_type}"
+        return f"{self.asset_name} - {self.asset_type}"
 
 
-class Assest_Details(models.Model):
-    assest_name = models.ForeignKey(
-        Assets, on_delete=models.CASCADE, related_name="assest_details", db_index=True
+class Asset_Details(models.Model):
+    asset_name = models.ForeignKey(
+        Assets, on_delete=models.CASCADE, related_name="asset_details", db_index=True
     )
     brand = models.CharField(max_length=100, null=True, db_index=True)
     model_name = models.CharField(max_length=100, null=True, db_index=True)
@@ -155,7 +155,7 @@ class Assest_Details(models.Model):
         related_name="facilities",
         db_index=True,
     )
-    assest_user = models.ForeignKey(
+    asset_user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name="users",
@@ -169,4 +169,4 @@ class Assest_Details(models.Model):
     )
 
     def __str__(self):
-        return f"{self.assest_name.assest_name} - {self.brand}"
+        return f"{self.asset_name.asset_name} - {self.brand}"

@@ -1,0 +1,59 @@
+{% extends "HTMS_APP/inventory.html" %} 
+{% block new_assets %}
+
+
+{% load static %} 
+<link rel='stylesheet' href={% static 'HTMS_App/new_assets.css' %}>
+
+<form class= 'new-incident-form'method="post" >
+  {% csrf_token %}
+
+    <div class="new-incident-header">
+      <span for="header">
+        {% if asset_header %}
+        {{ asset_header }}
+        {%endif%}
+      </span>
+    </div>
+
+    {% if create_assest %}
+  <section class='create_assest-container'>
+        <ul class="create_assest-form">
+          <li>
+            <header>Add New Asset Type</header> 
+            <input type="hidden" name="create_asset" value="create_asset">
+          </li>
+  
+          <li class='requester-input'>
+              <label for="asset_name">Asset Name<span class='required-field'>*</span></label>
+              <input type="text" name="asset_name" id="asset_name" placeholder="Desktop / Laptop / All In One / Keyboard / RAM / etc..." required />
+          </li>
+  
+          <li class="requester-input">
+            <label for="asset_type">Asset Type<span class='required-field'>*</span></label>
+            <select  name="asset_type" class="select" id="asset_type">
+              <option disabled selected hidden value=""> -- Select Mode -- </option>
+              <option value="hardware">Hardware</option>
+              <option value="software">Software</option>
+            </select>
+          </li>
+
+          <li class="requester-input-description">
+            <label  class='asset_description' for='description'>Asset Description</label>
+            <textarea  class='incident-description-textarea' rows="5" cols="33" type="text" name="description" id="description"
+              placeholder="Provide detailed reason, why is there a need to create a new asset?"></textarea>
+            <button type='submit' class='submit-button'>
+                <span class='btn--add btn--text'>Submit</span>
+            </button>
+          </li>
+        </ul>
+   </section>
+  {%endif%}
+
+</form>
+
+{% endblock new_assets %}
+
+
+              
+                

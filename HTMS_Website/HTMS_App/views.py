@@ -200,21 +200,21 @@ def inventory(request):
 
 @login_required(login_url="login_page")
 @allowed_users
-def new_assest(request):
+def new_assets(request):
     sup = Support()
     if request.method == "GET":
         filters = {
-            "assest_creation": sup.get_assest_creation_context,
+            "asset_creation": sup.get_assets_creation_context,
         }
 
         for filter_name, filter_func in filters.items():
             if request.GET.get("arg") == filter_name:
                 context = filter_func(request)
-                return render(request, "HTMS_App/new_assest.html", context)
+                return render(request, "HTMS_App/new_assets.html", context)
 
     if request.method == "POST":
         submit_type = {
-            "create_assest": Support.create_new_assest_type,
+            "create_asset": Support.create_new_asset_type,
         }
 
         for submit_name, submit_func in submit_type.items():

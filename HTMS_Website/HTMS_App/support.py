@@ -517,22 +517,23 @@ class Support:
         ticket_objects = ticket_objects.filter(requester_pr_number=technician.pr_number)
         return ticket_objects
 
-    def get_assest_creation_context(self, request):
+    def get_assets_creation_context(self, request):
         context = {
             "user_fullname": request.user.get_full_name(),
             "link_active_status_create_new_asset": "link--active",
-            "assest_header": "Create A New Asset",
+            "asset_header": "Create A New Asset",
             "create_assest": True,
         }
         return context
 
-    def create_new_assest_type(request):
+    def create_new_asset_type(request):
+        print(request.POST)
         date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        new_assest = Assets(
-            assest_name=request.POST.get("new_assest_name"),
-            assest_type=request.POST.get("new_assest_type"),
-            assest_description=request.POST.get("description"),
-            assest_creation_date=date_now,
+        new_asset = Assets(
+            asset_name=request.POST.get("asset_name"),
+            asset_type=request.POST.get("asset_type"),
+            asset_description=request.POST.get("description"),
+            asset_creation_date=date_now,
             asset_creator=User.objects.get(id=request.user.id),
         )
-        new_assest.save()
+        new_asset.save()

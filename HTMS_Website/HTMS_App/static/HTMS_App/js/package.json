@@ -10,7 +10,7 @@
     "watch1:sass": "sass ./src/scss/new_incident.scss ../new_incident.css -w",
     "watch2:sass": "sass ./src/scss/index.scss ../index.css -w",
     "watch3:sass": "sass ./src/scss/inventory.scss ../inventory.css -w",
-    "watch4:sass": "sass ./src/scss/new_assest.scss ../new_assest.css -w",
+    "watch4:sass": "sass ./src/scss/new_assets.scss ../new_assets.css -w",
     "start:sass": "npm-run-all --parallel watch:sass watch1:sass watch2:sass watch3:sass watch4:sass",
     "compile:sass": "sass ./src/scss/home.scss ./src/css/home.compile.css",
     "prefix:css": "postcss --use autoprefixer -b 'last 10 versions' ./src/css/home.compile.css -o ./src/css/home.prefix.css",
