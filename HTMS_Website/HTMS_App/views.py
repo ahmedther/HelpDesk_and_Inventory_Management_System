@@ -187,11 +187,8 @@ def home_non_it(request):
 def inventory(request):
 
     if request.method == "GET":
-        context = {
-            "user_fullname": request.user.get_full_name(),
-            "header": "Assets Summary",
-            "link_active_status_all_assests": "link--active",
-        }
+        sup = Support()
+        context = sup.get_inventory_home_context(request)
         return render(request, "HTMS_App/inventory.html", context)
 
     if request.method == "POST":

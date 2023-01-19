@@ -6,6 +6,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth.hashers import make_password
 from datetime import date, timedelta
 from HTMS_App.sms_sender import SendSms
+import random
 
 
 class Support:
@@ -537,3 +538,16 @@ class Support:
             asset_creator=User.objects.get(id=request.user.id),
         )
         new_asset.save()
+
+    def get_inventory_home_context(self, request):
+        all_assets = Assets.objects.all().order_by("asset_name").values()
+        random_number = random.randint(1, 15)
+        context = {
+            "user_fullname": request.user.get_full_name(),
+            "header": "Assets Summary",
+            "link_active_status_all_assests": "link--active",
+            "random_number": random_number,
+            "all_assets": all_assets,
+        }
+
+        return context
