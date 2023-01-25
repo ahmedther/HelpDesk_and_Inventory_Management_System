@@ -140,8 +140,8 @@ class Asset_Details(models.Model):
     current_status = models.CharField(
         max_length=20,
         choices=(
-            ("in-stock", "In Stock"),
-            ("in-use", "In Use"),
+            ("in_stock", "In Stock"),
+            ("in_use", "In Use"),
             ("returned_to_vendor", "Returned To Vendor"),
             ("lost", "Lost"),
         ),

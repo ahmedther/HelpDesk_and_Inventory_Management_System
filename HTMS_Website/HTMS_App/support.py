@@ -551,3 +551,15 @@ class Support:
         }
 
         return context
+
+    def add_quantity_to_asset(self, request):
+        all_assets = Assets.objects.all().order_by("asset_name").values()
+        facilities = FacilityDropdown.objects.all().order_by("facility_name").values()
+        context = {
+            "asset_header": "Add Quantity To An Asset",
+            "add_quantity": True,
+            "all_assets": all_assets,
+            "facilities": facilities,
+        }
+        context = self.incident_context(request.user.get_full_name(), context)
+        return context

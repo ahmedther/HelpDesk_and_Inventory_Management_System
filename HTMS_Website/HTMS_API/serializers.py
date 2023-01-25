@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from HTMS_App.models import *
+from django.contrib.auth.models import User
 
 
 class NewIncidentStatSerializer(serializers.ModelSerializer):

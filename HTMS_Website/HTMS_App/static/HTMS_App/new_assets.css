@@ -52,7 +52,7 @@
 /********************************
 /* Requester Details FOrm */
 /********************************/
-.requester-form, .create_assest-form {
+.requester-form, .asset_user_form, .create_assest-form {
   min-width: 50rem;
   grid-column: 1;
   list-style: none;
@@ -68,7 +68,7 @@
   flex-direction: column;
 }
 
-.requester-form header, .create_assest-form header {
+.requester-form header, .asset_user_form header, .create_assest-form header {
   font-size: 1.8rem;
   color: #45f3ff;
   text-align: center;
@@ -141,7 +141,7 @@ input[type=number] {
 /*******************
 * Incident FOrm
 ********************/
-.incident-form {
+.incident-form, .asset_incident-form {
   grid-column: 2;
   list-style: none;
   padding: 5rem;
@@ -157,7 +157,7 @@ input[type=number] {
   flex-direction: column;
 }
 
-.incident-form li .incident-header {
+.incident-form li .incident-header, .asset_incident-form li .incident-header {
   font-size: 1.8rem;
   text-align: center;
   padding-bottom: 3rem;
@@ -165,30 +165,13 @@ input[type=number] {
   color: var(--text-color-seconday);
 }
 
-.select {
-  padding: 1.3rem;
-  color: rgba(35, 35, 46, 0.8156862745);
-  font-size: 1.6rem;
-  font-weight: 600;
-  font-size: 1.6rem;
-  border-radius: 1rem;
-  border: 0.1rem solid var(--text-color-seconday);
-}
-
-.select:hover,
-.select:focus,
-.select::selection {
-  outline: none;
-  border: 0.1rem solid var(--text-color-primary);
-  color: rgba(35, 35, 46, 0.8156862745);
-}
-
-.incident-form .incident-input {
+.incident-form .incident-input, .asset_incident-form .incident-input {
   border-bottom: 0.1rem solid var(--text-color-seconday);
 }
 
-.incident-form .incident-input:focus,
-.incident-form .incident-input:hover {
+.incident-form .incident-input:focus, .asset_incident-form .incident-input:focus,
+.incident-form .incident-input:hover,
+.asset_incident-form .incident-input:hover {
   border-bottom: 0.1rem solid var(--text-color-primary);
 }
 
@@ -415,10 +398,43 @@ input[type=number] {
   padding-left: 0rem;
 }
 
+select {
+  padding: 1.3rem;
+  color: rgba(35, 35, 46, 0.8156862745);
+  font-size: 1.6rem;
+  font-weight: 600;
+  font-size: 1.6rem;
+  border-radius: 1rem;
+  border: 0.1rem solid var(--text-color-seconday);
+  background: transparent;
+}
+select:hover, select:focus, select::selection {
+  background: rgba(0, 0, 255, 0.062745098);
+  outline: none;
+  border: 0.1rem solid var(--text-color-primary);
+  color: rgba(35, 35, 46, 0.8156862745);
+}
+select option {
+  background: #45f3ff;
+  color: #f969c1;
+  font-size: 1.6rem;
+  font-weight: 600;
+  border: none;
+  color: #535368;
+  text-decoration-color: #00ff4c;
+}
+
 body {
   font-family: "Poppins", sans-serif;
   line-height: 1;
   font-weight: 400;
+}
+
+.add_qty_assest-container {
+  grid-column: 1/-1;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 3rem;
 }
 
 .new-incident-form {
@@ -428,6 +444,15 @@ body {
 .create_assest-container {
   grid-column: 1/-1;
   margin: auto;
+}
+
+.create_assest-form {
+  margin: auto;
+  min-width: 50rem;
+  grid-column: 1/2;
+  min-width: 95%;
+  max-width: 95%;
+  height: 100%;
 }
 
 .requester-input-description {
@@ -451,6 +476,47 @@ body {
 
 .create_assest-form li header {
   color: #f969c1;
+}
+
+.asset_user_form {
+  margin: auto;
+  min-width: 50rem;
+  grid-column: 2/3;
+  min-width: 95%;
+  max-width: 95%;
+  height: 100%;
+}
+
+.search-box {
+  padding: 1rem 0rem;
+}
+.search-box .magnify-btn {
+  z-index: 2;
+  position: absolute;
+  margin-right: auto;
+}
+.search-box .enter-btn {
+  z-index: 2;
+  position: absolute;
+  display: flex;
+  justify-self: end;
+}
+
+.asset_incident-form {
+  margin: auto;
+  min-width: 50rem;
+  grid-column: 3/4;
+  min-width: 95%;
+  max-width: 95%;
+  height: 100%;
+}
+
+.disabled,
+.disabled:hover {
+  cursor: not-allowed;
+  color: rgba(255, 255, 255, 0.9176470588);
+  background: rgba(0, 0, 0, 0.2196078431);
+  border-color: rgba(0, 0, 0, 0.2196078431);
 }
 
 /*# sourceMappingURL=new_assets.css.map */

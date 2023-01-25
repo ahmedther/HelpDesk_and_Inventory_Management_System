@@ -1,0 +1,1 @@
+cd "D:\Python Projects\helpdesk_management_system\Scripts\HTMS_Website\HTMS_App\static\HTMS_App\js" && npm run start

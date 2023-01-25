@@ -34,18 +34,20 @@
               </a> {% endcomment %}
             
           </div>
-    
-          <form id='search-box-id' class = 'search-box' method='get' action= "{% url 'home' %}">
-            <img  src={% static 'HTMS_App/search_icon.png' %} alt="Search Icon">
-            <button type='submit'><img src="{% static 'HTMS_App/enter_key.png' %}" alt="Entery Key logo"></button>
-            <input autofocus class='search-box-input' type="text" name='search_ticket' placeholder= 'Search in all Inventory...'
-            {%if search_ticket %}
-            value={{ search_ticket }}
-            {% endif %}
-            
-            >
-           
-          </form>
+          
+
+          <form id='search-box-id' class = 'search-box' method='get'  action= "{% url 'home' %}"  >
+            <div class = 'submit_buttons'>
+            <button type='submit'><img  src={% static 'HTMS_App/search_icon.png' %} alt="Search Icon"></button>
+              <button type='submit'><img src="{% static 'HTMS_App/enter_key.png' %}" alt="Entery Key logo"></button>
+            </div>
+              <input autofocus class='search-box-input' type="text" name='search_ticket' placeholder= 'Search Asset in Inventory...'
+              {%if search_ticket %}
+              value={{ search_ticket }}
+              {% endif %}
+              >
+      
+           </form>
 
           <ul class='ticket-link-container'>
             <li class='ticket-heading'><span>Assets Functions</span></li>
@@ -69,7 +71,7 @@
             </li>
 
             <li class="ticket-links-listing" > 
-              <img src="{% static 'HTMS_App/new_assest_logo.png' %}" alt="New Assest logo">
+              <img src="{% static 'HTMS_App/add_product_logo.png' %}" alt="Add Assest logo">
               <a class='ticket-links' href="{% url 'new_assets' %}?arg=quantity_addition">
                 <span>Add Quantity to an Asset</span>
               </a>

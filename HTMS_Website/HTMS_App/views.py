@@ -202,6 +202,8 @@ def new_assets(request):
     if request.method == "GET":
         filters = {
             "asset_creation": sup.get_assets_creation_context,
+            "quantity_addition": sup.add_quantity_to_asset,
+            # "search_user":
         }
 
         for filter_name, filter_func in filters.items():
@@ -210,6 +212,7 @@ def new_assets(request):
                 return render(request, "HTMS_App/new_assets.html", context)
 
     if request.method == "POST":
+        print(request.POST)
         submit_type = {
             "create_asset": Support.create_new_asset_type,
         }

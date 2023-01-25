@@ -5,7 +5,7 @@
 {% load static %} 
 <link rel='stylesheet' href={% static 'HTMS_App/new_assets.css' %}>
 
-<form class= 'new-incident-form'method="post" >
+<form class= 'new-incident-form'method="post"  action="{% url 'new_assets' %}">
   {% csrf_token %}
 
     <div class="new-incident-header">
@@ -16,7 +16,7 @@
       </span>
     </div>
 
-    {% if create_assest %}
+  {% if create_assest %}
   <section class='create_assest-container'>
         <ul class="create_assest-form">
           <li>
@@ -32,7 +32,7 @@
           <li class="requester-input">
             <label for="asset_type">Asset Type<span class='required-field'>*</span></label>
             <select  name="asset_type" class="select" id="asset_type">
-              <option disabled selected hidden value=""> -- Select Mode -- </option>
+              <option disabled selected hidden value=""> -- Select Asset Type -- </option>
               <option value="hardware">Hardware</option>
               <option value="software">Software</option>
             </select>
@@ -50,8 +50,413 @@
    </section>
   {%endif%}
 
-</form>
+  {% if add_quantity %}
+  <section class='add_qty_assest-container'>
+    <ul class="create_assest-form">
+      <li>
+        <header>Add Quantity</header> 
+        <input type="hidden" name="add_qty_asset" value="add_qty_asset">
+      </li>
 
+      <li class="requester-input">
+        <label for="add_asset_name">Asset Name<span class='required-field'>*</span></label>
+        <select  name="add_asset_name" class="select" id="add_asset_name">
+          <option class="select-hidden" disabled selected hidden value=""> -- Select Asset Name -- </option>
+          {% for asset in all_assets %}
+          <option value="{{asset.id}}">{{asset.asset_name}}</option>
+          {% endfor %}
+
+        </select>
+      </li>
+
+      <li class='requester-input'>
+          <label for="asset_brand">Brand<span class='required-field'>*</span></label>
+          <input type="text" name="asset_brand" id="asset_brand" placeholder="HP / Dell / Lenovo / Iball / Logitech / etc..." required/>
+      </li>
+
+      <li class='requester-input'>
+        <label for="model_name">Model Name</label>
+        <input type="text" name="model_name" id="model_name" placeholder="Model XXXXXXX" />
+      </li>
+
+      <li class='requester-input'>
+        <label for="model_number">Model Number<span class='required-field' >*</span></label>
+        <input type="text" name="model_number" id="model_number" placeholder="XXXXXXX" required/>
+      </li>
+
+      <li class='requester-input'>
+        <label for="serial_number">Serial Number<span class='required-field' >*</span></label>
+        <input type="text" name="serial_number" id="serial_number" placeholder="XXXXXXX" required/>
+      </li>
+
+      <li class='requester-input'>
+        <label for="date_of_purchasee">Date of Purchase<span class='required-field' >*</span></label>
+        <input type="date" id="date_of_purchasee" name="date_of_purchasee" value="{% now "Y-m-d" %}" required/>
+      </li>
+
+      <li class="requester-input">
+        <label for="asset_current_status">Current Status<span class='required-field'>*</span></label>
+        <select  name="asset_current_status" class="select" id="asset_current_status" required>
+          <option disabled selected hidden value=""> -- Select Current Status -- </option>
+          <option value="in-stock">In Stock (In Store)</option>
+          <option value="in-use">In Use</option>
+          <option value="returned_to_vendor">Returned To Vendor</option>
+          <option value="lost">Lost</option>
+        </select>
+      </li>
+
+      <li class="requester-input">
+        <label for="asset_facility">Facility<span class='required-field'>*</span></label>
+        <select  name="asset_facility" class="select" id="asset_facility" required>
+          <option class="select-hidden" disabled selected hidden value=""> -- Select Asset Name -- </option>
+          {% for facility in facilities %}
+          <option value="{{facility.id}}">{{facility.facility_name}}</option>
+          {% endfor %}
+
+        </select>
+      </li>
+
+      <li class="requester-input-description">
+        <label  class='asset_description' for='description'>Other Details and Comments</label>
+        <textarea  class='incident-description-textarea' rows="5" cols="33" type="text" name="description" id="description"
+          placeholder="Comments...."></textarea>
+      </li>
+    </ul>
+
+    <ul class="asset_user_form">
+        <li>
+          <header>User Details</header> 
+        </li>
+
+        <li class='requester-input'>
+          <label for="search_user">Search User</label>
+          <div class = 'search-box user-search-box'>
+
+              <button type='submit' class='magnify-btn'><img class='user-search--btn' src={% static 'HTMS_App/search_icon.png' %} alt="Search Icon"></button>
+              <button type='submit' class='enter-btn' ><img class='user-search--btn' src="{% static 'HTMS_App/enter_key.png' %}" alt="Entery Key logo"></button>
+              <input autofocus class='search-box-input' type="text" name='search_user' placeholder= 'Search User...'>
+           
+          </div>
+        </li>
+
+        <li class="requester-input">
+          <label for="search_user_selection">User Search Results<span class='required-field'>*</span></label>
+          <select  name="search_user_selection" class="select disabled" id="search_user_selection" disabled>
+            <option disabled selected hidden value=""> -- Please Search A User -- </option>
+          </select>
+        </li>
+
+         
+        <li class='requester-input'>
+            <label for="name">User Name<span class='required-field'>*</span></label>
+            <input type="text" name="requester_name" id="name" placeholder="Name" required 
+            {% if ticket_edit_objects.requester_name %}
+            value="{{ ticket_edit_objects.requester_name }}" readonly
+            {% endif%}
+            />
+        </li>
+
+        <li class="requester-input">
+          <label for="requester_pr_number">PR Number<span class='required-field'>*</span></label>
+          <input type="number" name="requester_pr_number" id="requester_pr_number" placeholder="PR Number"  required
+            {% if ticket_edit_objects.requester_pr_number %}
+            value="{{ ticket_edit_objects.requester_pr_number }}" readonly  
+            {% endif%}
+             />
+        </li>
+
+        <li class="requester-input">
+          <label for="requester_designation">Designation</label>
+          <input type="text" name="requester_designation" id="requester_designation" placeholder="Designation" 
+          {% if ticket_edit_objects.requester_designation %}
+          value="{{ ticket_edit_objects.requester_designation }}" readonly  
+          {% endif%}
+          />
+        </li>
+
+        <li class="requester-input">
+          <label for="requester_department">Department<span class='required-field'>*</span> </label>
+          <input type="text" name="requester_department" id="requester_department" placeholder="Department Name" required
+          {% if ticket_edit_objects.requester_department %}
+          value="{{ ticket_edit_objects.requester_department }}" readonly 
+          {% endif%}
+          />
+        </li>
+
+        <li class="requester-input">
+          <label for="requester_email">Email</label>
+          <input type="email" name="requester_email" id="requester_email" placeholder="Email ID" 
+          {% if ticket_edit_objects.requester_email %}
+          value="{{ ticket_edit_objects.requester_email }}" readonly  
+          {% endif%}
+          />
+        </li>
+        
+        <li class="requester-input">
+          <label for="requester_extension">Extention</label>
+          <input type="number" name="requester_extension" id="requester_extension" placeholder="33333" 
+          {% if ticket_edit_objects.requester_extension %}
+          value="{{ ticket_edit_objects.requester_extension }}" readonly  
+          {% endif%}
+          />
+        </li>
+        
+        <li class="requester-input">
+          <label for="requester_phone_number">Phone Number</label>
+          <input type="number" name="requester_phone_number" id="requester_phone_number" placeholder="9800000000" 
+          {% if ticket_edit_objects.requester_phone_number %}
+          value="{{ ticket_edit_objects.requester_phone_number }}" readonly 
+          {% endif%}
+          />
+        </li>
+
+      </ul>
+
+      <ul class="asset_incident-form">
+        <li>
+          <header class='incident-header'>Ticket / Incident Details</header> 
+        </li>
+        
+        <li class='requester-input'>
+          <label for="search_ticket">Search Ticket / Incident</label>
+          <div class = 'search-box ticket-search-box'>
+
+              <button type='submit' class='magnify-btn'><img class='ticket-search--btn' src={% static 'HTMS_App/search_icon.png' %} alt="Search Icon"></button>
+              <button type='submit' class='enter-btn' ><img class='ticket-search--btn' src="{% static 'HTMS_App/enter_key.png' %}" alt="Entery Key logo"></button>
+              <input autofocus class='search-box-input' type="text" name='search_ticket' placeholder= 'Search Ticket / Incident...'>
+           
+          </div>
+        </li>
+
+        <li class="requester-input">
+          <label for="search_ticket_selection">Ticket Search Results<span class='required-field'>*</span></label>
+          <select  name="search_ticket_selection" class="select disabled" id="search_ticket_selection" disabled>
+            <option disabled selected hidden value=""> -- Please Search For A ticket -- </option>
+          </select>
+        </li>
+
+        {% if new_inc_req_type %}
+        <li class='requester-input'>
+          <label for="request_type">Request Type <span class='required-field'>*</span></label>
+          <select  {% if ticket_edit_objects.request_type %} disabled {% endif %} name="request_type" class="select" id="request_type" required>
+          
+            
+              {% if ticket_edit_objects.request_type %}
+              <option 
+                value="{{ ticket_edit_objects.request_type }}" selected hidden>
+                {{ ticket_edit_objects.request_type }}
+                {% else %}
+              <option 
+                disabled selected hidden value="">
+                -- Select Request Type --     
+              {% endif%}
+              
+            </option>
+            
+            
+            {% for new_inc in new_inc_req_type %}
+    
+            <option value="{{ new_inc.request_name }}">
+              {{ new_inc.request_name }}
+            </option>
+            {% endfor %}
+          </select>
+        </li>
+        {% endif %}
+
+
+        {% if new_inc_status %}
+        <li class='requester-input'>
+          <label for="request_status">Status <span class='required-field'>*</span></label>
+          <select disabled name="request_status" class="select" id="request_status">
+                       
+            
+            {% if ticket_edit_objects.request_status %}
+            <option 
+            value="{{ ticket_edit_objects.request_status }}"  selected hidden
+            >
+            {{ ticket_edit_objects.request_status }}
+            </option>
+            {% else %}
+            <option 
+             disabled selected hidden value="">
+             -- Select Status --
+           </option>
+            {% endif%}
+            
+
+            {% for stats in new_inc_status %}
+            <option value="{{ stats.status_name }}">
+              {{ stats.status_name }}
+            </option>
+            {% endfor %}
+          </select>
+        </li>
+        {% endif %}
+
+        {% if new_inc_mode %}
+        <li class='requester-input'>
+          <label for="request_mode">Mode <span class='required-field'>*</span> </label>
+          {% if non_it %}
+          <input type="hidden" name="request_mode" value="Web Form">
+          {% endif %}
+          <select {% if ticket_edit_objects.request_mode %} disabled {% elif non_it %} disabled {% endif %}  name="request_mode" class="select" id="request_mode">
+            {% if non_it %}
+            <option value="Web Form" selected hidden>Web Form
+            {% elif ticket_edit_objects.request_mode %}
+            <option 
+            value="{{ ticket_edit_objects.request_mode }}"  selected hidden
+            >
+            {{ ticket_edit_objects.request_mode }}
+            </option>
+
+            
+            {% else  %}
+            <option 
+             disabled selected hidden value="">
+             -- Select Mode --
+           </option>
+            {% endif%}
+
+
+
+            {% for mode in new_inc_mode %}
+            <option value="{{ mode.mode_name }}">
+              {{ mode.mode_name }}
+            </option>
+            {% endfor %}
+          </select>
+
+        </li>
+        {% endif %}
+
+        {% if new_inc_priority %}
+        <li class='requester-input'>
+          <label for="request_priority">Priority <span class='required-field'>*</span></label>
+
+          {% if non_it %}
+          <input type="hidden" name="request_priority" value="Medium">
+          {% endif %}
+
+          <select {% if ticket_edit_objects.request_priority %} disabled {% endif %} 
+          {% if non_it %} disabled {% endif%} required name="request_priority" class="select" id="request_priority">
+            
+            {% if ticket_edit_objects.request_priority %}
+            <option 
+            value="{{ ticket_edit_objects.request_priority }}"  selected hidden
+            >
+            {{ ticket_edit_objects.request_priority }}
+            </option>
+            {% elif non_it %}
+            <option 
+            value="Medium"  selected hidden
+            >
+            Medium
+          </option>
+            {% else %}
+            <option 
+             disabled selected hidden value="">
+             -- Select Priority --
+           </option>
+            {% endif%}
+    
+            {% for priority in new_inc_priority %}
+            <option value="{{ priority.priority_name }}">
+              {{ priority.priority_name }}
+            </option>
+            {% endfor %}
+          </select>
+
+        </li>
+        {% endif %}
+
+
+        {% if new_inc_category %}
+        <li class='requester-input'>
+
+          <label for="request_category">Category <span class='required-field'>*</span></label>
+          <select {% if ticket_edit_objects.request_category %} disabled {% endif %}  required name="request_category" class="select" id="request_category">
+            
+             
+            {% if ticket_edit_objects.request_category %}
+            <option
+            value="{{ ticket_edit_objects.request_category }}"  selected hidden
+            >
+            {{ ticket_edit_objects.request_category }}
+            </option>
+            {% else %}
+            <option
+             disabled selected hidden value="">
+             -- Select Category --
+           </option>
+            {% endif%}
+            
+
+            {% for category in new_inc_category %}
+            <option value="{{ category.category_name }} - {{ category.subcategory_name }}">
+              {{ category.category_name }} - {{ category.subcategory_name }}
+            </option>
+            {% endfor %}
+          </select>
+
+        </li>
+        {% endif %}
+
+
+        {% if technician %}
+        <li class='requester-input'>
+          <label for="request_technician">Technician</label>
+          <select {% if ticket_edit_objects.request_technician %} disabled {% endif %} 
+          {% if non_it %} disabled {% endif%} name="request_technician" class="select" id="request_technician">
+
+             
+            {% if ticket_edit_objects.request_technician %}
+            <option
+            value="{{ ticket_edit_objects.request_technician.id }}"  selected hidden
+            >
+            {{ ticket_edit_objects.request_technician.first_name }} {{ ticket_edit_objects.request_technician.last_name }} ({{ ticket_edit_objects.request_technician.username }} )
+            </option>
+            {% else %}
+            <option
+             disabled selected hidden >
+             -- Select Technician --
+           </option>
+            {% endif%}
+
+
+            {% for tech in technician %}
+            <option value={{tech.id}}>
+              {{ tech.first_name }} {{ tech.last_name }} ({{ tech.username }})
+            </option>
+            {% endfor %}
+          </select>
+
+        </li>
+        {% endif %}
+
+        <li class='requester-input'>
+          <label for="subject">Subject <span class='required-field'>*</span></label>
+          <input class='incident-input' type="text" name="subject" id="subject" placeholder="Subject" required 
+          {% if ticket_edit_objects.subject %}
+          value="{{ ticket_edit_objects.subject }}" disabled
+          {% endif%}
+          />
+        </li>
+
+        <li><input type="text" name='ticket_pk' hidden value="{{ ticket_edit_objects.id }}">
+      </ul>
+
+    <button type='submit' class='submit-button'>
+      <span class='btn--add btn--text'>Submit</span>
+    </button>
+
+
+  </section>
+  
+  {% endif %}
+
+</form>
+<script src={% static 'HTMS_App/new_assets.js' %} type='module'></script>
 {% endblock new_assets %}
 
 

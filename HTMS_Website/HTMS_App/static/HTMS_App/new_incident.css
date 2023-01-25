@@ -165,24 +165,6 @@ input[type=number] {
   color: var(--text-color-seconday);
 }
 
-.select {
-  padding: 1.3rem;
-  color: rgba(35, 35, 46, 0.8156862745);
-  font-size: 1.6rem;
-  font-weight: 600;
-  font-size: 1.6rem;
-  border-radius: 1rem;
-  border: 0.1rem solid var(--text-color-seconday);
-}
-
-.select:hover,
-.select:focus,
-.select::selection {
-  outline: none;
-  border: 0.1rem solid var(--text-color-primary);
-  color: rgba(35, 35, 46, 0.8156862745);
-}
-
 .incident-form .incident-input {
   border-bottom: 0.1rem solid var(--text-color-seconday);
 }
@@ -413,6 +395,32 @@ input[type=number] {
 
 .pad-lef-0rem {
   padding-left: 0rem;
+}
+
+select {
+  padding: 1.3rem;
+  color: rgba(35, 35, 46, 0.8156862745);
+  font-size: 1.6rem;
+  font-weight: 600;
+  font-size: 1.6rem;
+  border-radius: 1rem;
+  border: 0.1rem solid var(--text-color-seconday);
+  background: transparent;
+}
+select:hover, select:focus, select::selection {
+  background: rgba(0, 0, 255, 0.062745098);
+  outline: none;
+  border: 0.1rem solid var(--text-color-primary);
+  color: rgba(35, 35, 46, 0.8156862745);
+}
+select option {
+  background: #45f3ff;
+  color: #f969c1;
+  font-size: 1.6rem;
+  font-weight: 600;
+  border: none;
+  color: #535368;
+  text-decoration-color: #00ff4c;
 }
 
 /*# sourceMappingURL=new_incident.css.map */

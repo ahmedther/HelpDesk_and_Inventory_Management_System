@@ -1,4 +1,6 @@
+from django.db.models import Q
 from rest_framework.response import Response
+from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from HTMS_App.models import *
 from HTMS_API.serializers import *
@@ -40,3 +42,65 @@ def post_reason_on_hold(request):
     request_object.save()
     request_object_serializer = RequestsSerializer(request_object)
     return Response(request_object_serializer.data)
+
+
+@api_view(["GET"])
+def get_users(request):
+    search_query = request.GET.get("search_value")
+    user_tech_obj = Technician.objects.filter(
+        Q(user__id__icontains=search_query)
+        | Q(user__username__icontains=search_query)
+        | Q(user__first_name__icontains=search_query)
+        | Q(user__last_name__icontains=search_query)
+        | Q(pr_number__icontains=search_query)
+    ).distinct()
+
+    user_tech_data = {}
+    for users in user_tech_obj:
+        user_tech_data[users.user.username] = {
+            "id": users.user.id,
+            "username": users.user.username,
+            "first_name": users.user.first_name,
+            "last_name": users.user.last_name,
+            "email": users.user.email,
+            "department": users.department,
+            "designation": users.designation,
+            "pr_number": users.pr_number,
+            "extension_number": users.extension_number,
+            "mobile_number": users.mobile_number,
+        }
+    return JsonResponse(user_tech_data)
+    # user_user_obj = User.objects.get(pk=user_tech_obj["user_id"])
+    # print(user_user_obj)
+    # # user_obj_serializer = UserSerializer(user_tech_obj, many=True)
+    # json_data = json.dumps(user_tech_obj)
+    # return HttpResponse(json_data, content_type="application/json")
+
+
+@api_view(["GET"])
+def get_tickets(request):
+    search_ticket = request.GET.get("search_value")
+    ticket_objects = Requests.objects.distinct().filter(
+        Q(id__icontains=search_ticket)
+        | Q(requester_name__icontains=search_ticket)
+        | Q(request_status__icontains=search_ticket)
+        | Q(request_priority__icontains=search_ticket)
+        | Q(request_category__icontains=search_ticket)
+        | Q(request_technician__username__icontains=search_ticket)
+        | Q(subject__icontains=search_ticket)
+        | Q(request_creation_date__icontains=search_ticket)
+    )
+    ticket_data = {}
+    for tickets in ticket_objects:
+        ticket_data[tickets.requester_name] = {
+            "id": tickets.id,
+            "requester_name": tickets.requester_name,
+            "request_type": tickets.request_type,
+            "request_status": tickets.request_status,
+            "request_mode": tickets.request_mode,
+            "request_priority": tickets.request_priority,
+            "request_category": tickets.request_category,
+            "subject": tickets.subject,
+            "subject": tickets.subject,
+        }
+    return JsonResponse(ticket_data)

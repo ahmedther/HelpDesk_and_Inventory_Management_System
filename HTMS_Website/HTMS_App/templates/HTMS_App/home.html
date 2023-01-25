@@ -39,17 +39,18 @@
         action= "{% url 'home' %}"
       {% endif %}
       >
-        <img  src={% static 'HTMS_App/search_icon.png' %} alt="Search Icon">
+      <div class = 'submit_buttons'>
+      <button type='submit'><img  src={% static 'HTMS_App/search_icon.png' %} alt="Search Icon"></button>
         <button type='submit'><img src="{% static 'HTMS_App/enter_key.png' %}" alt="Entery Key logo"></button>
+      </div>
         <input autofocus class='search-box-input' type="text" name='search_ticket' placeholder= 'Search in all tickets...'
         {%if search_ticket %}
         value={{ search_ticket }}
         {% endif %}
-        
         >
-       
+      
       </form>
-    
+
       <ul class='ticket-link-container'>
         <li class='ticket-heading'><span>Navigate Tickets</span></li>
         

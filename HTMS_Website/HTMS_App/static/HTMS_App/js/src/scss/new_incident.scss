@@ -234,24 +234,6 @@ input[type=number] {
     color: var(--text-color-seconday);
 }
 
-.select {
-
-    padding: 1.3rem;
-    color: #23232ed0;
-    font-size: 1.6rem;
-    font-weight: 600;
-    font-size: 1.6rem;
-    border-radius: 1rem;
-    border: .1rem solid var(--text-color-seconday)
-}
-
-.select:hover,
-.select:focus,
-.select::selection {
-    outline: none;
-    border: .1rem solid var(--text-color-primary);
-    color: #23232ed0;
-}
 
 .incident-form .incident-input {
     border-bottom: .1rem solid var(--text-color-seconday)
@@ -477,4 +459,40 @@ input[type=number] {
 
 .pad-lef-0rem {
     padding-left: 0rem;
+}
+
+select {
+    padding: 1.3rem;
+    color: #23232ed0;
+    font-size: 1.6rem;
+    font-weight: 600;
+    font-size: 1.6rem;
+    border-radius: 1rem;
+    border: .1rem solid var(--text-color-seconday);
+    background: transparent;
+
+
+
+    &:hover,
+    &:focus,
+    &::selection {
+        background: #0000ff10;
+        outline: none;
+        border: .1rem solid var(--text-color-primary);
+        color: #23232ed0;
+
+    }
+
+    & option {
+        background: #45f3ff;
+        color: #f969c1;
+        font-size: 1.6rem;
+        font-weight: 600;
+        border: none;
+        color: #535368;
+        text-decoration-color: #00ff4c;
+
+
+    }
+
 }
