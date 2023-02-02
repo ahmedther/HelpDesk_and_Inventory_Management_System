@@ -90,8 +90,8 @@
       </li>
 
       <li class='requester-input'>
-        <label for="date_of_purchasee">Date of Purchase<span class='required-field' >*</span></label>
-        <input type="date" id="date_of_purchasee" name="date_of_purchasee" value="{% now "Y-m-d" %}" required/>
+        <label for="date_of_purchase">Date of Purchase<span class='required-field' >*</span></label>
+        <input type="date" id="date_of_purchase" name="date_of_purchase" value="{% now "Y-m-d" %}" required/>
       </li>
 
       <li class="requester-input">
@@ -100,8 +100,8 @@
           <option disabled selected hidden value=""> -- Select Current Status -- </option>
           <option value="in-stock">In Stock (In Store)</option>
           <option value="in-use">In Use</option>
-          <option value="returned_to_vendor">Returned To Vendor</option>
-          <option value="lost">Lost</option>
+          <option value="returned-to-vendor">Returned To Vendor</option>
+          <option value="lost-or-misplaced">Lost or Misplaced</option>
         </select>
       </li>
 
@@ -134,7 +134,7 @@
 
               <button type='submit' class='magnify-btn'><img class='user-search--btn' src={% static 'HTMS_App/search_icon.png' %} alt="Search Icon"></button>
               <button type='submit' class='enter-btn' ><img class='user-search--btn' src="{% static 'HTMS_App/enter_key.png' %}" alt="Entery Key logo"></button>
-              <input autofocus class='search-box-input' type="text" name='search_user' placeholder= 'Search User...'>
+              <input autofocus class='search-box-input' type="text" name='search_user' id='search_user' placeholder= 'Search User...'>
            
           </div>
         </li>
@@ -148,7 +148,7 @@
 
          
         <li class='requester-input'>
-            <label for="name">User Name<span class='required-field'>*</span></label>
+            <label for="name">Full Name<span class='required-field'>*</span></label>
             <input type="text" name="requester_name" id="name" placeholder="Name" required 
             {% if ticket_edit_objects.requester_name %}
             value="{{ ticket_edit_objects.requester_name }}" readonly
@@ -194,7 +194,7 @@
         
         <li class="requester-input">
           <label for="requester_extension">Extention</label>
-          <input type="number" name="requester_extension" id="requester_extension" placeholder="33333" 
+          <input type="number" name="requester_extension" id="requester_extension" placeholder="33333"  pattern="\d{10}" 
           {% if ticket_edit_objects.requester_extension %}
           value="{{ ticket_edit_objects.requester_extension }}" readonly  
           {% endif%}
@@ -203,13 +203,17 @@
         
         <li class="requester-input">
           <label for="requester_phone_number">Phone Number</label>
-          <input type="number" name="requester_phone_number" id="requester_phone_number" placeholder="9800000000" 
+          <input type="number" name="requester_phone_number" id="requester_phone_number" placeholder="9800000000" pattern="\d{10}" 
           {% if ticket_edit_objects.requester_phone_number %}
           value="{{ ticket_edit_objects.requester_phone_number }}" readonly 
           {% endif%}
           />
         </li>
 
+        <button type='submit' class='submit-button'>
+          <span class='btn--add btn--text'>Submit</span><span class="submit-logo">&#10174;</span>
+        </button>
+           
       </ul>
 
       <ul class="asset_incident-form">
@@ -223,7 +227,7 @@
 
               <button type='submit' class='magnify-btn'><img class='ticket-search--btn' src={% static 'HTMS_App/search_icon.png' %} alt="Search Icon"></button>
               <button type='submit' class='enter-btn' ><img class='ticket-search--btn' src="{% static 'HTMS_App/enter_key.png' %}" alt="Entery Key logo"></button>
-              <input autofocus class='search-box-input' type="text" name='search_ticket' placeholder= 'Search Ticket / Incident...'>
+              <input autofocus class='search-box-input' type="text" name='search_ticket' id='search_ticket' placeholder= 'Search Ticket / Incident...'>
            
           </div>
         </li>
@@ -417,17 +421,16 @@
             {{ ticket_edit_objects.request_technician.first_name }} {{ ticket_edit_objects.request_technician.last_name }} ({{ ticket_edit_objects.request_technician.username }} )
             </option>
             {% else %}
-            <option
+            <option value=""
              disabled selected hidden >
              -- Select Technician --
            </option>
+           <option hidden value="0">No Technician is Assigned (Open)</option>
             {% endif%}
 
 
             {% for tech in technician %}
-            <option value={{tech.id}}>
-              {{ tech.first_name }} {{ tech.last_name }} ({{ tech.username }})
-            </option>
+            <option value={{tech.id}}>{{ tech.first_name }} {{ tech.last_name }} ({{ tech.username }})</option>
             {% endfor %}
           </select>
 
@@ -446,9 +449,7 @@
         <li><input type="text" name='ticket_pk' hidden value="{{ ticket_edit_objects.id }}">
       </ul>
 
-    <button type='submit' class='submit-button'>
-      <span class='btn--add btn--text'>Submit</span>
-    </button>
+
 
 
   </section>

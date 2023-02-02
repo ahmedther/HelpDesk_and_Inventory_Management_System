@@ -51,7 +51,6 @@ const status_update = async function (search_value, el) {
 }
 
 const updateSelectTag = function (data, el) {
-    console.log(data)
     data = Object.values(data)
     const selectTagEl = document.querySelector(el.selectHtmlTagID)
     const selectTagElParent = selectTagEl.previousElementSibling
@@ -83,41 +82,127 @@ const updateSelectTag = function (data, el) {
 const UserFormUpdate = function (data, el) {
     const selectTagEl = document.querySelector(el.selectHtmlTagID)
     const userForm = []
+    const ticketForm = []
     selectTagEl.addEventListener('change', () => {
         if (el.name == 'user') {
             if (selectTagEl.value == 0) userForm.forEach((el) => userFormReset(el))
             if (selectTagEl.value > 0) {
                 const dataUser = data.find(user => user.id == selectTagEl.value)
-                const userFormElId = [
-
-                    { 'id': '#name', 'value': `${dataUser.first_name} ${dataUser.last_name}` },
-                    { 'id': '#requester_pr_number', 'value': dataUser.pr_number },
-                    { 'id': '#requester_designation', 'value': dataUser.designation },
-                    { 'id': '#requester_department', 'value': dataUser.department },
-                    { 'id': '#requester_email', 'value': dataUser.email },
-                    { 'id': '#requester_extension', 'value': dataUser.extension_number },
-                    { 'id': '#requester_phone_number', 'value': dataUser.mobile_number },
-
-                ]
+                const userFormElId = get_elementsID(dataUser, el.name)
                 userFormElId.forEach((el_id) => userFormUpdation(el_id.id, el_id.value, userForm))
+            }
+        }
+
+        if (el.name == 'ticket') {
+            if (selectTagEl.value == 0) ticketForm.forEach((el) => userFormReset(el))
+            if (selectTagEl.value > 0) {
+                const dataTicket = data.find((ticket) => ticket.id == selectTagEl.value)
+                const ticketFormElId = get_elementsID(dataTicket, el.name)
+                ticketFormElId.forEach((el_id) => userFormUpdation(el_id.id, el_id.value, ticketForm))
+
             }
         }
     })
 }
 
 
-const userFormUpdation = function (selectorName, inputValue, userForm) {
+const userFormUpdation = function (selectorName, inputValue, userForm = null) {
+    if (selectorName == "#request_status") {
+        const element = document.querySelector(selectorName)
+        element.classList.add('disabled')
+        element.value = inputValue
+        if (userForm) userForm.push(element)
+        return
+    }
+
     const element = document.querySelector(selectorName)
     element.setAttribute('disabled', true)
     element.value = inputValue
-    userForm.push(element)
+    element.classList.add('disabled')
+    if (userForm) userForm.push(element)
+
+
 
 }
 
 const userFormReset = function (element) {
+    if (element.id == 'request_status') {
+        element.classList.remove('disabled')
+        element.value = ""
+        return
+    }
+
+    
     element.removeAttribute('disabled')
     element.value = ""
+    element.classList.remove('disabled')
+
+
 }
 
 
+
+const get_elementsID = function (data, request_type) {
+    if (!data) {
+        data = {}
+    }
+    if (request_type == 'ticket') {
+        return [
+            { 'id': '#request_type', 'value': data.request_type },
+            { 'id': '#request_status', 'value': data.request_status },
+            { 'id': '#request_mode', 'value': data.request_mode },
+            { 'id': '#request_priority', 'value': data.request_priority },
+            { 'id': '#request_category', 'value': data.request_category },
+            { 'id': '#request_technician', 'value': data.request_technician_id },
+            { 'id': '#subject', 'value': data.subject },
+        ]
+    }
+
+    if (request_type == 'user') {
+        return [
+
+            { 'id': '#name', 'value': `${data.first_name} ${data.last_name}` },
+            { 'id': '#requester_pr_number', 'value': data.pr_number },
+            { 'id': '#requester_designation', 'value': data.designation },
+            { 'id': '#requester_department', 'value': data.department },
+            { 'id': '#requester_email', 'value': data.email },
+            { 'id': '#requester_extension', 'value': data.extension_number },
+            { 'id': '#requester_phone_number', 'value': data.mobile_number },
+
+        ]
+    }
+
+
+}
+
+
+const disableNonEssElements = function () {
+    const selectCurrentStatus = document.querySelector('#asset_current_status')
+    selectCurrentStatus.addEventListener('change', () => {
+        if (selectCurrentStatus.value != 'in-use') {
+            const elementIds = [...get_elementsID(undefined, "user"), ...get_elementsID(undefined, "ticket")]
+            elementIds.push({ 'id': '#search_user' }, { 'id': '#search_ticket' })
+            elementIds.forEach((elIds) => userFormUpdation(elIds.id, ""))
+            submitButtonPosition('.create_assest-form')
+        }
+        if (selectCurrentStatus.value == 'in-use') {
+            const elementIds = [...get_elementsID(undefined, "user"), ...get_elementsID(undefined, "ticket")]
+            elementIds.push({ 'id': '#search_user' }, { 'id': '#search_ticket' })
+            elementIds.forEach((elIds) => {
+                const elementId = document.querySelector(elIds.id)
+                userFormReset(elementId)
+            })
+            submitButtonPosition('.asset_user_form')
+        }
+    })
+}
+
+const submitButtonPosition = function (targetClass) {
+    const subBtn = document.querySelector('.submit-button')
+    const targetEl = document.querySelector(targetClass)
+    subBtn.remove()
+    targetEl.appendChild(subBtn)
+}
+
+disableNonEssElements()
 searchUsersAndTickets()

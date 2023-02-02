@@ -7,6 +7,7 @@ from django.contrib.auth.hashers import make_password
 from datetime import date, timedelta
 from HTMS_App.sms_sender import SendSms
 import random
+import requests
 
 
 class Support:
@@ -165,7 +166,7 @@ class Support:
 
     def display_all_data(request):
 
-        ticket_objects = Requests.objects.all()
+        ticket_objects = Requests.objects.all().order_by("-id")
         context = {
             "user_fullname": request.user.get_full_name(),
             "ticket_objects": ticket_objects,
@@ -527,8 +528,17 @@ class Support:
         }
         return context
 
-    def create_new_asset_type(request):
-        print(request.POST)
+    def create_new_asset_type(self, request):
+        try:
+            image_url_api = self.get_categories(request.POST.get("asset_name"), 1)
+            image_url_api = image_url_api["icons"][0]["raster_sizes"][-1]["formats"][
+                -1
+            ]["preview_url"]
+        except:
+            num = random.randint(1, 15)
+
+            image_url_api = f"http://127.0.0.1:8000/static/HTMS_App/asset{num}.png"
+
         date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         new_asset = Assets(
             asset_name=request.POST.get("asset_name"),
@@ -536,18 +546,39 @@ class Support:
             asset_description=request.POST.get("description"),
             asset_creation_date=date_now,
             asset_creator=User.objects.get(id=request.user.id),
+            image_url=image_url_api,
         )
-        new_asset.save()
+        try:
+            new_asset.save()
+        except Exception as e:
+            pass
+
+    def get_categories(self, search_key, number_of_res):
+        BASE_ENDPOINT = "https://api.iconfinder.com/v4/"
+        API_SECRET = "NlhtuuCDXDjWp02MEBMqmWLzXus7jYVxicyPoISuo7aT3BvZJaKXyVO7ecvRuEmu"  # Keep this secret
+        url = f"https://api.iconfinder.com/v4/icons/search?query={search_key}&count={number_of_res}"
+        # Create the categories endpoint
+        categories_endpoint = BASE_ENDPOINT + "categories"
+
+        # Create the authorization header (and any additional ones if needed)
+        headers = {"Authorization": "Bearer " + API_SECRET}
+
+        # Make the GET request.
+        response = requests.get(url, headers=headers)
+
+        return response.json()
 
     def get_inventory_home_context(self, request):
         all_assets = Assets.objects.all().order_by("asset_name").values()
         random_number = random.randint(1, 15)
+        asset_objects = AssetDetails.objects.all().order_by("-id")
         context = {
             "user_fullname": request.user.get_full_name(),
             "header": "Assets Summary",
             "link_active_status_all_assests": "link--active",
             "random_number": random_number,
             "all_assets": all_assets,
+            "asset_objects": asset_objects,
         }
 
         return context
@@ -563,3 +594,106 @@ class Support:
         }
         context = self.incident_context(request.user.get_full_name(), context)
         return context
+
+    def post_assest_quantity_addition(self, request):
+        print(request.POST)
+        print(
+            datetime.strptime(request.POST.get("date_of_purchase"), r"%Y-%m-%d"),
+        )
+        date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        asset_detail = AssetDetails(
+            asset_name=Assets.objects.get(pk=request.POST.get("add_asset_name")),
+            brand=request.POST.get("asset_brand"),
+            model_name=request.POST.get("model_name"),
+            model_number=request.POST.get("model_number"),
+            serial_number=request.POST.get("serial_number"),
+            date_of_purchase=datetime.strptime(
+                request.POST.get("date_of_purchase"), r"%Y-%m-%d"
+            ),
+            date_added=date_now,
+            current_status=request.POST.get("asset_current_status"),
+            description=request.POST.get("description"),
+            facility=FacilityDropdown.objects.get(
+                pk=request.POST.get("asset_facility")
+            ),
+        )
+        search_user_selection = request.POST.get("search_user_selection", -1)
+        pr_num = request.POST.get("requester_pr_number")
+
+        if int(search_user_selection) > 0:
+            user = User.objects.get(pk=search_user_selection)
+            asset_detail.asset_user = user
+
+        if int(search_user_selection) == 0 or pr_num:
+
+            name = request.POST.get("requester_name", "")
+            first_name, *rest = name.split(" ")
+            last_name = " ".join(rest)
+            password = make_password(pr_num)
+            user, created = User.objects.get_or_create(
+                username=pr_num,
+                defaults={
+                    "password": password,
+                    "first_name": first_name,
+                    "last_name": last_name,
+                    "email": request.POST.get("requester_email"),
+                },
+            )
+
+            if created:
+                user = User.objects.get(pk=user.id)
+                employe_data = Technician(
+                    user=user,
+                    department=request.POST.get("requester_department"),
+                    designation=request.POST.get("requester_designation"),
+                    pr_number=pr_num,
+                    mobile_number=request.POST.get("requester_phone_number")[:10],
+                    extension_number=request.POST.get("requester_extension")[:10],
+                )
+                employe_data.save()
+
+            asset_detail.asset_user = user
+
+        search_ticket_selection = request.POST.get("search_ticket_selection", -1)
+        req_type = request.POST.get("request_type")
+        if int(search_ticket_selection) > 0:
+            search_ticket_obj = Requests.objects.get(pk=search_ticket_selection)
+            asset_detail.assign_to_ticket = search_ticket_obj
+
+        if int(search_ticket_selection) == 0 or req_type:
+            date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            technician, status, req_asin_time = self.get_technician_and_status(
+                request, date_now
+            )
+            try:
+                user_instance = User.objects.get(pk=request.user.id)
+            except:
+                user_instance = None
+
+            new_serv_req = Requests(
+                requester_name=f"{user.first_name} {user.last_name}",
+                requester_pr_number=user.technician.pr_number,
+                requester_designation=user.technician.designation,
+                requester_department=user.technician.department,
+                requester_email=user.email,
+                requester_extension=user.technician.extension_number,
+                requester_phone_number=user.technician.mobile_number,
+                request_type=req_type,
+                request_status=status,
+                request_mode=request.POST["request_mode"],
+                request_priority=request.POST["request_priority"],
+                request_category=request.POST["request_category"],
+                request_technician=technician,
+                subject=request.POST["subject"],
+                description=request.POST["description"],
+                request_creation_date=date_now,
+                request_submitter=user_instance,
+                last_modified_by=user_instance,
+                last_modified_date=date_now,
+                request_assigned_time=req_asin_time,
+            )
+            new_serv_req.save()
+
+            asset_detail.assign_to_ticket = Requests.objects.get(pk=new_serv_req.id)
+
+        asset_detail.save()

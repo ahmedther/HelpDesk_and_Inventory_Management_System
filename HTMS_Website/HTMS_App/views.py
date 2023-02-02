@@ -108,7 +108,7 @@ def update_incident(request, pk):
 
 
 @login_required(login_url="login_page")
-@allowed_users
+@allowed_users(allowed_group="Helpdesk")
 def home(request):
 
     if request.method == "GET":
@@ -183,7 +183,7 @@ def home_non_it(request):
 
 
 @login_required(login_url="login_page")
-@allowed_users
+@allowed_users(allowed_group="Helpdesk")
 def inventory(request):
 
     if request.method == "GET":
@@ -196,7 +196,7 @@ def inventory(request):
 
 
 @login_required(login_url="login_page")
-@allowed_users
+@allowed_users(allowed_group="Inventory")
 def new_assets(request):
     sup = Support()
     if request.method == "GET":
@@ -212,9 +212,11 @@ def new_assets(request):
                 return render(request, "HTMS_App/new_assets.html", context)
 
     if request.method == "POST":
-        print(request.POST)
+
+        sup = Support()
         submit_type = {
-            "create_asset": Support.create_new_asset_type,
+            "create_asset": sup.create_new_asset_type,
+            "add_qty_asset": sup.post_assest_quantity_addition,
         }
 
         for submit_name, submit_func in submit_type.items():

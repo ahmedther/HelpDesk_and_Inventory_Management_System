@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "HTMS_API",
+    "custom_templates",
 ]
 
 MIDDLEWARE = [

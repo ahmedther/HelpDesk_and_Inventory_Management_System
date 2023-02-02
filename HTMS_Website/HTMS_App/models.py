@@ -65,6 +65,9 @@ class Requests(models.Model):
     request_assigned_time = models.DateTimeField(blank=True, null=True, db_index=True)
     request_resolved_time = models.DateTimeField(blank=True, null=True, db_index=True)
     request_closed_time = models.DateTimeField(blank=True, null=True, db_index=True)
+    request_closed_user = models.ForeignKey(
+        User, null=True, related_name="request_closed_user", on_delete=models.CASCADE
+    )
 
     def __str__(self):
         return f"{self.id} - {self.requester_name} - {self.subject} "
@@ -122,12 +125,13 @@ class Assets(models.Model):
         related_name="asset_creator",
         db_index=True,
     )
+    image_url = models.CharField(max_length=300, null=True, db_index=True)
 
     def __str__(self):
         return f"{self.asset_name} - {self.asset_type}"
 
 
-class Asset_Details(models.Model):
+class AssetDetails(models.Model):
     asset_name = models.ForeignKey(
         Assets, on_delete=models.CASCADE, related_name="asset_details", db_index=True
     )
@@ -135,8 +139,8 @@ class Asset_Details(models.Model):
     model_name = models.CharField(max_length=100, null=True, db_index=True)
     model_number = models.CharField(max_length=100, null=True, db_index=True)
     serial_number = models.CharField(max_length=100, null=True, db_index=True)
-    date_of_purchase = models.DateTimeField(auto_now_add=True, db_index=True)
-    date_added = models.DateTimeField(auto_now_add=True, db_index=True)
+    date_of_purchase = models.DateTimeField(auto_now_add=False, db_index=True)
+    date_added = models.DateTimeField(auto_now_add=False, db_index=True)
     current_status = models.CharField(
         max_length=20,
         choices=(
@@ -160,12 +164,14 @@ class Asset_Details(models.Model):
         on_delete=models.CASCADE,
         related_name="users",
         db_index=True,
+        null=True,
     )
     assign_to_ticket = models.ForeignKey(
         Requests,
         on_delete=models.CASCADE,
         related_name="assign_to_ticket",
         db_index=True,
+        null=True,
     )
 
     def __str__(self):

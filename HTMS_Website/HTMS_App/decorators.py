@@ -12,13 +12,16 @@ def check_auth_redirect(login_page):
     return wrapper_func
 
 
-def allowed_users(view_func):
-    def wrapper_func(request, *args, **kwargs):
+def allowed_users(allowed_group):
+    def decorator(view_func):
+        def wrapper_func(request, *args, **kwargs):
 
-        try:
-            group = request.user.groups.get(name="Helpdesk")
-            return view_func(request)
-        except Group.DoesNotExist:
-            return redirect("home_non_it")
+            try:
+                group = request.user.groups.get(name=allowed_group)
+                return view_func(request)
+            except Group.DoesNotExist:
+                return redirect("home_non_it")
 
-    return wrapper_func
+        return wrapper_func
+
+    return decorator

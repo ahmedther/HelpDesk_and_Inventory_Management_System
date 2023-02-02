@@ -1,3 +1,4 @@
+@charset "UTF-8";
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap");
 :root {
@@ -325,7 +326,7 @@ body {
 /* ********************************
 * Ticket Diplay
 ******************************** */
-.ticket-main-row,
+.ticket-main-row, .asset-rows, .asset-main-header,
 .ticket-main-row:link,
 .ticket-main-row:visited {
   position: relative;
@@ -343,7 +344,7 @@ body {
   color: #7F8487;
   transition: all 400ms;
 }
-.ticket-main-row:hover,
+.ticket-main-row:hover, .asset-rows:hover, .asset-main-header:hover,
 .ticket-main-row:link:hover,
 .ticket-main-row:visited:hover {
   color: #413F42;
@@ -355,13 +356,13 @@ body {
   transform: scale(1.01) translateY(-1rem);
   z-index: 9;
 }
-.ticket-main-row:active,
+.ticket-main-row:active, .asset-rows:active, .asset-main-header:active,
 .ticket-main-row:link:active,
 .ticket-main-row:visited:active {
   transform: translateY(0rem);
 }
 
-.ticket-display-header {
+.ticket-display-header, .asset-main-header {
   /* color: #6C6C6C; */
   color: transparent;
   background: var(--primary-gradient);
@@ -376,7 +377,7 @@ body {
   letter-spacing: 0.3rem;
 }
 
-.requester-profile-container {
+.requester-profile-container, .asset-rows .asset-user, .asset-rows .asset-name-container, .asset-main-header .asset-main-name {
   text-align: center;
   align-items: center;
   justify-content: center;
@@ -427,14 +428,16 @@ body {
   font-size: 1.2rem;
   font-weight: 400;
   color: rgba(35, 35, 46, 0.4745098039);
+  text-align: left;
 }
 
-.display-ticket-number {
+.display-ticket-number, .asset-rows .asset-model-name, .asset-main-header .asset-main-model-name {
   grid-column: 2/3;
 }
 
-.display-ticket-subject-header,
-.display-ticket-subject {
+.display-ticket-subject-header, .asset-main-header .asset-main-status,
+.display-ticket-subject,
+.asset-rows .asset-status {
   grid-column: 3/4;
   display: flex;
   justify-content: flex-start;
@@ -442,7 +445,7 @@ body {
   gap: 1rem;
 }
 
-.display-ticket-subject-header {
+.display-ticket-subject-header, .asset-main-header .asset-main-status {
   justify-content: center;
 }
 
@@ -455,12 +458,13 @@ body {
   text-align: left;
 }
 
-.display-ticket-agent {
+.display-ticket-agent, .asset-main-header .asset-main-assest-user {
   grid-column: 4/5;
 }
 
-.display-ticket-status-header,
-.display-ticket-status {
+.display-ticket-status-header, .asset-main-header .asset-main-ticket-assigned,
+.display-ticket-status,
+.asset-rows .asset-assign-ticket-number {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -548,7 +552,7 @@ body {
   font-weight: inherit;
 }
 
-.display-ticket-date {
+.display-ticket-date, .asset-rows .asset-purchase-added-dates, .asset-main-header .asset-main-dates {
   grid-column: 6/7;
 }
 
@@ -560,7 +564,7 @@ body {
   grid-column: 8/9;
 }
 
-.mar-top-1 {
+.mar-top-1, .asset-main-header .asset-main-dates, .asset-main-header .asset-main-ticket-assigned, .asset-main-header .asset-main-assest-user, .asset-main-header .asset-main-status {
   margin: 1rem 0.5rem;
 }
 
@@ -598,7 +602,7 @@ body {
   gap: 2rem;
 }
 
-.ticket-display-header:hover {
+.ticket-display-header:hover, .asset-main-header:hover {
   color: transparent;
   background: var(--primary-gradient);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
@@ -609,7 +613,7 @@ body {
   transform: scale(1.01) translateY(-1rem);
   -webkit-background-clip: text;
 }
-.ticket-display-header:active {
+.ticket-display-header:active, .asset-main-header:active {
   transform: translateY(0rem);
 }
 
@@ -925,6 +929,114 @@ button {
 
 .ticket-heading {
   color: rgba(0, 149, 255, 0.8549019608);
+}
+
+.asset-main-header .asset-main-model-name {
+  margin: auto;
+}
+.asset-main-header .asset-main-dates {
+  display: flex;
+  justify-content: center;
+}
+.asset-main-header .asset-main-dates .asset-main-dates-cont {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.asset-main-name-cont {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+  align-items: center;
+  justify-content: center;
+}
+.asset-main-name-cont .asset-main-name--band {
+  padding-left: 0.09rem;
+  font-size: 1rem;
+}
+
+.asset-rows .asset-name-container .requester-profile-photo img {
+  filter: invert(100%) hue-rotate(90deg) contrast(200%) brightness(200%);
+  position: relative;
+  height: 2.5rem;
+}
+.asset-rows .asset-model-name {
+  padding-left: 2rem;
+}
+.asset-rows .asset-model-name .asset-model-cont {
+  list-style: symbols(cyclic "†");
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.asset-rows .asset-model-name .asset-model-cont .asset-model-name--name {
+  font-size: 1.4rem;
+}
+.asset-rows .asset-model-name .asset-model-cont .asset-model-name--number {
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+.asset-rows .asset-model-name .asset-model-cont .asset-model-name--serial {
+  font-size: 1rem;
+  font-weight: 400;
+}
+.asset-rows .asset-status {
+  align-items: center;
+  justify-content: center;
+}
+.asset-rows .asset-status .asset-cont {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+}
+.asset-rows .asset-status .asset-cont .asset-name--number {
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+.asset-rows .asset-user {
+  grid-column: 4/5;
+  padding-left: 3rem;
+}
+.asset-rows .asset-assign-ticket-number {
+  justify-content: flex-start;
+}
+.asset-rows .asset-assign-ticket-number .asset-assign-ticket-number-cont {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.asset-rows .asset-purchase-added-dates .asset-purchase-added-dates--container {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 6rem 12rem;
+  grid-template-rows: repeat(2, 1fr);
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+  justify-items: center;
+}
+.asset-rows .asset-purchase-added-dates .asset-purchase-added-dates--container .asset-purchase-label--purchase-date {
+  grid-column: 1/2;
+  grid-row: 1/2;
+  font-size: 1rem;
+}
+.asset-rows .asset-purchase-added-dates .asset-purchase-added-dates--container .asset-purchase--purchase-date {
+  grid-column: 2/3;
+  grid-row: 1/2;
+}
+.asset-rows .asset-purchase-added-dates .asset-purchase-added-dates--container .asset-purchase-label--added-date {
+  grid-column: 1/2;
+  grid-row: 2/2;
+}
+.asset-rows .asset-purchase-added-dates .asset-purchase-added-dates--container .asset-purchase--added-date {
+  grid-column: 2/3;
+  grid-row: 2/2;
 }
 
 /*# sourceMappingURL=inventory.css.map */

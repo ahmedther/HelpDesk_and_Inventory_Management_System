@@ -83,6 +83,11 @@
 // "#414141",//grey light
 // "#FF7F5B", // peach
 
+@mixin align-center {
+    align-items: center;
+    justify-content: center;
+}
+
 .sub-nav {
     background: #ECFCFF;
 }
@@ -103,4 +108,194 @@
 
 .ticket-heading {
     color: #0095ffda;
+}
+
+////////////////////////////
+// Inventory Main Header
+////////////////////////////
+
+.asset-main-header {
+    @extend .ticket-main-row;
+    @extend .ticket-display-header;
+
+
+    & .asset-main-name {
+        @extend .requester-profile-container;
+
+
+    }
+
+    & .asset-main-model-name {
+        margin: auto;
+        @extend .display-ticket-number;
+
+    }
+
+    & .asset-main-status {
+
+        @extend .display-ticket-subject-header;
+        @extend .mar-top-1;
+    }
+
+    & .asset-main-assest-user {
+        @extend .display-ticket-agent;
+        @extend .mar-top-1;
+    }
+
+    & .asset-main-ticket-assigned {
+        @extend .display-ticket-status-header;
+        @extend .mar-top-1;
+    }
+
+    & .asset-main-dates {
+        @extend .display-ticket-date;
+        @extend .mar-top-1;
+        display: flex;
+        justify-content: center;
+
+        & .asset-main-dates-cont {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+    }
+
+}
+
+.asset-main-name-cont {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+    @include align-center;
+
+    & .asset-main-name--band {
+        padding-left: 0.09rem;
+        font-size: 1rem;
+
+    }
+}
+
+////////////////////////////
+// Inventory Assets
+////////////////////////////
+
+.asset-rows {
+    @extend .ticket-main-row;
+
+    & .asset-name-container {
+        @extend .requester-profile-container;
+
+        & .requester-profile-photo {
+            & img {
+                filter: invert(100%) hue-rotate(90deg) contrast(200%) brightness(200%);
+                position: relative;
+                height: 2.5rem;
+            }
+        }
+    }
+
+    & .asset-model-name {
+        @extend .display-ticket-number;
+        padding-left: 2rem;
+
+        & .asset-model-cont {
+            list-style: symbols(cyclic "†");
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+
+            & .asset-model-name--name {
+                font-size: 1.4rem;
+
+            }
+
+            & .asset-model-name--number {
+                font-size: 1.2rem;
+                font-weight: 400;
+            }
+
+            & .asset-model-name--serial {
+                font-size: 1rem;
+                font-weight: 400;
+            }
+        }
+    }
+
+    & .asset-status {
+        @extend .display-ticket-subject;
+        @include align-center;
+
+        & .asset-cont {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.2rem;
+
+            & .asset-name--number {
+                font-size: 1.2rem;
+                font-weight: 400;
+            }
+        }
+    }
+
+
+    & .asset-user {
+        @extend .requester-profile-container;
+        grid-column: 4/5;
+        padding-left: 3rem
+    }
+
+    & .asset-assign-ticket-number {
+        @extend .display-ticket-status;
+        justify-content: flex-start;
+
+        & .asset-assign-ticket-number-cont {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+    }
+
+    & .asset-purchase-added-dates {
+        @extend .display-ticket-date;
+
+        & .asset-purchase-added-dates--container {
+            list-style: none;
+            display: grid;
+            grid-template-columns: 6rem 12rem;
+            grid-template-rows: repeat(2, 1fr);
+            gap: .5rem;
+            justify-content: center;
+            align-items: center;
+            justify-items: center;
+
+            & .asset-purchase-label--purchase-date {
+                grid-column: 1/2;
+                grid-row: 1/2;
+                font-size: 1rem;
+            }
+
+            & .asset-purchase--purchase-date {
+                grid-column: 2/3;
+                grid-row: 1/2;
+            }
+
+            & .asset-purchase-label--added-date {
+                grid-column: 1/2;
+                grid-row: 2/2;
+            }
+
+            & .asset-purchase--added-date {
+                grid-column: 2/3;
+                grid-row: 2/2;
+            }
+        }
+    }
+
+
 }

@@ -1,45 +1,14 @@
 const path = require('path');
 
-// module.exports = {
-//     mode: 'development',
-//     watch: true,
-//     entry: {
-//         controller: path.resolve(__dirname, "src/js/controller.js"),
-//     },
-//     output: {
-//         path: path.resolve(__dirname, "../"),
-//         filename: "index.js",
-//         // clean: true,
-//     },
-//     devtool: 'source-map',
-//     module: {
-//         rules: [
-//             {
-//                 test: /\.js$/,
-//                 exclude: /node_modules/,
-//                 use: {
-//                     loader: 'babel-loader',
-//                     options: {
-//                         presets: ['@babel/preset-env'],
-//                     },
-//                 }
-//             }]
-//     },
-
-
-///////////////////////////////////
-// add assets
-//////////////////////////////  
-
 module.exports = {
     mode: 'development',
     watch: true,
     entry: {
-        controller: path.resolve(__dirname, "src/js/new_assets.js"),
+        controller: path.resolve(__dirname, "src/js/controller.js"),
     },
     output: {
         path: path.resolve(__dirname, "../"),
-        filename: "new_assets.js",
+        filename: "index.js",
         // clean: true,
     },
     devtool: 'source-map',
@@ -56,6 +25,37 @@ module.exports = {
                 }
             }]
     },
+
+
+    ///////////////////////////////////
+    // add assets
+    //////////////////////////////  
+
+    // module.exports = {
+    //     mode: 'development',
+    //     watch: true,
+    //     entry: {
+    //         controller: path.resolve(__dirname, "src/js/new_assets.js"),
+    //     },
+    //     output: {
+    //         path: path.resolve(__dirname, "../"),
+    //         filename: "new_assets.js",
+    //         // clean: true,
+    //     },
+    //     devtool: 'source-map',
+    //     module: {
+    //         rules: [
+    //             {
+    //                 test: /\.js$/,
+    //                 exclude: /node_modules/,
+    //                 use: {
+    //                     loader: 'babel-loader',
+    //                     options: {
+    //                         presets: ['@babel/preset-env'],
+    //                     },
+    //                 }
+    //             }]
+    //     },
     // module.exports = {
     //     mode: 'development',
     //     watch: true,

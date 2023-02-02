@@ -101,6 +101,11 @@ def get_tickets(request):
             "request_priority": tickets.request_priority,
             "request_category": tickets.request_category,
             "subject": tickets.subject,
-            "subject": tickets.subject,
         }
+        try:
+            ticket_data[tickets.requester_name][
+                "request_technician_id"
+            ] = tickets.request_technician.id
+        except:
+            ticket_data[tickets.requester_name]["request_technician_id"] = 0
     return JsonResponse(ticket_data)

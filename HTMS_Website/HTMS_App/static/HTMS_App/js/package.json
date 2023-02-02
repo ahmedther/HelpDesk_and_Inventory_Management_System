@@ -11,7 +11,7 @@
     "watch2:sass": "sass ./src/scss/index.scss ../index.css -w",
     "watch3:sass": "sass ./src/scss/inventory.scss ../inventory.css -w",
     "watch4:sass": "sass ./src/scss/new_assets.scss ../new_assets.css -w",
-    "start:sass": "npm-run-all --parallel  watch1:sass watch4:sass",
+    "start:sass": "npm-run-all --parallel  watch4:sass watch3:sass",
     "compile:sass": "sass ./src/scss/home.scss ./src/css/home.compile.css",
     "prefix:css": "postcss --use autoprefixer -b 'last 10 versions' ./src/css/home.compile.css -o ./src/css/home.prefix.css",
     "compress:css": "sass ./src/css/home.prefix.css ../home.css --style compressed",

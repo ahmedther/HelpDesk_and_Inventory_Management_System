@@ -18,7 +18,7 @@ admin.site.register(NewIncidentCategory)
 admin.site.register(FacilityDropdown)
 admin.site.register(Requests)
 admin.site.register(Assets)
-admin.site.register(Asset_Details)
+admin.site.register(AssetDetails)
 
 
 # admin.site.register(FacilityDropdown)

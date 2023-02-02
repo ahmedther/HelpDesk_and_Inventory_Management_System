@@ -53,7 +53,22 @@ body {
 }
 
 .submit-button {
-    margin-top: 2rem;
+    margin: auto;
+    height: 4.5%;
+    width: 50%;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+
+    & .btn--add {
+        padding-top: 0.5rem;
+        font-size: 2rem
+    }
+
+    & .submit-logo {
+        color: #ECFCFF;
+        font-size: 3.6rem;
+    }
 }
 
 .select {
@@ -127,9 +142,7 @@ body {
 .disabled,
 .disabled:hover {
     cursor: not-allowed;
-    color: #ffffffea;
-    background: #00000038;
-    border-color: #00000038;
-
-
+    color: #0000005b !important;
+    background: #00000010 !important;
+    border-color: #00000038 !important;
 }

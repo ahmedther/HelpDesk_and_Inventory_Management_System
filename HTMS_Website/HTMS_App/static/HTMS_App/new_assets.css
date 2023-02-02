@@ -462,7 +462,20 @@ body {
 }
 
 .submit-button {
-  margin-top: 2rem;
+  margin: auto;
+  height: 4.5%;
+  width: 50%;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+.submit-button .btn--add {
+  padding-top: 0.5rem;
+  font-size: 2rem;
+}
+.submit-button .submit-logo {
+  color: #ECFCFF;
+  font-size: 3.6rem;
 }
 
 .select {
@@ -514,9 +527,9 @@ body {
 .disabled,
 .disabled:hover {
   cursor: not-allowed;
-  color: rgba(255, 255, 255, 0.9176470588);
-  background: rgba(0, 0, 0, 0.2196078431);
-  border-color: rgba(0, 0, 0, 0.2196078431);
+  color: rgba(0, 0, 0, 0.3568627451) !important;
+  background: rgba(0, 0, 0, 0.062745098) !important;
+  border-color: rgba(0, 0, 0, 0.2196078431) !important;
 }
 
 /*# sourceMappingURL=new_assets.css.map */
