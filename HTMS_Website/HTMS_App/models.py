@@ -61,7 +61,9 @@ class Requests(models.Model):
     last_modified_by = models.ForeignKey(
         User, null=True, related_name="updater", on_delete=models.CASCADE
     )
-    last_modified_date = models.DateTimeField(auto_now_add=True, db_index=True)
+    last_modified_date = models.DateTimeField(
+        auto_now_add=True, db_index=True, null=True
+    )
     request_assigned_time = models.DateTimeField(blank=True, null=True, db_index=True)
     request_resolved_time = models.DateTimeField(blank=True, null=True, db_index=True)
     request_closed_time = models.DateTimeField(blank=True, null=True, db_index=True)
@@ -112,6 +114,13 @@ class NewIncidentCategory(models.Model):
         return f"{self.category_name} - {self.subcategory_name}"
 
 
+class AssetStatus(models.Model):
+    status_name = models.CharField(max_length=50, null=False, db_index=True)
+
+    def __str__(self):
+        return self.status_name
+
+
 class Assets(models.Model):
     asset_name = models.CharField(
         max_length=100, null=False, unique=True, db_index=True
@@ -142,15 +151,7 @@ class AssetDetails(models.Model):
     date_of_purchase = models.DateTimeField(auto_now_add=False, db_index=True)
     date_added = models.DateTimeField(auto_now_add=False, db_index=True)
     current_status = models.CharField(
-        max_length=20,
-        choices=(
-            ("in_stock", "In Stock"),
-            ("in_use", "In Use"),
-            ("returned_to_vendor", "Returned To Vendor"),
-            ("lost", "Lost"),
-        ),
-        default="in-stock",
-        db_index=True,
+        null=False, default="In Stock", db_index=True, max_length=50
     )
     description = models.TextField(max_length=99999999, null=True, db_index=True)
     facility = models.ForeignKey(
@@ -172,6 +173,12 @@ class AssetDetails(models.Model):
         related_name="assign_to_ticket",
         db_index=True,
         null=True,
+    )
+    last_modified_by = models.ForeignKey(
+        User, null=True, related_name="last_modified_by", on_delete=models.CASCADE
+    )
+    last_modified_date = models.DateTimeField(
+        auto_now_add=True, db_index=True, null=True
     )
 
     def __str__(self):

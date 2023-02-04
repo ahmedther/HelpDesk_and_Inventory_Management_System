@@ -150,11 +150,12 @@ var userFormUpdation = function userFormUpdation(selectorName, inputValue) {
 };
 var userFormReset = function userFormReset(element) {
   if (element.id == 'request_status') {
-    element.classList.remove('disabled');
+    // element.classList.remove('disabled')
     element.value = "";
     return;
   }
   element.removeAttribute('disabled');
+  element.readOnly = false;
   element.value = "";
   element.classList.remove('disabled');
 };
@@ -214,7 +215,7 @@ var get_elementsID = function get_elementsID(data, request_type) {
 var disableNonEssElements = function disableNonEssElements() {
   var selectCurrentStatus = document.querySelector('#asset_current_status');
   selectCurrentStatus.addEventListener('change', function () {
-    if (selectCurrentStatus.value != 'in-use') {
+    if (selectCurrentStatus.value != 'In Use') {
       var elementIds = [].concat(_toConsumableArray(get_elementsID(undefined, "user")), _toConsumableArray(get_elementsID(undefined, "ticket")));
       elementIds.push({
         'id': '#search_user'
@@ -226,7 +227,7 @@ var disableNonEssElements = function disableNonEssElements() {
       });
       submitButtonPosition('.create_assest-form');
     }
-    if (selectCurrentStatus.value == 'in-use') {
+    if (selectCurrentStatus.value == 'In Use') {
       var _elementIds = [].concat(_toConsumableArray(get_elementsID(undefined, "user")), _toConsumableArray(get_elementsID(undefined, "ticket")));
       _elementIds.push({
         'id': '#search_user'

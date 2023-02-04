@@ -187,8 +187,23 @@ def home_non_it(request):
 def inventory(request):
 
     if request.method == "GET":
+        print(request.GET)
         sup = Support()
+        filters = {
+            "search_asset": sup.search_assets,
+            "asset_id": sup.filter_by_asset_id,
+        }
+        for filter_name, filter_func in filters.items():
+            if request.GET.get(filter_name):
+                context, ticket_objects = filter_func(request)
+                if not ticket_objects:
+                    return render(request, "HTMS_App/inventory.html", context)
+                context = Support.paginator(
+                    request, context, paginate_name="asset_objects"
+                )
+                return render(request, "HTMS_App/inventory.html", context)
         context = sup.get_inventory_home_context(request)
+        context = Support.paginator(request, context, paginate_name="asset_objects")
         return render(request, "HTMS_App/inventory.html", context)
 
     if request.method == "POST":
@@ -223,4 +238,17 @@ def new_assets(request):
             if request.POST.get(submit_name):
                 submit_func(request)
 
+        return redirect("inventory")
+
+
+@login_required(login_url="login_page")
+def update_asset(request, pk):
+    sup = Support()
+    context = sup.update_asset(request, pk)
+    if request.method == "GET":
+
+        return render(request, "HTMS_App/new_assets.html", context)
+
+    if request.method == "POST":
+        sup.send_edit_request_to_db_asset(request)
         return redirect("inventory")

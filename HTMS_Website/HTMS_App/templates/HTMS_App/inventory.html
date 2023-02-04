@@ -37,14 +37,14 @@
           </div>
           
 
-          <form id='search-box-id' class = 'search-box' method='get'  action= "{% url 'home' %}"  >
+          <form id='search-box-id' class = 'search-box' method='get'  action= "{% url 'inventory' %}"  >
             <div class = 'submit_buttons'>
             <button type='submit'><img  src={% static 'HTMS_App/search_icon.png' %} alt="Search Icon"></button>
               <button type='submit'><img src="{% static 'HTMS_App/enter_key.png' %}" alt="Entery Key logo"></button>
             </div>
-              <input autofocus class='search-box-input' type="text" name='search_ticket' placeholder= 'Search Asset in Inventory...'
-              {%if search_ticket %}
-              value={{ search_ticket }}
+              <input autofocus class='search-box-input' type="text" name='search_asset' placeholder= 'Search Asset in Inventory...'
+              {%if search_asset %}
+              value={{ search_asset }}
               {% endif %}
               >
       
@@ -81,11 +81,11 @@
            
     
     
-            {% if all_assets %}
+            {% if all_assets_heads %}
             <li class='ticket-heading'><span>All Assets</span></li>
-            {% for asset in all_assets %}
+            {% for asset in all_assets_heads %}
             <li class="ticket-links-listing
-            {% if link_active_status %}
+            {% if asset.asset_name == active_link %}
             {{  link_active_status }}
             {% endif %}
             ">
@@ -94,7 +94,7 @@
                 <span>{{asset.asset_name|title}}</span>
               </a> {% endcomment %}
               <img src="{{asset.image_url}}"alt="dynamic  logo">
-              <a class='ticket-links' href="?asset_id={{asset.id}}">
+              <a class="ticket-links" href="?asset_id={{asset.id}}">
                 <span>{{asset.asset_name|title}}</span>
               </a>
             </li>
@@ -186,7 +186,7 @@
       
       {% for asset in asset_objects %}
       
-      <a href="{% url 'update_incident' asset.id %}" data-id="{{ asset.id }}" class="asset-rows">
+      <a href="{% url 'update_asset' asset.id %}" data-id="{{ asset.id }}" class="asset-rows">
         <div class='asset-name-container'>
           <div class="requester-profile-photo">
             {% comment %} <div class="requester-profile-text">
@@ -202,8 +202,13 @@
 
         <div class="asset-model-name">
           <ul class="asset-model-cont">
+            {% if asset.model_name %}
+            <img  src="{% static 'HTMS_App/bullet.png' %}" alt="Bullet Logo"></li>
             <li class="asset-model-name--name">{{ asset.model_name }}</li>
+            {% endif %}
+            <img src="{% static 'HTMS_App/bullet.png' %}" alt="Bullet Logo"></li>
             <li class="asset-model-name--number">{{ asset.model_number }}</li>
+            <img  src="{% static 'HTMS_App/bullet.png' %}" alt="Bullet Logo"></li>
             <li class="asset-model-name--serial">{{ asset.serial_number }}</li>
           </ul>
         </div>
@@ -233,9 +238,7 @@
           </div>
           {% else %}
           <div class="requester-profile-photo">
-            <div class="requester-profile-text">
-              🚫
-            </div>
+            <img class="image-invert"src="{% static 'HTMS_App/no-entry.png'%}" alt="Block User Logo">
           </div>
 
           <div class="requester-profile-name-container">
@@ -255,7 +258,7 @@
               <li class="divider">-</li>
               <li class="aasset-assign-ticket-number-cont--subject">{{asset.assign_to_ticket.subject|title }}</li>
               {% else %}
-              <li class="asset-assign-ticket-number-cont--ticket-id">🚫</li>
+              <li class="asset-assign-ticket-number-cont--ticket-id"><img class="image-invert-2"src="{% static 'HTMS_App/box_prohibited_1.png'%}" alt="Block User Logo"></li>
               <li class="divider">-</li>
               <li class="aasset-assign-ticket-number-cont--subject">Not Assigned To A Ticket</li>
               {% endif %}

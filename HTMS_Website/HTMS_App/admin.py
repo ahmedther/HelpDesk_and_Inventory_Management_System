@@ -17,6 +17,7 @@ admin.site.register(NewIncidentPriority)
 admin.site.register(NewIncidentCategory)
 admin.site.register(FacilityDropdown)
 admin.site.register(Requests)
+admin.site.register(AssetStatus)
 admin.site.register(Assets)
 admin.site.register(AssetDetails)
 

@@ -105,8 +105,8 @@
         <li class='ticket-heading'><span>STATUSES</span></li>
 
         <li class="ticket-links-listing
-        {% if link_active_status_open %}
-        {{  link_active_status_open }}
+        {% if link_active_status_tickets_open %}
+        {{  link_active_status_tickets_open }}
         {% endif %}
         ">
           <img src="{% static 'HTMS_App/open_icon1.png' %}" alt="Open Sign icon logo">
@@ -241,12 +241,7 @@
           </div>
   
         </div>
-
-
-
-
-
-      
+    
       
       {% for tickets in ticket_objects %}
       

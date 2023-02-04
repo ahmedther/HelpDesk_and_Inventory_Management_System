@@ -127,13 +127,14 @@ const userFormUpdation = function (selectorName, inputValue, userForm = null) {
 
 const userFormReset = function (element) {
     if (element.id == 'request_status') {
-        element.classList.remove('disabled')
+        // element.classList.remove('disabled')
         element.value = ""
         return
     }
 
-    
+
     element.removeAttribute('disabled')
+    element.readOnly = false;
     element.value = ""
     element.classList.remove('disabled')
 
@@ -179,13 +180,13 @@ const get_elementsID = function (data, request_type) {
 const disableNonEssElements = function () {
     const selectCurrentStatus = document.querySelector('#asset_current_status')
     selectCurrentStatus.addEventListener('change', () => {
-        if (selectCurrentStatus.value != 'in-use') {
+        if (selectCurrentStatus.value != 'In Use') {
             const elementIds = [...get_elementsID(undefined, "user"), ...get_elementsID(undefined, "ticket")]
             elementIds.push({ 'id': '#search_user' }, { 'id': '#search_ticket' })
             elementIds.forEach((elIds) => userFormUpdation(elIds.id, ""))
             submitButtonPosition('.create_assest-form')
         }
-        if (selectCurrentStatus.value == 'in-use') {
+        if (selectCurrentStatus.value == 'In Use') {
             const elementIds = [...get_elementsID(undefined, "user"), ...get_elementsID(undefined, "ticket")]
             elementIds.push({ 'id': '#search_user' }, { 'id': '#search_ticket' })
             elementIds.forEach((elIds) => {

@@ -180,6 +180,16 @@
 ////////////////////////////
 // Inventory Assets
 ////////////////////////////
+.image-invert {
+    filter: invert(100%) contrast(200%) brightness(200%);
+    position: relative;
+    height: 2.5rem;
+
+}
+
+.image-invert-2 {
+    height: 2.5rem;
+}
 
 .asset-rows {
     @extend .ticket-main-row;
@@ -189,7 +199,7 @@
 
         & .requester-profile-photo {
             & img {
-                filter: invert(100%) hue-rotate(90deg) contrast(200%) brightness(200%);
+                filter: brightness(0%) invert(100%) contrast(200%) brightness(200%);
                 position: relative;
                 height: 2.5rem;
             }
@@ -198,25 +208,39 @@
 
     & .asset-model-name {
         @extend .display-ticket-number;
-        padding-left: 2rem;
+
 
         & .asset-model-cont {
-            list-style: symbols(cyclic "†");
-            display: flex;
-            flex-direction: column;
-            gap: .5rem;
+            list-style: none;
+            display: grid;
+            grid-template-columns: 1rem 1fr;
+            justify-content: center;
+            align-items: center;
+            justify-items: stretch;
+            column-gap: 3rem;
+            row-gap: .3rem;
+            margin-left: 1rem;
+
+            & img {
+                grid-column: 1/2;
+                height: 0.3rem;
+            }
+
 
             & .asset-model-name--name {
+                grid-column: 2/3;
                 font-size: 1.4rem;
 
             }
 
             & .asset-model-name--number {
+                grid-column: 2/3;
                 font-size: 1.2rem;
                 font-weight: 400;
             }
 
             & .asset-model-name--serial {
+                grid-column: 2/3;
                 font-size: 1rem;
                 font-weight: 400;
             }
@@ -252,6 +276,7 @@
     & .asset-assign-ticket-number {
         @extend .display-ticket-status;
         justify-content: flex-start;
+        padding-left: 1rem;
 
         & .asset-assign-ticket-number-cont {
             list-style: none;

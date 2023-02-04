@@ -458,11 +458,11 @@ class Support:
 
         return context, ticket_objects
 
-    def paginator(request, context):
+    def paginator(request, context, paginate_name="ticket_objects"):
         page = request.GET.get("page")
         # results = 14
         results = 16
-        paginator = Paginator(context["ticket_objects"], results)
+        paginator = Paginator(context[paginate_name], results)
         # context["paginator"] = paginator
 
         if not page:
@@ -478,13 +478,13 @@ class Support:
         custom_page_range = range(left_index, right_index)
         context["custom_page_range"] = custom_page_range
         try:
-            context["ticket_objects"] = paginator.page(page)
+            context[paginate_name] = paginator.page(page)
         except PageNotAnInteger:
             page = 1
-            context["ticket_objects"] = paginator.page(page)
+            context[paginate_name] = paginator.page(page)
         except EmptyPage:
             page = paginator.num_pages
-            context["ticket_objects"] = paginator.page(page)
+            context[paginate_name] = paginator.page(page)
 
         return context
 
@@ -541,7 +541,7 @@ class Support:
 
         date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         new_asset = Assets(
-            asset_name=request.POST.get("asset_name"),
+            asset_name=request.POST.get("asset_name").title(),
             asset_type=request.POST.get("asset_type"),
             asset_description=request.POST.get("description"),
             asset_creation_date=date_now,
@@ -568,61 +568,46 @@ class Support:
 
         return response.json()
 
+    def get_asset_head_objects(self, context):
+        all_assets_heads = Assets.objects.all().order_by("asset_name").values()
+        context["all_assets_heads"] = all_assets_heads
+        return context
+
     def get_inventory_home_context(self, request):
-        all_assets = Assets.objects.all().order_by("asset_name").values()
-        random_number = random.randint(1, 15)
+
+        # random_number = random.randint(1, 15)
         asset_objects = AssetDetails.objects.all().order_by("-id")
         context = {
             "user_fullname": request.user.get_full_name(),
             "header": "Assets Summary",
             "link_active_status_all_assests": "link--active",
-            "random_number": random_number,
-            "all_assets": all_assets,
+            # "random_number": random_number,
             "asset_objects": asset_objects,
         }
+        context = self.get_asset_head_objects(context)
 
         return context
 
     def add_quantity_to_asset(self, request):
-        all_assets = Assets.objects.all().order_by("asset_name").values()
         facilities = FacilityDropdown.objects.all().order_by("facility_name").values()
+        asset_status = AssetStatus.objects.all().order_by("status_name").values()
         context = {
             "asset_header": "Add Quantity To An Asset",
             "add_quantity": True,
-            "all_assets": all_assets,
             "facilities": facilities,
+            "asset_status": asset_status,
         }
         context = self.incident_context(request.user.get_full_name(), context)
+        context = self.get_asset_head_objects(context)
         return context
 
-    def post_assest_quantity_addition(self, request):
-        print(request.POST)
-        print(
-            datetime.strptime(request.POST.get("date_of_purchase"), r"%Y-%m-%d"),
-        )
-        date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        asset_detail = AssetDetails(
-            asset_name=Assets.objects.get(pk=request.POST.get("add_asset_name")),
-            brand=request.POST.get("asset_brand"),
-            model_name=request.POST.get("model_name"),
-            model_number=request.POST.get("model_number"),
-            serial_number=request.POST.get("serial_number"),
-            date_of_purchase=datetime.strptime(
-                request.POST.get("date_of_purchase"), r"%Y-%m-%d"
-            ),
-            date_added=date_now,
-            current_status=request.POST.get("asset_current_status"),
-            description=request.POST.get("description"),
-            facility=FacilityDropdown.objects.get(
-                pk=request.POST.get("asset_facility")
-            ),
-        )
+    def user_creation_or_updation(self, request):
         search_user_selection = request.POST.get("search_user_selection", -1)
         pr_num = request.POST.get("requester_pr_number")
 
         if int(search_user_selection) > 0:
             user = User.objects.get(pk=search_user_selection)
-            asset_detail.asset_user = user
+            return user
 
         if int(search_user_selection) == 0 or pr_num:
 
@@ -652,13 +637,14 @@ class Support:
                 )
                 employe_data.save()
 
-            asset_detail.asset_user = user
+            return user
 
+    def search_ticket_or_create(self, request, user):
         search_ticket_selection = request.POST.get("search_ticket_selection", -1)
         req_type = request.POST.get("request_type")
         if int(search_ticket_selection) > 0:
             search_ticket_obj = Requests.objects.get(pk=search_ticket_selection)
-            asset_detail.assign_to_ticket = search_ticket_obj
+            return search_ticket_obj
 
         if int(search_ticket_selection) == 0 or req_type:
             date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -693,7 +679,142 @@ class Support:
                 request_assigned_time=req_asin_time,
             )
             new_serv_req.save()
+            return new_serv_req
 
-            asset_detail.assign_to_ticket = Requests.objects.get(pk=new_serv_req.id)
+    def post_assest_quantity_addition(self, request):
+        date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        asset_detail = AssetDetails(
+            asset_name=Assets.objects.get(pk=request.POST.get("add_asset_name")),
+            brand=request.POST.get("asset_brand"),
+            model_name=request.POST.get("model_name"),
+            model_number=request.POST.get("model_number"),
+            serial_number=request.POST.get("serial_number"),
+            date_of_purchase=datetime.strptime(
+                request.POST.get("date_of_purchase"), r"%Y-%m-%d"
+            ),
+            date_added=date_now,
+            current_status=request.POST.get("asset_current_status"),
+            description=request.POST.get("description"),
+            facility=FacilityDropdown.objects.get(
+                pk=request.POST.get("asset_facility")
+            ),
+        )
+        user = self.user_creation_or_updation(request)
+        if user:
+            asset_detail.asset_user = user
 
+            ticket_req_obj = self.search_ticket_or_create(request, user)
+            asset_detail.assign_to_ticket = Requests.objects.get(pk=ticket_req_obj.id)
         asset_detail.save()
+
+    def update_asset(self, request, pk):
+        context = self.add_quantity_to_asset(request)
+        asset_details_objects = AssetDetails.objects.get(pk=pk)
+        context["asset_details_objects"] = asset_details_objects
+        context[
+            "asset_header"
+        ] = f"Update Asset #{pk} {asset_details_objects.brand} - {asset_details_objects.asset_name.asset_name}"
+        return context
+
+    def send_edit_request_to_db_asset(self, request):
+        print(request.POST)
+        date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        user_instance = User.objects.filter(pk=request.user.id).first()
+        facility_instance = FacilityDropdown.objects.filter(
+            id=request.POST.get("asset_facility")
+        ).first()
+
+        update_asset_details = AssetDetails.objects.get(
+            pk=request.POST["asset_detail_pk"]
+        )
+        update_fields = {
+            "brand": "asset_brand",
+            "model_name": "model_name",
+            "model_number": "model_number",
+            "serial_number": "serial_number",
+            "date_of_purchase": "date_of_purchase",
+            "current_status": "asset_current_status",
+            "facility": facility_instance,
+            "description": "description",
+        }
+
+        for field, value in update_fields.items():
+            try:
+                if field == "facility":
+                    setattr(update_asset_details, field, value)
+                else:
+                    setattr(update_asset_details, field, request.POST[value])
+            except KeyError:
+                pass
+
+        update_asset_details.last_modified_by = user_instance
+        update_asset_details.last_modified_date = date_now
+        update_asset_details.description += f"\nLast Modified By {request.user.get_full_name()} ({request.user.username}) On {date_now}.\n"
+        user = self.user_creation_or_updation(request)
+        if user:
+            update_asset_details.asset_user = user
+
+            ticket_req_obj = self.search_ticket_or_create(request, user)
+            if ticket_req_obj:
+                update_asset_details.assign_to_ticket = Requests.objects.get(
+                    pk=ticket_req_obj.id
+                )
+        update_asset_details.save()
+
+    def search_assets(self, request):
+        search_asset = ""
+        context = {
+            "user_fullname": request.user.get_full_name(),
+            "header": "Search Results",
+        }
+        search_asset = request.GET.get("search_asset")
+        context["search_asset"] = search_asset
+        context["page_href"] = f"search_asset={search_asset}"
+        context = self.get_asset_head_objects(context)
+        if search_asset.isdigit():
+            search_with_id = int(search_asset)
+        else:
+            search_with_id = 0
+        asset_objects = AssetDetails.objects.distinct().filter(
+            Q(asset_name__asset_name__icontains=search_asset)
+            | Q(brand__icontains=search_asset)
+            | Q(model_name__icontains=search_asset)
+            | Q(model_number__icontains=search_asset)
+            | Q(serial_number__icontains=search_asset)
+            | Q(date_of_purchase__icontains=search_asset)
+            | Q(date_added__icontains=search_asset)
+            | Q(current_status__icontains=search_asset)
+            | Q(facility__facility_name__icontains=search_asset)
+            | Q(asset_user__username__icontains=search_asset)
+            | Q(asset_user__first_name__icontains=search_asset)
+            | Q(asset_user__last_name__icontains=search_asset)
+            | Q(asset_user__technician__pr_number__icontains=search_asset)
+            | Q(assign_to_ticket__id=search_with_id)
+        )
+
+        if not asset_objects:
+            context["error"] = ["No data found!!!", "Please refine your search."]
+
+        else:
+            context["asset_objects"] = asset_objects
+
+        return context, asset_objects
+
+    def filter_by_asset_id(self, request):
+        context = {
+            "user_fullname": request.user.get_full_name(),
+            "link_active_status": "link--active",
+        }
+
+        asset_id = request.GET.get("asset_id")
+        context["page_href"] = f"asset_id={asset_id}"
+        asset_objects = AssetDetails.objects.distinct().filter(asset_name__id=asset_id)
+        context = self.get_asset_head_objects(context)
+        if not asset_objects:
+            context["error"] = ["No data found!!!", "Please refine your search."]
+
+        else:
+            context["asset_objects"] = asset_objects
+            context["header"] = f"{asset_objects[0].asset_name}"
+            context["active_link"] = f"{asset_objects[0].asset_name.asset_name}"
+        return context, asset_objects

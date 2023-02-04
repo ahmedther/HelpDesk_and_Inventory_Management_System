@@ -5,7 +5,7 @@
 {% load static %} 
 <link rel='stylesheet' href={% static 'HTMS_App/new_assets.css' %}>
 
-<form class= 'new-incident-form'method="post"  action="{% url 'new_assets' %}">
+<form class= 'new-incident-form' method="post">
   {% csrf_token %}
 
     <div class="new-incident-header">
@@ -60,66 +60,99 @@
 
       <li class="requester-input">
         <label for="add_asset_name">Asset Name<span class='required-field'>*</span></label>
-        <select  name="add_asset_name" class="select" id="add_asset_name">
+        <select  name="add_asset_name" class="select" id="add_asset_name"
+        {% if asset_details_objects.asset_name.id %} disabled >
+        <option class="select-hidden" disabled selected hidden value="">{{asset_details_objects.asset_name.asset_name}}</option>
+        {% else %} >
           <option class="select-hidden" disabled selected hidden value=""> -- Select Asset Name -- </option>
-          {% for asset in all_assets %}
+          {% for asset in all_assets_heads %}
           <option value="{{asset.id}}">{{asset.asset_name}}</option>
           {% endfor %}
-
+        {%endif%}
         </select>
       </li>
 
       <li class='requester-input'>
           <label for="asset_brand">Brand<span class='required-field'>*</span></label>
-          <input type="text" name="asset_brand" id="asset_brand" placeholder="HP / Dell / Lenovo / Iball / Logitech / etc..." required/>
+          <input type="text" name="asset_brand" id="asset_brand" placeholder="HP / Dell / Lenovo / Iball / Logitech / etc..." required/
+          {% if asset_details_objects.brand %} class='disabled'
+          value="{{ asset_details_objects.brand }}" readonly 
+          {% endif%}
+          >
       </li>
 
       <li class='requester-input'>
         <label for="model_name">Model Name</label>
-        <input type="text" name="model_name" id="model_name" placeholder="Model XXXXXXX" />
+        <input type="text" name="model_name" id="model_name" placeholder="Model XXXXXXX" 
+        {% if asset_details_objects.model_name %} class='disabled'
+        value="{{ asset_details_objects.model_name }}" readonly 
+        {% endif%}
+        />
       </li>
 
       <li class='requester-input'>
         <label for="model_number">Model Number<span class='required-field' >*</span></label>
-        <input type="text" name="model_number" id="model_number" placeholder="XXXXXXX" required/>
+        <input type="text" name="model_number" id="model_number" placeholder="XXXXXXX" required
+        {% if asset_details_objects.model_number %}class='disabled'
+        value="{{ asset_details_objects.model_number }}" readonly 
+        {% endif%}
+        />
       </li>
 
       <li class='requester-input'>
         <label for="serial_number">Serial Number<span class='required-field' >*</span></label>
-        <input type="text" name="serial_number" id="serial_number" placeholder="XXXXXXX" required/>
+        <input type="text" name="serial_number" id="serial_number" placeholder="XXXXXXX" required
+        {% if asset_details_objects.serial_number %} class='disabled'
+        value="{{ asset_details_objects.serial_number }}" readonly 
+        {% endif%}
+        />
       </li>
 
       <li class='requester-input'>
         <label for="date_of_purchase">Date of Purchase<span class='required-field' >*</span></label>
-        <input type="date" id="date_of_purchase" name="date_of_purchase" value="{% now "Y-m-d" %}" required/>
+        <input type="date" id="date_of_purchase" name="date_of_purchase"  required
+        {% if asset_details_objects.date_of_purchase %} class='disabled'
+        value="{{ asset_details_objects.date_of_purchase|date:"Y-m-d"   }}" readonly 
+        {% else %}
+        value="{% now "Y-m-d" %}"
+        {% endif%}
+        />
       </li>
 
       <li class="requester-input">
         <label for="asset_current_status">Current Status<span class='required-field'>*</span></label>
-        <select  name="asset_current_status" class="select" id="asset_current_status" required>
-          <option disabled selected hidden value=""> -- Select Current Status -- </option>
-          <option value="in-stock">In Stock (In Store)</option>
-          <option value="in-use">In Use</option>
-          <option value="returned-to-vendor">Returned To Vendor</option>
-          <option value="lost-or-misplaced">Lost or Misplaced</option>
+        <select  name="asset_current_status" class="select" id="asset_current_status" required
+          {% if asset_details_objects.current_status %} >
+          <option class="select-hidden" selected hidden value="{{asset_details_objects.current_status}}">{{asset_details_objects.current_status}}</option>
+          {% else %} >
+          <option class="select-hidden" disabled selected hidden value=""> -- Select Current Status -- </option>
+          {%endif%}
+          {% for status in asset_status %}
+          <option value="{{status.status_name}}">{{status.status_name}}</option>
+          {% endfor %}
         </select>
       </li>
 
       <li class="requester-input">
         <label for="asset_facility">Facility<span class='required-field'>*</span></label>
-        <select  name="asset_facility" class="select" id="asset_facility" required>
-          <option class="select-hidden" disabled selected hidden value=""> -- Select Asset Name -- </option>
-          {% for facility in facilities %}
-          <option value="{{facility.id}}">{{facility.facility_name}}</option>
-          {% endfor %}
-
+        <select  name="asset_facility" class="select" id="asset_facility" required
+        {% if asset_details_objects.facility.id %}>
+        <option class="select-hidden" selected hidden value="{{asset_details_objects.facility.id}}">{{asset_details_objects.facility.facility_name}}</option>
+        {% else %} >
+        <option class="select-hidden" disabled selected hidden value=""> -- Select Asset Name -- </option>   
+        {%endif%}    
+        {% for facility in facilities %}
+        <option value="{{facility.id}}">{{facility.facility_name}}</option>
+        {% endfor %}  
         </select>
       </li>
 
       <li class="requester-input-description">
         <label  class='asset_description' for='description'>Other Details and Comments</label>
         <textarea  class='incident-description-textarea' rows="5" cols="33" type="text" name="description" id="description"
-          placeholder="Comments...."></textarea>
+          placeholder="Comments...."
+          {% if asset_details_objects.description %}readonly class='disabled'{% endif%}
+          >{% if asset_details_objects.description %}{{ asset_details_objects.description }}{% endif%}</textarea>
       </li>
     </ul>
 
@@ -150,8 +183,8 @@
         <li class='requester-input'>
             <label for="name">Full Name<span class='required-field'>*</span></label>
             <input type="text" name="requester_name" id="name" placeholder="Name" required 
-            {% if ticket_edit_objects.requester_name %}
-            value="{{ ticket_edit_objects.requester_name }}" readonly
+            {% if asset_details_objects.asset_user.first_name %} class='disabled'
+            value="{{ asset_details_objects.asset_user.first_name }} {{ asset_details_objects.asset_user.last_name }}" readonly
             {% endif%}
             />
         </li>
@@ -159,8 +192,8 @@
         <li class="requester-input">
           <label for="requester_pr_number">PR Number<span class='required-field'>*</span></label>
           <input type="number" name="requester_pr_number" id="requester_pr_number" placeholder="PR Number"  required
-            {% if ticket_edit_objects.requester_pr_number %}
-            value="{{ ticket_edit_objects.requester_pr_number }}" readonly  
+            {% if asset_details_objects.asset_user.technician.pr_number %} class='disabled'
+            value="{{ asset_details_objects.asset_user.technician.pr_number }}" readonly  
             {% endif%}
              />
         </li>
@@ -168,8 +201,8 @@
         <li class="requester-input">
           <label for="requester_designation">Designation</label>
           <input type="text" name="requester_designation" id="requester_designation" placeholder="Designation" 
-          {% if ticket_edit_objects.requester_designation %}
-          value="{{ ticket_edit_objects.requester_designation }}" readonly  
+          {% if asset_details_objects.asset_user.technician.designation %} class='disabled'
+          value="{{ asset_details_objects.asset_user.technician.designation }}" readonly  
           {% endif%}
           />
         </li>
@@ -177,8 +210,8 @@
         <li class="requester-input">
           <label for="requester_department">Department<span class='required-field'>*</span> </label>
           <input type="text" name="requester_department" id="requester_department" placeholder="Department Name" required
-          {% if ticket_edit_objects.requester_department %}
-          value="{{ ticket_edit_objects.requester_department }}" readonly 
+          {% if asset_details_objects.asset_user.technician.department %} class='disabled'
+          value="{{ asset_details_objects.asset_user.technician.department }}" readonly 
           {% endif%}
           />
         </li>
@@ -186,8 +219,8 @@
         <li class="requester-input">
           <label for="requester_email">Email</label>
           <input type="email" name="requester_email" id="requester_email" placeholder="Email ID" 
-          {% if ticket_edit_objects.requester_email %}
-          value="{{ ticket_edit_objects.requester_email }}" readonly  
+          {% if asset_details_objects.asset_user.email %} class='disabled'
+          value="{{ asset_details_objects.asset_user.email }}" readonly  
           {% endif%}
           />
         </li>
@@ -195,8 +228,8 @@
         <li class="requester-input">
           <label for="requester_extension">Extention</label>
           <input type="number" name="requester_extension" id="requester_extension" placeholder="33333"  pattern="\d{10}" 
-          {% if ticket_edit_objects.requester_extension %}
-          value="{{ ticket_edit_objects.requester_extension }}" readonly  
+          {% if asset_details_objects.asset_user.technician.extension_number %} class='disabled'
+          value="{{ asset_details_objects.asset_user.technician.extension_number }}" readonly  
           {% endif%}
           />
         </li>
@@ -204,8 +237,8 @@
         <li class="requester-input">
           <label for="requester_phone_number">Phone Number</label>
           <input type="number" name="requester_phone_number" id="requester_phone_number" placeholder="9800000000" pattern="\d{10}" 
-          {% if ticket_edit_objects.requester_phone_number %}
-          value="{{ ticket_edit_objects.requester_phone_number }}" readonly 
+          {% if asset_details_objects.asset_user.technician.mobile_number %} class='disabled'
+          value="{{ asset_details_objects.asset_user.technician.mobile_number }}" readonly 
           {% endif%}
           />
         </li>
@@ -239,16 +272,16 @@
           </select>
         </li>
 
-        {% if new_inc_req_type %}
+        
         <li class='requester-input'>
           <label for="request_type">Request Type <span class='required-field'>*</span></label>
-          <select  {% if ticket_edit_objects.request_type %} disabled {% endif %} name="request_type" class="select" id="request_type" required>
+          <select  {% if asset_details_objects.assign_to_ticket.request_type %} disabled class="select disabled"{% endif %} name="request_type" class="select" id="request_type" required>
           
             
-              {% if ticket_edit_objects.request_type %}
+              {% if asset_details_objects.assign_to_ticket.request_type %}
               <option 
-                value="{{ ticket_edit_objects.request_type }}" selected hidden>
-                {{ ticket_edit_objects.request_type }}
+                value="{{ asset_details_objects.assign_to_ticket.request_type }}" selected hidden>
+                {{ asset_details_objects.assign_to_ticket.request_type }}
                 {% else %}
               <option 
                 disabled selected hidden value="">
@@ -256,137 +289,115 @@
               {% endif%}
               
             </option>
-            
-            
+            {% if new_inc_req_type %}
             {% for new_inc in new_inc_req_type %}
     
             <option value="{{ new_inc.request_name }}">
               {{ new_inc.request_name }}
             </option>
             {% endfor %}
+            {% endif %}
           </select>
         </li>
-        {% endif %}
+       
 
 
-        {% if new_inc_status %}
+        
         <li class='requester-input'>
           <label for="request_status">Status <span class='required-field'>*</span></label>
-          <select disabled name="request_status" class="select" id="request_status">
-                       
-            
-            {% if ticket_edit_objects.request_status %}
+          <select disabled name="request_status" class="select disabled" id="request_status">
+            {% if asset_details_objects.assign_to_ticket.request_status %}
             <option 
-            value="{{ ticket_edit_objects.request_status }}"  selected hidden
+            value="{{ asset_details_objects.assign_to_ticket.request_status }}"  selected hidden
             >
-            {{ ticket_edit_objects.request_status }}
+            {{ asset_details_objects.assign_to_ticket.request_status }}
             </option>
             {% else %}
             <option 
              disabled selected hidden value="">
              -- Select Status --
-           </option>
+            </option>
             {% endif%}
             
-
+            {% if new_inc_status %}
             {% for stats in new_inc_status %}
             <option value="{{ stats.status_name }}">
               {{ stats.status_name }}
             </option>
             {% endfor %}
+            {% endif %}
           </select>
         </li>
-        {% endif %}
+        
 
-        {% if new_inc_mode %}
+        
         <li class='requester-input'>
           <label for="request_mode">Mode <span class='required-field'>*</span> </label>
-          {% if non_it %}
-          <input type="hidden" name="request_mode" value="Web Form">
-          {% endif %}
-          <select {% if ticket_edit_objects.request_mode %} disabled {% elif non_it %} disabled {% endif %}  name="request_mode" class="select" id="request_mode">
-            {% if non_it %}
-            <option value="Web Form" selected hidden>Web Form
-            {% elif ticket_edit_objects.request_mode %}
-            <option 
-            value="{{ ticket_edit_objects.request_mode }}"  selected hidden
-            >
-            {{ ticket_edit_objects.request_mode }}
-            </option>
+          <select {% if asset_details_objects.assign_to_ticket.request_mode %} disabled class="select disabled" {%endif%} name="request_mode" class="select" id="request_mode">
 
-            
+            {% if asset_details_objects.assign_to_ticket.request_mode %}
+            <option 
+            value="{{ asset_details_objects.assign_to_ticket.request_mode }}"  selected hidden
+            >
+            {{ asset_details_objects.assign_to_ticket.request_mode }}
+            </option>
             {% else  %}
             <option 
              disabled selected hidden value="">
              -- Select Mode --
            </option>
             {% endif%}
-
-
-
+            {% if new_inc_mode %}
             {% for mode in new_inc_mode %}
             <option value="{{ mode.mode_name }}">
               {{ mode.mode_name }}
             </option>
             {% endfor %}
+            {% endif %}
           </select>
-
         </li>
-        {% endif %}
+        
 
-        {% if new_inc_priority %}
+        
         <li class='requester-input'>
           <label for="request_priority">Priority <span class='required-field'>*</span></label>
-
-          {% if non_it %}
-          <input type="hidden" name="request_priority" value="Medium">
-          {% endif %}
-
-          <select {% if ticket_edit_objects.request_priority %} disabled {% endif %} 
-          {% if non_it %} disabled {% endif%} required name="request_priority" class="select" id="request_priority">
+          <select {% if asset_details_objects.assign_to_ticket.request_priority %} disabled class="select disabled" {% endif %} required name="request_priority" class="select" id="request_priority">
             
-            {% if ticket_edit_objects.request_priority %}
+            {% if asset_details_objects.assign_to_ticket.request_priority %}
             <option 
-            value="{{ ticket_edit_objects.request_priority }}"  selected hidden
+            value="{{ asset_details_objects.assign_to_ticket.request_priority }}"  selected hidden
             >
-            {{ ticket_edit_objects.request_priority }}
+            {{ asset_details_objects.assign_to_ticket.request_priority }}
             </option>
-            {% elif non_it %}
-            <option 
-            value="Medium"  selected hidden
-            >
-            Medium
-          </option>
             {% else %}
             <option 
              disabled selected hidden value="">
              -- Select Priority --
            </option>
             {% endif%}
-    
+            {% if new_inc_priority %}
             {% for priority in new_inc_priority %}
             <option value="{{ priority.priority_name }}">
               {{ priority.priority_name }}
             </option>
             {% endfor %}
+            {% endif %}
           </select>
 
         </li>
-        {% endif %}
+        
 
-
-        {% if new_inc_category %}
+        
         <li class='requester-input'>
 
           <label for="request_category">Category <span class='required-field'>*</span></label>
-          <select {% if ticket_edit_objects.request_category %} disabled {% endif %}  required name="request_category" class="select" id="request_category">
-            
-             
-            {% if ticket_edit_objects.request_category %}
+          <select {% if asset_details_objects.assign_to_ticket.request_category %} disabled class="select disabled" {% endif %}  required name="request_category" class="select" id="request_category">
+
+            {% if asset_details_objects.assign_to_ticket.request_category %}
             <option
-            value="{{ ticket_edit_objects.request_category }}"  selected hidden
+            value="{{ asset_details_objects.assign_to_ticket.request_category }}"  selected hidden
             >
-            {{ ticket_edit_objects.request_category }}
+            {{ asset_details_objects.assign_to_ticket.request_category }}
             </option>
             {% else %}
             <option
@@ -395,30 +406,28 @@
            </option>
             {% endif%}
             
-
+            {% if new_inc_category %}
             {% for category in new_inc_category %}
             <option value="{{ category.category_name }} - {{ category.subcategory_name }}">
               {{ category.category_name }} - {{ category.subcategory_name }}
             </option>
             {% endfor %}
+            {% endif %}
           </select>
 
         </li>
-        {% endif %}
+        
 
 
-        {% if technician %}
+        
         <li class='requester-input'>
           <label for="request_technician">Technician</label>
-          <select {% if ticket_edit_objects.request_technician %} disabled {% endif %} 
-          {% if non_it %} disabled {% endif%} name="request_technician" class="select" id="request_technician">
-
-             
-            {% if ticket_edit_objects.request_technician %}
+          <select {% if asset_details_objects.assign_to_ticket.request_technician %} disabled class="select disabled" {% endif %} class="select" name="request_technician" id="request_technician">
+            {% if asset_details_objects.assign_to_ticket.request_technician %}
             <option
-            value="{{ ticket_edit_objects.request_technician.id }}"  selected hidden
+            value="{{ asset_details_objects.assign_to_ticket.request_technician.id }}"  selected hidden
             >
-            {{ ticket_edit_objects.request_technician.first_name }} {{ ticket_edit_objects.request_technician.last_name }} ({{ ticket_edit_objects.request_technician.username }} )
+            {{ asset_details_objects.assign_to_ticket.request_technician.first_name }} {{ asset_details_objects.assign_to_ticket.request_technician.last_name }} ({{ asset_details_objects.assign_to_ticket.request_technician.username }} )
             </option>
             {% else %}
             <option value=""
@@ -427,26 +436,26 @@
            </option>
            <option hidden value="0">No Technician is Assigned (Open)</option>
             {% endif%}
-
-
+            {% if technician %}
             {% for tech in technician %}
             <option value={{tech.id}}>{{ tech.first_name }} {{ tech.last_name }} ({{ tech.username }})</option>
             {% endfor %}
+            {% endif %}
           </select>
 
         </li>
-        {% endif %}
+        
 
         <li class='requester-input'>
           <label for="subject">Subject <span class='required-field'>*</span></label>
-          <input class='incident-input' type="text" name="subject" id="subject" placeholder="Subject" required 
-          {% if ticket_edit_objects.subject %}
-          value="{{ ticket_edit_objects.subject }}" disabled
+          <input type="text" name="subject" id="subject" placeholder="Subject" required 
+          {% if asset_details_objects.assign_to_ticket.subject %}  class='incident-input disabled'
+          value="{{ asset_details_objects.assign_to_ticket.subject }}" disabled
           {% endif%}
-          />
+          class='incident-input'/>
         </li>
 
-        <li><input type="text" name='ticket_pk' hidden value="{{ ticket_edit_objects.id }}">
+        <li><input type="text" name='asset_detail_pk' hidden value="{{ asset_details_objects.id }}">
       </ul>
 
 
