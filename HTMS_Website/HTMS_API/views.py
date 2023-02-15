@@ -24,7 +24,7 @@ def post_status(request):
         request_object.request_resolved_time = date_now
     if status_value == "Closed":
         request_object.request_closed_time = date_now
-
+    request_object.description += f"\nLast Modified By {request.user.get_full_name()} ({request.user.username}) On {date_now}. Modification: Status Changed to {status_value}\n"
     request_object.request_status = status_value
     request_object.save()
     request_object_serializer = RequestsSerializer(request_object)
@@ -101,6 +101,7 @@ def get_tickets(request):
             "request_priority": tickets.request_priority,
             "request_category": tickets.request_category,
             "subject": tickets.subject,
+            "location": tickets.location,
         }
         try:
             ticket_data[tickets.requester_name][

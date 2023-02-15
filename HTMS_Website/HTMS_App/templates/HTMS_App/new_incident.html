@@ -23,15 +23,39 @@
           <header>Requester Details</header> 
         </li>
 
+
+        <li class='requester-input'>
+          <label for="search_user">Search User</label>
+          <div class = 'search-box user-search-box' >
+              <button type='submit' class='magnify-btn'><img class='user-search--btn' src={% static 'HTMS_App/search_icon.png' %} alt="Search Icon"></button>
+              <button type='submit' class='enter-btn' ><img class='user-search--btn' src="{% static 'HTMS_App/enter_key.png' %}" alt="Entery Key logo"></button>
+              <input autofocus 
+              {% if ticket_edit_objects %}
+              class="disabled" disabled
+              {% elif non_it %}
+              class="disabled" disabled
+              {% endif%} 
+              class='search-box-input' type="text" name='search_user' id='search_user' placeholder= 'Search User...'>
+           
+          </div>
+        </li>
+
+        <li class="requester-input">
+          <label for="search_user_selection">User Search Results<span class='required-field'>*</span></label>
+          <select  name="search_user_selection" class="select disabled" id="search_user_selection" disabled>
+            <option disabled selected hidden value=""> -- Please Search A User -- </option>
+          </select>
+        </li>
+
         <li class='requester-input'>
             <label for="name">Requester Name<span class='required-field'>*</span></label>
             <input type="text" name="requester_name" id="name" placeholder="Name" required 
             {% if ticket_edit_objects.requester_name %}
-            value="{{ ticket_edit_objects.requester_name }}" readonly
+            value="{{ ticket_edit_objects.requester_name }}" class="disabled" disabled
             {% endif%}
             
             {% if non_it %}
-            value="{{ user_fullname }}" readonly
+            value="{{ user_fullname }}" class="disabled" readonly
             {% endif%}
 
             />
@@ -41,11 +65,11 @@
           <label for="requester_pr_number">PR Number<span class='required-field'>*</span></label>
           <input type="number" name="requester_pr_number" id="requester_pr_number" placeholder="PR Number"  required
             {% if ticket_edit_objects.requester_pr_number %}
-            value="{{ ticket_edit_objects.requester_pr_number }}" readonly  
+            value="{{ ticket_edit_objects.requester_pr_number }}" class="disabled" readonly
             {% endif%}
 
             {% if non_it %}
-            value="{{ user_data.pr_number }}" readonly  
+            value="{{ user_data.pr_number }}" class="disabled" readonly
             {% endif%}
           />
         </li>
@@ -54,11 +78,11 @@
           <label for="requester_designation">Designation</label>
           <input type="text" name="requester_designation" id="requester_designation" placeholder="Designation" 
           {% if ticket_edit_objects.requester_designation %}
-          value="{{ ticket_edit_objects.requester_designation }}" readonly  
+          value="{{ ticket_edit_objects.requester_designation }}" class="disabled" disabled
           {% endif%}
 
           {% if non_it %}
-          value="{{ user_data.designation }}" readonly  
+          value="{{ user_data.designation }}" class="disabled" readonly  
           {% endif%}
           />
         </li>
@@ -67,11 +91,11 @@
           <label for="requester_department">Department<span class='required-field'>*</span> </label>
           <input type="text" name="requester_department" id="requester_department" placeholder="Department Name" required
           {% if ticket_edit_objects.requester_department %}
-          value="{{ ticket_edit_objects.requester_department }}" readonly 
+          value="{{ ticket_edit_objects.requester_department }}" class="disabled" disabled
           {% endif%}
 
           {% if non_it %}
-          value="{{ user_data.department }}" readonly 
+          value="{{ user_data.department }}" class="disabled" readonly 
           {% endif%}
           />
         </li>
@@ -80,11 +104,11 @@
           <label for="requester_email">Email</label>
           <input type="email" name="requester_email" id="requester_email" placeholder="Email ID" 
           {% if ticket_edit_objects.requester_email %}
-          value="{{ ticket_edit_objects.requester_email }}" readonly  
+          value="{{ ticket_edit_objects.requester_email }}" class="disabled" disabled 
           {% endif%}
 
           {% if non_it %}
-          value="{{ user.email }}" readonly 
+          value="{{ user.email }}" class="disabled" readonly 
           {% endif%}
           />
         </li>
@@ -93,11 +117,11 @@
           <label for="requester_extension">Extention</label>
           <input type="number" name="requester_extension" id="requester_extension" placeholder="33333" 
           {% if ticket_edit_objects.requester_extension %}
-          value="{{ ticket_edit_objects.requester_extension }}" readonly  
+          value="{{ ticket_edit_objects.requester_extension }}" class="disabled" disabled
           {% endif%}
 
           {% if non_it %}
-          value="{{ user_data.extension_number }}" readonly 
+          value="{{ user_data.extension_number }}" class="disabled" readonly 
           {% endif%}
           />
         </li>
@@ -106,11 +130,11 @@
           <label for="requester_phone_number">Phone Number</label>
           <input type="number" name="requester_phone_number" id="requester_phone_number" placeholder="9800000000" 
           {% if ticket_edit_objects.requester_phone_number %}
-          value="{{ ticket_edit_objects.requester_phone_number }}" readonly 
+          value="{{ ticket_edit_objects.requester_phone_number }}" class="disabled" disabled 
           {% endif%}
 
           {% if non_it %}
-          value="{{ user_data.mobile_number }}" readonly  
+          value="{{ user_data.mobile_number }}" class="disabled" readonly  
           {% endif%}
           />
         </li>
@@ -127,7 +151,7 @@
         {% if new_inc_req_type %}
         <li class='requester-input'>
           <label for="request_type">Request Type <span class='required-field'>*</span></label>
-          <select  {% if ticket_edit_objects.request_type %} disabled {% endif %} name="request_type" class="select" id="request_type" required>
+          <select  {% if ticket_edit_objects.request_type %} disabled class="select disabled" {% endif %} name="request_type" class="select" id="request_type" required>
           
             
               {% if ticket_edit_objects.request_type %}
@@ -157,7 +181,7 @@
         {% if new_inc_status %}
         <li class='requester-input'>
           <label for="request_status">Status <span class='required-field'>*</span></label>
-          <select disabled name="request_status" class="select" id="request_status">
+          <select disabled name="request_status" class="select disabled" id="request_status">
                        
             
             {% if ticket_edit_objects.request_status %}
@@ -169,7 +193,7 @@
             {% else %}
             <option 
              disabled selected hidden value="">
-             -- Select Status --
+             -- Status Will Be Decided Automatically --
            </option>
             {% endif%}
             
@@ -183,15 +207,16 @@
         </li>
         {% endif %}
 
+
         {% if new_inc_mode %}
         <li class='requester-input'>
           <label for="request_mode">Mode <span class='required-field'>*</span> </label>
           {% if non_it %}
           <input type="hidden" name="request_mode" value="Web Form">
           {% endif %}
-          <select {% if ticket_edit_objects.request_mode %} disabled {% elif non_it %} disabled {% endif %}  name="request_mode" class="select" id="request_mode">
+          <select {% if ticket_edit_objects.request_mode %} disabled class="select disabled" {% elif non_it %} disabled  class="select disabled" {% endif %}  name="request_mode" class="select" id="request_mode">
             {% if non_it %}
-            <option value="Web Form" selected hidden>Web Form
+            <option value="Web Form"  selected hidden>Web Form
             {% elif ticket_edit_objects.request_mode %}
             <option 
             value="{{ ticket_edit_objects.request_mode }}"  selected hidden
@@ -227,8 +252,8 @@
           <input type="hidden" name="request_priority" value="Medium">
           {% endif %}
 
-          <select {% if ticket_edit_objects.request_priority %} disabled {% endif %} 
-          {% if non_it %} disabled {% endif%} required name="request_priority" class="select" id="request_priority">
+          <select {% if ticket_edit_objects.request_priority %} disabled class="select disabled"{% endif %} 
+          {% if non_it %} disabled class="select disabled"{% endif%} required name="request_priority" class="select" id="request_priority">
             
             {% if ticket_edit_objects.request_priority %}
             <option 
@@ -259,12 +284,43 @@
         </li>
         {% endif %}
 
+        {% if locations_obj %}
+        <li class='requester-input'>
+
+          <label for="location">Department Location<span class='required-field'>*</span></label>
+          <select {% if ticket_edit_objects.location %} disabled class="select disabled" {% endif %}  required name="location" class="select" id="location">
+            
+             
+            {% if ticket_edit_objects.location %}
+            <option
+            value="{{ ticket_edit_objects.location }}"  selected hidden
+            >
+            {{ ticket_edit_objects.location }}
+            </option>
+            {% else %}
+            <option
+             disabled selected hidden value="">
+             -- Select a Department Location --
+           </option>
+            {% endif%}
+            
+
+            {% for locations in locations_obj %}
+            <option value="{{ locations.location_floor }} - {{ locations.location_name }}">
+              {{ locations.location_floor }} - {{ locations.location_name }}
+            </option>
+            {% endfor %}
+          </select>
+
+        </li>
+        {% endif %}
+
 
         {% if new_inc_category %}
         <li class='requester-input'>
 
           <label for="request_category">Category <span class='required-field'>*</span></label>
-          <select {% if ticket_edit_objects.request_category %} disabled {% endif %}  required name="request_category" class="select" id="request_category">
+          <select {% if ticket_edit_objects.request_category %} disabled class="select disabled" {% endif %}  required name="request_category" class="select" id="request_category">
             
              
             {% if ticket_edit_objects.request_category %}
@@ -295,14 +351,19 @@
         {% if technician %}
         <li class='requester-input'>
           <label for="request_technician">Technician</label>
-          <select {% if ticket_edit_objects.request_technician %} disabled {% endif %} 
+          {% if ticket_edit_objects.request_technician %}
+            <select hidden name="request_technician" class="select" id="request_technician">
+              <option
+                value="{{ ticket_edit_objects.request_technician.id }}"  selected  >
+                {{ ticket_edit_objects.request_technician.first_name }} {{ ticket_edit_objects.request_technician.last_name }} ({{ ticket_edit_objects.request_technician.username }} )
+              </option>
+            </select>
+          {% endif %} 
+          <select {% if ticket_edit_objects.request_technician %} disabled class="select disabled"{% endif %} 
           {% if non_it %} disabled {% endif%} name="request_technician" class="select" id="request_technician">
-
-             
             {% if ticket_edit_objects.request_technician %}
             <option
-            value="{{ ticket_edit_objects.request_technician.id }}"  selected hidden
-            >
+            value="{{ ticket_edit_objects.request_technician.id }}"  selected  >
             {{ ticket_edit_objects.request_technician.first_name }} {{ ticket_edit_objects.request_technician.last_name }} ({{ ticket_edit_objects.request_technician.username }} )
             </option>
             {% else %}
@@ -325,11 +386,11 @@
 
         <li class='requester-input'>
           <label for="subject">Subject<span class='required-field'>*</span></label>
-          <input class='incident-input' type="text" name="subject" id="subject" placeholder="Subject" required 
+          <input  type="text" name="subject" id="subject" placeholder="Subject" required 
           {% if ticket_edit_objects.subject %}
-          value="{{ ticket_edit_objects.subject }}" disabled
+          value="{{ ticket_edit_objects.subject }}" disabled class='incident-input disabled'
           {% endif%}
-          />
+          class='incident-input'/>
         </li>
 
         <li><input type="text" name='ticket_pk' hidden value="{{ ticket_edit_objects.id }}">
@@ -346,7 +407,264 @@
 
       </div>
 
-      <div class="drop-body">
+      
+      <div class="summary-card">
+        <header class='summary-heading'>Summary</header> 
+          <ul class="summary-ticket">
+
+            <header class='summary-ticket-heading'>Ticket Summary</header> 
+
+            <img class='summary-ticket-image'src="/static/HTMS_App/arrow_right1.png" alt="Bullet Logo">
+            <li class="summary-ticket-label">
+              Submit Type
+            </li>
+            <li class='summary-ticket-colon'>:</li>
+
+            <li class="summary-ticket-detail">
+              {% if submit_type %}
+              {{submit_type|title}}
+              {% endif %}
+            </li>
+
+
+            
+
+            {% if ticket_edit_objects.request_submitter %}
+            <img class='summary-ticket-image'src="/static/HTMS_App/arrow_right1.png" alt="Bullet Logo">
+            <li class="summary-ticket-label">
+              Submited By
+            </li>
+            <li class='summary-ticket-colon'>:</li>
+
+            <li class="summary-ticket-detail">
+              {{ ticket_edit_objects.request_submitter.first_name|title }} {{ ticket_edit_objects.request_submitter.last_name|title  }} ({{ ticket_edit_objects.request_submitter.username }} )
+            </li>
+            {% endif%}
+
+            {% if ticket_edit_objects.request_creation_date %}
+            <img class='summary-ticket-image'src="/static/HTMS_App/arrow_right1.png" alt="Bullet Logo">
+            <li class="summary-ticket-label">
+              Submited On
+            </li>
+            <li class='summary-ticket-colon'>:</li>
+
+            <li class="summary-ticket-detail">
+              {{ ticket_edit_objects.request_creation_date|date:"d-M-Y   g:i a"  }}
+            </li>
+            {% endif%}
+            
+            {% if ticket_edit_objects.last_modified_by %}          
+            <img class='summary-ticket-image'src="/static/HTMS_App/arrow_right1.png" alt="Bullet Logo">
+            <li class="summary-ticket-label">
+              Last Updated By
+            </li>
+            <li class='summary-ticket-colon'>:</li>
+
+            <li class="summary-ticket-detail">
+              {{ ticket_edit_objects.last_modified_by.first_name|title }} {{ ticket_edit_objects.last_modified_by.last_name|title }} ({{ ticket_edit_objects.last_modified_by.username }} )
+            </li>
+            {% endif%}
+
+            {% if ticket_edit_objects.last_modified_date %}
+            <img class='summary-ticket-image'src="/static/HTMS_App/arrow_right1.png" alt="Bullet Logo">
+            <li class="summary-ticket-label">
+              Last Updated On
+            </li>
+            <li class='summary-ticket-colon'>:</li>
+
+            <li class="summary-ticket-detail">
+              {{ ticket_edit_objects.last_modified_date|date:"d-M-Y   g:i a" }}
+            </li>
+            {% endif%}
+            
+
+
+          
+
+
+
+            {% if ticket_edit_objects.id %}
+
+            <header class='summary-tat-heading'>TAT Of Ticket No. {{ticket_edit_objects.id}}</header> 
+
+            <img class='summary-tat-image'src="/static/HTMS_App/arrow_right1.png" alt="Bullet Logo">
+            <li class="summary-tat-label">
+              Assigned On
+            </li>
+            <li class='summary-tat-colon'>:</li>
+
+            <li class="summary-tat-detail">
+              {% if ticket_edit_objects.request_assigned_time  %}
+              {{ ticket_edit_objects.request_assigned_time|date:"d-M-Y   g:i a" }}
+              {% else %}
+              No Yet Assigned
+              {% endif %}
+            </li>
+
+            <img class='summary-tat-image'src="/static/HTMS_App/arrow_right1.png" alt="Bullet Logo">
+            <li class="summary-tat-label">
+              Time Taken to Assign
+            </li>
+            <li class='summary-tat-colon'>:</li>
+
+            <li class="summary-tat-detail">
+              {% if ticket_edit_objects.request_assigned_time  %}
+
+                {% if time_between_assign.days > 0%}
+                {{time_between_assign.days}} Day(s),
+                {%endif%}
+
+                {% if time_between_assign.hours > 0%}
+                {{time_between_assign.hours}} Hours,
+                {%endif%}
+
+                {% if time_between_assign.minutes > 0%}
+                {{time_between_assign.minutes}} Minutes,
+                {%endif%}
+
+                {% if time_between_assign.seconds > -1%}
+                {{time_between_assign.seconds}} Seconds.
+                {%endif%}
+
+              {% else %}
+              No Yet Assigned
+              {% endif %}
+            </li>
+
+
+            <img class='summary-tat-image'src="/static/HTMS_App/arrow_right1.png" alt="Bullet Logo">
+            <li class="summary-tat-label">
+              Resolved On
+            </li>
+            <li class='summary-tat-colon'>:</li>
+
+            <li class="summary-tat-detail">
+              {% if ticket_edit_objects.request_resolved_time  %}
+              {{ ticket_edit_objects.request_resolved_time|date:"d-M-Y   g:i a" }}
+              {% else %}
+              Not Yet Resolved
+              {% endif %}
+            </li>
+
+
+
+            <img class='summary-tat-image'src="/static/HTMS_App/arrow_right1.png" alt="Bullet Logo">
+            <li class="summary-tat-label">
+              Time Taken to Resolve
+            </li>
+            <li class='summary-tat-colon'>:</li>
+
+            <li class="summary-tat-detail">
+              {% if ticket_edit_objects.request_resolved_time  %}
+
+                {% if time_between_resolve.days > 0%}
+                {{time_between_resolve.days}} Day(s),
+                {%endif%}
+
+                {% if time_between_resolve.hours > 0%}
+                {{time_between_resolve.hours}} Hours,
+                {%endif%}
+
+                {% if time_between_resolve.minutes > 0%}
+                {{time_between_resolve.minutes}} Minutes,
+                {%endif%}
+
+                {% if time_between_resolve.seconds > 0%}
+                {{time_between_resolve.seconds}} Seconds.
+                {%endif%}
+
+              {% else %}
+              No Yet Resolved
+              {% endif %}
+            </li>
+
+
+
+            <img class='summary-tat-image'src="/static/HTMS_App/arrow_right1.png" alt="Bullet Logo">
+            <li class="summary-tat-label">
+              Closed On
+            </li>
+            <li class='summary-tat-colon'>:</li>
+
+            <li class="summary-tat-detail">
+              {% if ticket_edit_objects.request_closed_time  %}
+              {{ ticket_edit_objects.request_closed_time|date:"d-M-Y   g:i a" }}
+              {% else %}
+              Not Yet Closed
+              {% endif %}
+            </li>
+
+
+
+            <img class='summary-tat-image'src="/static/HTMS_App/arrow_right1.png" alt="Bullet Logo">
+            <li class="summary-tat-label">
+              Time Taken to Close
+            </li>
+            <li class='summary-tat-colon'>:</li>
+
+            <li class="summary-tat-detail">
+              {% if ticket_edit_objects.request_closed_time  %}
+
+                {% if time_between_close.days > 0%}
+                {{time_between_close.days}} Day(s),
+                {%endif%}
+
+                {% if time_between_close.hours > 0%}
+                {{time_between_close.hours}} Hours,
+                {%endif%}
+
+                {% if time_between_close.minutes > 0%}
+                {{time_between_close.minutes}} Minutes,
+                {%endif%}
+
+                {% if time_between_close.seconds > 0%}
+                {{time_between_close.seconds}} Seconds.
+                {%endif%}
+
+              {% else %}
+              Not Yet Closed
+              {% endif %}
+            </li>
+
+          
+            <img class='summary-tat-image'src="/static/HTMS_App/arrow_right1.png" alt="Bullet Logo">
+            <li class="summary-tat-label">
+              Total TAT Time
+            </li>
+            <li class='summary-tat-colon'>:</li>
+
+            <li class="summary-tat-detail">
+              {% if ticket_edit_objects.request_closed_time  %}
+
+                {% if total_tat_time.days > 0%}
+                {{total_tat_time.days}} Day(s),
+                {%endif%}
+
+                {% if total_tat_time.hours > 0%}
+                {{total_tat_time.hours}} Hours,
+                {%endif%}
+
+                {% if total_tat_time.minutes > 0%}
+                {{total_tat_time.minutes}} Minutes,
+                {%endif%}
+
+                {% if total_tat_time.seconds > 0%}
+                {{total_tat_time.seconds}} Seconds.
+                {%endif%}
+
+              {% else %}
+              Not Yet Closed
+              {% endif %}
+            </li>
+            {%endif%}
+          
+
+          </ul>
+
+
+      </div>
+      
+      {% comment %} <div class="drop-body">
         <div class="drop-contrainer">
           <div class="drop-effect">
             <span class="detail-card-header"
@@ -356,7 +674,7 @@
             {% else %}
             pad-lef-0rem 
             {% endif %}"
-            >
+            >   
               <li>
                 <ul class='detail-card---listing'>
                   <li class='detail-card--label'>Submit Type</li>
@@ -422,7 +740,10 @@
             </ul>
           </div>
         </div>
-      </div>
+      </div> 
+ {% endcomment %}
+
+      
     </section>
 
 </form>

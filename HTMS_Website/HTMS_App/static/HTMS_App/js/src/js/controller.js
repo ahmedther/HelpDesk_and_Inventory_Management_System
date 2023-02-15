@@ -1,5 +1,6 @@
 import * as helper from "./helper.js";
 
+
 helper.scroller();
 
 helper.profileRandomColor()
@@ -8,6 +9,9 @@ helper.status_update()
 
 helper.closeDropdown()
 
+helper.disableNonEssElements() // on Add Asset Page
+
+helper.searchUsersAndTickets()
 
 
 // helper.paginationBtnClick()

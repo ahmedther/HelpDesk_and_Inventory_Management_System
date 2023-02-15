@@ -5,6 +5,26 @@
     min-width: 50rem;
 }
 
+@mixin submit-button_attris {
+    margin: auto;
+    margin-top: 3rem;
+    height: 15%;
+    width: 50%;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+
+    & .btn--add {
+        padding-top: 0.5rem;
+        font-size: 2rem
+    }
+
+    & .submit-logo {
+        color: #ECFCFF;
+        font-size: 3.6rem;
+    }
+}
+
 body {
     font-family: 'Poppins', sans-serif;
     line-height: 1;
@@ -25,6 +45,9 @@ body {
 // Create new Asset ///
 ////////////////////////////////////////////////
 .new-incident-form {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
     height: 100%;
 }
 
@@ -38,8 +61,8 @@ body {
     @extend .requester-form;
     @include continer_in_asset();
     grid-column: 1/2;
-    min-width: 95%;
-    max-width: 95%;
+
+    width: 20vw;
     height: 100%
 }
 
@@ -53,22 +76,11 @@ body {
 }
 
 .submit-button {
-    margin: auto;
-    height: 4.5%;
-    width: 50%;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
+    @include submit-button_attris();
+}
 
-    & .btn--add {
-        padding-top: 0.5rem;
-        font-size: 2rem
-    }
-
-    & .submit-logo {
-        color: #ECFCFF;
-        font-size: 3.6rem;
-    }
+.btn--create-asset {
+    height: 5%;
 }
 
 .select {
@@ -132,17 +144,4 @@ body {
     min-width: 95%;
     max-width: 95%;
     height: 100%
-}
-
-
-////////////////////////////////////////////////////////////////
-/// Disabled 
-/// //////////////////////////////////////////////////////////////////
-
-.disabled,
-.disabled:hover {
-    cursor: not-allowed;
-    color: #0000005b !important;
-    background: #00000010 !important;
-    border-color: #00000038 !important;
 }

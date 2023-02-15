@@ -348,7 +348,6 @@ body {
   color: #413F42;
   background: rgb(255, 255, 255);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-  -webkit-backdrop-filter: blur(4px);
   border-radius: 10px;
   border: none;
   transform: scale(1.01) translateY(-1rem);
@@ -426,6 +425,7 @@ body {
   font-size: 1.2rem;
   font-weight: 400;
   color: rgba(35, 35, 46, 0.4745098039);
+  text-align: left;
 }
 
 .display-ticket-number {
@@ -601,8 +601,6 @@ body {
   color: transparent;
   background: var(--primary-gradient);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
   border-radius: 10px;
   border: none;
   transform: scale(1.01) translateY(-1rem);

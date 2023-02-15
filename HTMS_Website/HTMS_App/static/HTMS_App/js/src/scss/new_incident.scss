@@ -102,36 +102,33 @@
 .new-incident-form {
     grid-area: 1;
     width: 100%;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
 }
 
 .new-incident-container {
     grid-column: 1/-1;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-
+    grid-template-columns: 1fr 1fr;
+    padding: 4rem .5rem;
 }
 
 /********************************
 /* Requester Details FOrm */
 /********************************/
 
+
 .requester-form {
-    min-width: 50rem;
-    grid-column: 1;
+    grid-column: 1/2;
     list-style: none;
     padding: 5rem;
-    margin: 2rem;
-    background: rgba(255, 255, 255, 0.25);
+    margin: auto;
+    width: 90%;
+    height: 100%;
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
     border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
     display: flex;
     flex-direction: column;
-
+    max-width: 34vw;
+    min-width: 30vw;
 }
 
 
@@ -208,22 +205,41 @@ input[type=number] {
 }
 
 /*******************
+* Search User Search Box
+********************/
+.search-box {
+    padding: 1rem 0rem;
+
+    & .magnify-btn {
+        z-index: 2;
+        position: absolute;
+        margin-right: auto
+    }
+
+    & .enter-btn {
+        z-index: 2;
+        position: absolute;
+        display: flex;
+        justify-self: end
+    }
+}
+
+/*******************
 * Incident FOrm
 ********************/
 .incident-form {
-    grid-column: 2;
+    grid-column: 2/3;
     list-style: none;
     padding: 5rem;
-    margin: 2rem;
-    min-width: 50rem;
-    background: rgba(255, 255, 255, 0.25);
+    margin: auto;
+    width: 90%;
+    height: 100%;
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
     border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
     display: flex;
     flex-direction: column;
+    max-width: 34vw;
+    min-width: 30vw;
 }
 
 .incident-form li .incident-header {
@@ -252,18 +268,20 @@ input[type=number] {
 * Description text Box. Textarea attributes are in home.scss
 ********************/
 .incident-description {
-    margin: 2rem;
-    background: rgba(255, 255, 255, 0.25);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
     border-radius: 10px;
     display: flex;
     flex-direction: column;
-    margin-top: 2rem;
+    margin: auto;
+    margin-top: 4rem;
+    width: 90%;
+    height: 80%;
     grid-column: 1;
     padding: 3rem;
-    gap: 2rem
+    gap: 2rem;
+    max-width: 34vw;
+    min-width: 30vw;
+
 }
 
 .incident-description-header {
@@ -308,9 +326,7 @@ input[type=number] {
 * Detail Card
 *******************/
 .detail-card {
-    background: rgba(255, 255, 255, 0.25);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    backdrop-filter: blur(4px);
     border-radius: 10px;
     margin: 2rem;
     grid-column: 2;
@@ -333,133 +349,138 @@ input[type=number] {
 
 }
 
-////////////////////
-// Drop Effect
-///////////////////
-.drop-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #fbfbfd;
-    grid-column: 2;
-    user-select: none;
-}
+// ////////////////////
+// // Drop Effect
+// ///////////////////
+// .drop-body {
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     background: #fbfbfd;
+//     grid-column: 2;
+//     user-select: none;
+// }
 
-.drop-contrainer {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+// .drop-contrainer {
+//     position: relative;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
 
-    & .drop-effect {
-        position: relative;
-        padding-top: 4rem;
-        width: 55rem;
-        height: 30rem;
-        box-shadow: inset 2rem 2rem 2rem rgba(0, 0, 0, 0.05),
-            2.5rem 3.5rem 2rem rgba(0, 0, 0, 0.05),
-            2.5rem 3rem 3rem rgba(0, 0, 0, 0.05),
-            inset -2rem -2rem 2.5rem rgba(255, 255, 255, 0.9);
-        transition: 0.5s;
-        display: flex;
-        flex-direction: column;
-        gap: 2rem;
-        align-items: center;
-        border-radius: 52% 48% 33% 67% / 38% 45% 55% 62%;
-        transition: all 400ms;
+//     & .drop-effect {
+//         position: relative;
+//         padding-top: 4rem;
+//         width: 55rem;
+//         height: 30rem;
+//         box-shadow: inset 2rem 2rem 2rem rgba(0, 0, 0, 0.05),
+//             2.5rem 3.5rem 2rem rgba(0, 0, 0, 0.05),
+//             2.5rem 3rem 3rem rgba(0, 0, 0, 0.05),
+//             inset -2rem -2rem 2.5rem rgba(255, 255, 255, 0.9);
+//         transition: 0.5s;
+//         display: flex;
+//         flex-direction: column;
+//         gap: 2rem;
+//         align-items: center;
+//         border-radius: 52% 48% 33% 67% / 38% 45% 55% 62%;
+//         transition: all 400ms;
 
-        &:hover {
-            border-radius: 50%;
-        }
+//         &:hover {
+//             border-radius: 50%;
+//         }
 
-        &::before {
-            content: "";
-            position: absolute;
-            top: 5rem;
-            left: 7.5rem;
-            width: 3.5rem;
-            height: 3.5rem;
-            border-radius: 50%;
-            background: #fff;
-            opacity: 0.9;
-        }
+//         &::before {
+//             content: "";
+//             position: absolute;
+//             top: 5rem;
+//             left: 7.5rem;
+//             width: 3.5rem;
+//             height: 3.5rem;
+//             border-radius: 50%;
+//             background: #fff;
+//             opacity: 0.9;
+//         }
 
-        &::after {
-            content: "";
-            position: absolute;
-            top: 9.5rem;
-            left: 11rem;
-            width: 1.5rem;
-            height: 1.5rem;
-            border-radius: 50%;
-            background: #fff;
-            opacity: 0.9;
-        }
+//         &::after {
+//             content: "";
+//             position: absolute;
+//             top: 9.5rem;
+//             left: 11rem;
+//             width: 1.5rem;
+//             height: 1.5rem;
+//             border-radius: 50%;
+//             background: #fff;
+//             opacity: 0.9;
+//         }
 
-    }
+//     }
 
-}
+// }
 
-.detail-card-header {
-    grid-column: 1/-1;
-    font-size: 1.8rem;
-    color: var(--text-color-seconday);
-    text-align: center;
-    font-weight: 600;
+// .detail-card-header {
+//     grid-column: 1/-1;
+//     font-size: 1.8rem;
+//     color: var(--text-color-seconday);
+//     text-align: center;
+//     font-weight: 600;
 
-}
+// }
 
-.detail-card-format {
-    display: flex;
-    flex-direction: column;
-    list-style: none;
-    font-size: 1.6rem;
-    color: #23232ed0;
-    font-weight: 600;
-    gap: 2rem;
-
-
-}
-
-@mixin textBackgroundGradient {
-    background: linear-gradient(138deg, #00000069 0%, #00000086 100%);
-    color: transparent;
-    -webkit-background-clip: text;
-}
+// .detail-card-format {
+//     display: flex;
+//     flex-direction: column;
+//     list-style: none;
+//     font-size: 1.6rem;
+//     color: #23232ed0;
+//     font-weight: 600;
+//     gap: 2rem;
 
 
-.detail-card-head {
-    grid-column: 1;
-    padding-left: 7rem;
+// }
 
-}
+// @mixin textBackgroundGradient {
+//     background: linear-gradient(138deg, #00000069 0%, #00000086 100%);
+//     color: transparent;
+//     -webkit-background-clip: text;
+// }
 
-.detail-card---listing {
-    display: flex;
-    gap: 1rem;
-    list-style: none;
-    color: #DFE0DF;
 
-    & .detail-card--label {
-        width: 14rem;
+// .detail-card-head {
+//     grid-column: 1;
+//     padding-left: 7rem;
 
-    }
+// }
 
-    & .detail-card--colon {
-        padding-left: 3rem;
-        width: .5rem;
+// .detail-card---listing {
+//     display: flex;
+//     gap: 1rem;
+//     list-style: none;
+//     color: #DFE0DF;
 
-    }
+//     & .detail-card--label {
+//         width: 14rem;
 
-    & .detail-card--info {
-        padding-left: 3rem;
+//     }
 
-    }
-}
+//     & .detail-card--colon {
+//         padding-left: 3rem;
+//         width: .5rem;
 
-.pad-lef-0rem {
-    padding-left: 0rem;
-}
+//     }
+
+//     & .detail-card--info {
+//         padding-left: 3rem;
+
+//     }
+// }
+
+// .pad-lef-0rem {
+//     padding-left: 0rem;
+// }
+
+////////////////////////////////////////////////////////////////
+/// Select 
+/// //////////////////////////////////////////////////////////////////
+
 
 select {
     padding: 1.3rem;
@@ -494,5 +515,119 @@ select {
 
 
     }
+
+}
+
+
+////////////////////////////////////////////////////////////////
+/// Disabled 
+/// //////////////////////////////////////////////////////////////////
+
+.disabled,
+.disabled:hover {
+    cursor: not-allowed;
+    color: #0000005b !important;
+    background: #00000010 !important;
+    border-color: #00000038 !important;
+}
+
+
+//////////////////////////
+/// /// Summary Card
+/// //////////////////////
+.summary-card {
+    grid-column: 2/3;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    padding: 3rem 2rem;
+    margin: auto;
+    margin-top: 4rem;
+    width: 90%;
+    height: 80%;
+    border-radius: 10px;
+    max-width: 34vw;
+    min-width: 30vw;
+
+    & .summary-heading {
+        font-size: 1.8rem;
+        color: #f969c1;
+        font-weight: 600;
+        padding-bottom: 3rem;
+        text-align: center;
+    }
+
+    & .summary-ticket {
+        list-style: none;
+        display: grid;
+        grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+        grid-template-columns: .2fr .6fr .1fr 1fr .2fr .6fr .1fr 1fr;
+        gap: 1rem;
+        align-content: stretch;
+        align-items: center;
+        justify-items: start;
+        height: 100%;
+        width: 100%;
+
+        & .summary-tat-heading,
+        & .summary-ticket-heading {
+            grid-column: 1/5;
+            justify-self: center;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+
+        & .summary-ticket-image {
+            height: 2rem;
+            grid-column: 1/2;
+        }
+
+
+
+        & .summary-ticket-label {
+            grid-column: 2/3;
+        }
+
+        & .summary-ticket-colon {
+            grid-column: 3/4;
+        }
+
+        & .summary-ticket-detail {
+            grid-column: 4/5;
+        }
+
+        /////
+        // TAT
+        /////
+        & .summary-tat-heading {
+            grid-column: 5/9;
+            grid-row: 1/2;
+
+        }
+
+        & .summary-tat-image {
+            height: 2rem;
+            grid-column: 5/6;
+
+        }
+
+        & .summary-tat-label {
+            grid-column: 6/7;
+
+        }
+
+        & .summary-tat-colon {
+            grid-column: 7/8;
+
+        }
+
+        & .summary-tat-detail {
+            grid-column: 8/9;
+
+
+
+        }
+    }
+
+
 
 }

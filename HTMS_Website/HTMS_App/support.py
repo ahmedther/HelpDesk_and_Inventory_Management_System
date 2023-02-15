@@ -19,20 +19,25 @@ class Support:
         technician, status, req_asin_time = self.get_technician_and_status(
             request, date_now
         )
-
-        try:
-            user_instance = User.objects.get(pk=request.user.id)
-        except:
-            user_instance = None
+        search_user_selection = request.POST.get("search_user_selection", -1)
+        if int(search_user_selection) > 0:
+            req_user = Technician.objects.get(
+                user=User.objects.get(id=search_user_selection)
+            )
+        else:
+            self.create_new_user(request)
+            req_user = Technician.objects.get(
+                pr_number=request.POST["requester_pr_number"]
+            )
 
         new_serv_req = Requests(
-            requester_name=request.POST["requester_name"],
-            requester_pr_number=request.POST["requester_pr_number"],
-            requester_designation=request.POST["requester_designation"],
-            requester_department=request.POST["requester_department"],
-            requester_email=request.POST["requester_email"],
-            requester_extension=request.POST["requester_extension"],
-            requester_phone_number=request.POST["requester_phone_number"],
+            requester_name=req_user.user.get_full_name(),
+            requester_pr_number=req_user.pr_number,
+            requester_designation=req_user.designation,
+            requester_department=req_user.department,
+            requester_email=req_user.user.email,
+            requester_extension=req_user.extension_number,
+            requester_phone_number=req_user.mobile_number,
             request_type=request.POST["request_type"],
             request_status=status,
             request_mode=request.POST["request_mode"],
@@ -42,14 +47,21 @@ class Support:
             subject=request.POST["subject"],
             description=request.POST["description"],
             request_creation_date=date_now,
-            request_submitter=user_instance,
-            last_modified_by=user_instance,
+            request_submitter=request.user,
+            last_modified_by=request.user,
             last_modified_date=date_now,
             request_assigned_time=req_asin_time,
+            location=request.POST["location"],
         )
         new_serv_req.save()
-
-        self.create_new_user(request)
+        # new_serv_req = Requests(
+        # requester_name=request.POST["requester_name"],
+        # requester_pr_number=request.POST["requester_pr_number"],
+        # requester_designation=request.POST["requester_designation"],
+        # requester_department=request.POST["requester_department"],
+        # requester_email=request.POST["requester_email"],
+        # requester_extension=request.POST["requester_extension"],
+        # requester_phone_number=request.POST["requester_phone_number"],
 
     def create_new_user(self, request):
         name = request.POST.get("requester_name", "")
@@ -107,18 +119,24 @@ class Support:
 
     # return technician, status, req_asin_time
 
+    def user_update(self, request):
+        req_user = Technician.objects.get(pr_number=request.POST["requester_pr_number"])
+        req_user.designation = request.POST.get("requester_designation")
+        req_user.user.email = request.POST.get("requester_email")
+        req_user.extension_number = request.POST.get("requester_extension")
+        req_user.mobile_number = request.POST.get("requester_phone_number")
+        req_user.save()
+        try:
+            req_user.user.save()
+        except:
+            pass
+
     def send_edit_request_to_db(self, request):
         date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        technician, status, req_asin_time = self.get_technician_and_status(
-            request, date_now
-        )
-        try:
-            user_instance = User.objects.get(pk=request.user.id)
-        except:
-            user_instance = None
-
         update_request_inci = Requests.objects.get(pk=request.POST["ticket_pk"])
-
+        technician, status, req_asin_time = self.get_technician_and_status(
+            request, date_now, update_request_inci
+        )
         update_fields = {
             "requester_name": "requester_name",
             "requester_pr_number": "requester_pr_number",
@@ -128,28 +146,46 @@ class Support:
             "requester_extension": "requester_extension",
             "requester_phone_number": "requester_phone_number",
             "request_type": "request_type",
-            "request_status": status,
             "request_mode": "request_mode",
             "request_priority": "request_priority",
             "request_category": "request_category",
-            "request_technician": technician,
             "subject": "subject",
             "description": "description",
+            "location": "location",
         }
-
+        update_values = {}
         for field, value in update_fields.items():
             try:
-                if field == "request_technician" or field == "request_status":
-                    setattr(update_request_inci, field, value)
-                else:
-                    setattr(update_request_inci, field, request.POST[value])
+                setattr(update_request_inci, field, request.POST[value])
+                if request.POST[value] != "" and field != "requester_pr_number":
+                    update_values.update({field.split("_")[-1]: request.POST[value]})
+
             except KeyError:
                 pass
 
-        update_request_inci.last_modified_by = user_instance
+        if update_request_inci.request_status != status:
+            update_request_inci.request_status = status
+            update_values.update({"Status": status})
+
+        if update_request_inci.request_technician != technician:
+            update_request_inci.request_technician = technician
+            if (
+                technician != None
+                and update_request_inci.request_technician.id == technician.id
+            ):
+                update_values.update(
+                    {
+                        "Techinican": f"{technician.first_name} {technician.last_name} ({technician.username})"
+                    }
+                )
+
+        update_request_inci.last_modified_by = request.user
         update_request_inci.last_modified_date = date_now
         update_request_inci.request_assigned_time = req_asin_time
+        if update_values != {}:
+            update_request_inci.description += f"\nLast Modified By {request.user.get_full_name()} ({request.user.username}) On {date_now}. Modification: Values Updated - {update_values}.\n\n"
         update_request_inci.save()
+        self.user_update(request)
 
     def incident_context(self, user_full_name, context):
         context["user_fullname"] = user_full_name
@@ -162,6 +198,7 @@ class Support:
         )
         technicians_group = Group.objects.get(name="Technicians")
         context["technician"] = technicians_group.user_set.all()
+        context["locations_obj"] = Location.objects.values().order_by("location_floor")
         return context
 
     def display_all_data(request):
@@ -210,6 +247,7 @@ class Support:
             | Q(request_technician__username__icontains=search_ticket)
             | Q(subject__icontains=search_ticket)
             | Q(request_creation_date__icontains=search_ticket)
+            | Q(location=search_ticket)
         )
 
         if non_it:
@@ -488,18 +526,74 @@ class Support:
 
         return context
 
+    def humanize_datetime(self, time_in_seconds):
+        time = timedelta(seconds=time_in_seconds)
+        days = time.days
+        hours, remainder = divmod(time.seconds, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        time_in_between = {
+            "days": days,
+            "hours": hours,
+            "minutes": minutes,
+            "seconds": seconds,
+        }
+        return time_in_between
+
+    def calculate_time_in_between(self, recent_time, earlier_time):
+        try:
+            recent_time = recent_time.replace(microsecond=0)
+        except:
+            return None
+        try:
+            earlier_time = earlier_time.replace(microsecond=0)
+        except: 
+            return None
+        if recent_time == earlier_time:
+            return {"seconds": 0}
+        try:
+            between_time = recent_time - earlier_time
+        except:
+            return None
+        if between_time:
+            between_time = self.humanize_datetime(between_time.total_seconds())
+        return between_time
+
     def update_ticket(self, request, pk):
         ticket_edit_objects = Requests.objects.get(pk=pk)
-        user_full_name = request.user.get_full_name()
         context = {
             "ticket_edit_objects": ticket_edit_objects,
             "incident_header": f"Update Ticket #{pk}",
         }
         context["submit_type"] = context["incident_header"]
-        context = self.incident_context(user_full_name, context)
+        context = self.incident_context(request.user.get_full_name(), context)
+        if ticket_edit_objects.request_assigned_time:
+            time_between_assign = self.calculate_time_in_between(
+                ticket_edit_objects.request_assigned_time,
+                ticket_edit_objects.request_creation_date,
+            )
+            context["time_between_assign"] = time_between_assign
+        if ticket_edit_objects.request_resolved_time:
+            time_between_resolve = self.calculate_time_in_between(
+                ticket_edit_objects.request_resolved_time,
+                ticket_edit_objects.request_assigned_time,
+            )
+            context["time_between_resolve"] = time_between_resolve
+        if ticket_edit_objects.request_closed_time:
+            time_between_close = self.calculate_time_in_between(
+                ticket_edit_objects.request_closed_time,
+                ticket_edit_objects.request_assigned_time,
+            )
+            context["time_between_close"] = time_between_close
+        if ticket_edit_objects.request_closed_time:
+            total_tat_time = self.calculate_time_in_between(
+                ticket_edit_objects.request_closed_time,
+                ticket_edit_objects.request_creation_date,
+            )
+            context["total_tat_time"] = total_tat_time
+
         return context
 
-    def get_technician_and_status(self, request, date_now):
+    def get_technician_and_status(self, request, date_now, ticket_edit_objects=None):
         try:
             technician = User.objects.get(pk=request.POST["request_technician"])
         except:
@@ -507,7 +601,10 @@ class Support:
             req_asin_time = None
             status = "Open"
         if technician != None:
-            status = "Assigned"
+            if not ticket_edit_objects:
+                status = "Assigned"
+            else:
+                status = ticket_edit_objects.request_status
             get_num = Technician.objects.get(user_id=technician.id)
             req_asin_time = date_now
             SendSms(number=get_num.mobile_number)
@@ -651,10 +748,6 @@ class Support:
             technician, status, req_asin_time = self.get_technician_and_status(
                 request, date_now
             )
-            try:
-                user_instance = User.objects.get(pk=request.user.id)
-            except:
-                user_instance = None
 
             new_serv_req = Requests(
                 requester_name=f"{user.first_name} {user.last_name}",
@@ -673,10 +766,11 @@ class Support:
                 subject=request.POST["subject"],
                 description=request.POST["description"],
                 request_creation_date=date_now,
-                request_submitter=user_instance,
-                last_modified_by=user_instance,
+                request_submitter=request.user,
+                last_modified_by=request.user,
                 last_modified_date=date_now,
                 request_assigned_time=req_asin_time,
+                location=request.POST["location"],
             )
             new_serv_req.save()
             return new_serv_req
@@ -717,7 +811,6 @@ class Support:
         return context
 
     def send_edit_request_to_db_asset(self, request):
-        print(request.POST)
         date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         user_instance = User.objects.filter(pk=request.user.id).first()
         facility_instance = FacilityDropdown.objects.filter(
@@ -737,19 +830,21 @@ class Support:
             "facility": facility_instance,
             "description": "description",
         }
-
+        update_values = {}
         for field, value in update_fields.items():
             try:
                 if field == "facility":
                     setattr(update_asset_details, field, value)
+                    update_values.update({field: value})
                 else:
                     setattr(update_asset_details, field, request.POST[value])
+                    update_values.update({field: request.POST[value]})
             except KeyError:
                 pass
 
         update_asset_details.last_modified_by = user_instance
         update_asset_details.last_modified_date = date_now
-        update_asset_details.description += f"\nLast Modified By {request.user.get_full_name()} ({request.user.username}) On {date_now}.\n"
+        update_asset_details.description += f"\nLast Modified By {request.user.get_full_name()} ({request.user.username}) On {date_now}. Modification: Values Updated - {update_values}.\n\n"
         user = self.user_creation_or_updation(request)
         if user:
             update_asset_details.asset_user = user

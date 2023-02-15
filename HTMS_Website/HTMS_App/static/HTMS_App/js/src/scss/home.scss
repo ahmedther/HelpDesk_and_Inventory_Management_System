@@ -583,8 +583,7 @@ body {
         color: #413F42;
         background: rgb(255, 255, 255);
         box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-        // backdrop-filter: blur(4px);
-        -webkit-backdrop-filter: blur(4px);
+
         border-radius: 10px;
         border: none;
         transform: scale(1.01) translateY(-1rem);
@@ -862,8 +861,6 @@ body {
         color: transparent;
         background: var(--primary-gradient);
         box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-        backdrop-filter: blur(4px);
-        -webkit-backdrop-filter: blur(4px);
         border-radius: 10px;
         border: none;
         transform: scale(1.01) translateY(-1rem);

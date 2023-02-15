@@ -77,8 +77,7 @@ def logout_user(request):
 def new_incident(request):
     sup = Support()
     if request.method == "GET":
-        context = {}
-        context = sup.incident_context(request.user.get_full_name(), context)
+        context = sup.incident_context(request.user.get_full_name(), context={})
         context["incident_header"] = "New Incident"
         context["submit_type"] = "New Incident"
         if request.GET.get("non_it", False):
@@ -187,7 +186,6 @@ def home_non_it(request):
 def inventory(request):
 
     if request.method == "GET":
-        print(request.GET)
         sup = Support()
         filters = {
             "search_asset": sup.search_assets,

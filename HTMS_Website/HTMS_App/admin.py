@@ -20,6 +20,7 @@ admin.site.register(Requests)
 admin.site.register(AssetStatus)
 admin.site.register(Assets)
 admin.site.register(AssetDetails)
+admin.site.register(Location)
 
 
 # admin.site.register(FacilityDropdown)

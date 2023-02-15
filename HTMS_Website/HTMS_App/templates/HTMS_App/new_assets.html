@@ -60,10 +60,10 @@
 
       <li class="requester-input">
         <label for="add_asset_name">Asset Name<span class='required-field'>*</span></label>
-        <select  name="add_asset_name" class="select" id="add_asset_name"
-        {% if asset_details_objects.asset_name.id %} disabled >
+        <select  name="add_asset_name"  id="add_asset_name"
+        {% if asset_details_objects.asset_name.id %} disabled class="select disabled">
         <option class="select-hidden" disabled selected hidden value="">{{asset_details_objects.asset_name.asset_name}}</option>
-        {% else %} >
+        {% else %} class="select ">
           <option class="select-hidden" disabled selected hidden value=""> -- Select Asset Name -- </option>
           {% for asset in all_assets_heads %}
           <option value="{{asset.id}}">{{asset.asset_name}}</option>
@@ -76,7 +76,7 @@
           <label for="asset_brand">Brand<span class='required-field'>*</span></label>
           <input type="text" name="asset_brand" id="asset_brand" placeholder="HP / Dell / Lenovo / Iball / Logitech / etc..." required/
           {% if asset_details_objects.brand %} class='disabled'
-          value="{{ asset_details_objects.brand }}" readonly 
+          value="{{ asset_details_objects.brand }}" disabled 
           {% endif%}
           >
       </li>
@@ -84,17 +84,17 @@
       <li class='requester-input'>
         <label for="model_name">Model Name</label>
         <input type="text" name="model_name" id="model_name" placeholder="Model XXXXXXX" 
-        {% if asset_details_objects.model_name %} class='disabled'
-        value="{{ asset_details_objects.model_name }}" readonly 
+        {% if asset_details_objects.model_name %} disabled class='disabled' 
+        value="{{ asset_details_objects.model_name }}" 
         {% endif%}
-        />
+        /> 
       </li>
 
       <li class='requester-input'>
         <label for="model_number">Model Number<span class='required-field' >*</span></label>
         <input type="text" name="model_number" id="model_number" placeholder="XXXXXXX" required
         {% if asset_details_objects.model_number %}class='disabled'
-        value="{{ asset_details_objects.model_number }}" readonly 
+        value="{{ asset_details_objects.model_number }}" disabled 
         {% endif%}
         />
       </li>
@@ -103,7 +103,7 @@
         <label for="serial_number">Serial Number<span class='required-field' >*</span></label>
         <input type="text" name="serial_number" id="serial_number" placeholder="XXXXXXX" required
         {% if asset_details_objects.serial_number %} class='disabled'
-        value="{{ asset_details_objects.serial_number }}" readonly 
+        value="{{ asset_details_objects.serial_number }}" disabled 
         {% endif%}
         />
       </li>
@@ -112,7 +112,7 @@
         <label for="date_of_purchase">Date of Purchase<span class='required-field' >*</span></label>
         <input type="date" id="date_of_purchase" name="date_of_purchase"  required
         {% if asset_details_objects.date_of_purchase %} class='disabled'
-        value="{{ asset_details_objects.date_of_purchase|date:"Y-m-d"   }}" readonly 
+        value="{{ asset_details_objects.date_of_purchase|date:"Y-m-d"   }}" disabled 
         {% else %}
         value="{% now "Y-m-d" %}"
         {% endif%}
@@ -151,7 +151,7 @@
         <label  class='asset_description' for='description'>Other Details and Comments</label>
         <textarea  class='incident-description-textarea' rows="5" cols="33" type="text" name="description" id="description"
           placeholder="Comments...."
-          {% if asset_details_objects.description %}readonly class='disabled'{% endif%}
+          {% if asset_details_objects.description %}disabled class='disabled'{% endif%}
           >{% if asset_details_objects.description %}{{ asset_details_objects.description }}{% endif%}</textarea>
       </li>
     </ul>
@@ -243,7 +243,7 @@
           />
         </li>
 
-        <button type='submit' class='submit-button'>
+        <button type='submit' class='submit-button btn--create-asset'>
           <span class='btn--add btn--text'>Submit</span><span class="submit-logo">&#10174;</span>
         </button>
            
@@ -386,7 +386,34 @@
 
         </li>
         
+        <li class='requester-input'>
 
+          <label for="location">Department Location<span class='required-field'>*</span></label>
+          <select {% if asset_details_objects.assign_to_ticket.location %} disabled class="select disabled" {% endif %}  required name="location" class="select" id="location">
+
+            {% if asset_details_objects.assign_to_ticket.location %}
+            <option
+            value="{{ asset_details_objects.assign_to_ticket.location }}"  selected hidden
+            >
+            {{ asset_details_objects.assign_to_ticket.location }}
+            </option>
+            {% else %}
+            <option
+             disabled selected hidden value="">
+             -- Select a Department Location --
+           </option>
+            {% endif%}
+            
+            {% if locations_obj %}
+            {% for locations in locations_obj %}
+            <option value="{{ locations.location_floor }} - {{ locations.location_name }}">
+              {{ locations.location_floor }} - {{ locations.location_name }}
+            </option>
+            {% endfor %}
+            {% endif %}
+          </select>
+
+        </li>
         
         <li class='requester-input'>
 
@@ -466,7 +493,6 @@
   {% endif %}
 
 </form>
-<script src={% static 'HTMS_App/new_assets.js' %} type='module'></script>
 {% endblock new_assets %}
 
 
