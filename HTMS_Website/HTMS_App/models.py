@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 
 
 class FacilityDropdown(models.Model):
-
     facility_name = models.CharField(max_length=255, db_index=True)
     facility_code = models.CharField(max_length=255, db_index=True)
 
@@ -267,4 +266,4 @@ class AssetDetails(models.Model):
     )
 
     def __str__(self):
-        return f"{self.asset_name.asset_name} - {self.brand}"
+        return f"{self.id} - {self.asset_name.asset_name} - {self.brand} - {self.model_name} # {self.model_number} --- {self.serial_number}"

@@ -8,6 +8,8 @@ from datetime import date, timedelta
 from HTMS_App.sms_sender import SendSms
 import random
 import requests
+import itertools
+import time
 
 
 class Support:
@@ -182,8 +184,14 @@ class Support:
         update_request_inci.last_modified_by = request.user
         update_request_inci.last_modified_date = date_now
         update_request_inci.request_assigned_time = req_asin_time
+        update_values_in_string = ""
         if update_values != {}:
-            update_request_inci.description += f"\nLast Modified By {request.user.get_full_name()} ({request.user.username}) On {date_now}. Modification: Values Updated - {update_values}.\n\n"
+            for key, value in update_values.items():
+                update_values_in_string += (
+                    f"\n✔️ {key.capitalize()} Changed To {value} "
+                )
+            update_request_inci.description += f"\nLast Modified By {request.user.get_full_name()} ({request.user.username}) On {date_now}. Modification: {update_values_in_string}.\n\n"
+
         update_request_inci.save()
         self.user_update(request)
 
@@ -202,7 +210,6 @@ class Support:
         return context
 
     def display_all_data(request):
-
         ticket_objects = Requests.objects.all().order_by("-id")
         context = {
             "user_fullname": request.user.get_full_name(),
@@ -295,7 +302,6 @@ class Support:
         return context, ticket_objects
 
     def my_open_ticket(request, non_it=False):
-
         my_open_ticket = request.GET.get("my_open_ticket", "open")
         user_pk = request.user.id
         context = {
@@ -546,7 +552,7 @@ class Support:
             return None
         try:
             earlier_time = earlier_time.replace(microsecond=0)
-        except: 
+        except:
             return None
         if recent_time == earlier_time:
             return {"seconds": 0}
@@ -671,7 +677,6 @@ class Support:
         return context
 
     def get_inventory_home_context(self, request):
-
         # random_number = random.randint(1, 15)
         asset_objects = AssetDetails.objects.all().order_by("-id")
         context = {
@@ -707,7 +712,6 @@ class Support:
             return user
 
         if int(search_user_selection) == 0 or pr_num:
-
             name = request.POST.get("requester_name", "")
             first_name, *rest = name.split(" ")
             last_name = " ".join(rest)
@@ -831,33 +835,58 @@ class Support:
             "description": "description",
         }
         update_values = {}
+
         for field, value in update_fields.items():
             try:
                 if field == "facility":
-                    setattr(update_asset_details, field, value)
-                    update_values.update({field: value})
-                else:
+                    if update_asset_details.facility != value:
+                        setattr(update_asset_details, field, value)
+                        update_values.update({field: value})
+
+                if field == "description":
                     setattr(update_asset_details, field, request.POST[value])
-                    update_values.update({field: request.POST[value]})
+
+                if field == "current_status":
+                    if update_asset_details.current_status != request.POST[value]:
+                        setattr(update_asset_details, field, request.POST[value])
+                        update_values.update({field: request.POST[value]})
+                else:
+                    if request.POST[value] == "":
+                        pass
+                    else:
+                        setattr(update_asset_details, field, request.POST[value])
+                        update_values.update({field: request.POST[value]})
+
             except KeyError:
                 pass
 
         update_asset_details.last_modified_by = user_instance
         update_asset_details.last_modified_date = date_now
-        update_asset_details.description += f"\nLast Modified By {request.user.get_full_name()} ({request.user.username}) On {date_now}. Modification: Values Updated - {update_values}.\n\n"
         user = self.user_creation_or_updation(request)
         if user:
             update_asset_details.asset_user = user
+            update_values.update(
+                {"User Changed To ": f"{user.get_full_name()} ({user.username})"}
+            )
 
             ticket_req_obj = self.search_ticket_or_create(request, user)
             if ticket_req_obj:
                 update_asset_details.assign_to_ticket = Requests.objects.get(
                     pk=ticket_req_obj.id
                 )
+                {"Ticket Assigned To ": f"{user.get_full_name()} ({user.username})"}
+        update_values_in_string = ""
+        if update_values != {}:
+            for key, value in update_values.items():
+                update_values_in_string += (
+                    f"\n✔️ {key.capitalize()} Changed To {value} "
+                )
+        update_asset_details.description += f"\nLast Modified By {request.user.get_full_name()} ({request.user.username}) On {date_now}. Modification: {update_values_in_string}.\n\n"
+
         update_asset_details.save()
 
     def search_assets(self, request):
-        search_asset = ""
+        search_asset = ""   
         context = {
             "user_fullname": request.user.get_full_name(),
             "header": "Search Results",
@@ -868,6 +897,7 @@ class Support:
         context = self.get_asset_head_objects(context)
         if search_asset.isdigit():
             search_with_id = int(search_asset)
+
         else:
             search_with_id = 0
         asset_objects = AssetDetails.objects.distinct().filter(

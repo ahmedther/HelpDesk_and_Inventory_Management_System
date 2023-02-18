@@ -24,7 +24,7 @@ def post_status(request):
         request_object.request_resolved_time = date_now
     if status_value == "Closed":
         request_object.request_closed_time = date_now
-    request_object.description += f"\nLast Modified By {request.user.get_full_name()} ({request.user.username}) On {date_now}. Modification: Status Changed to {status_value}\n"
+    request_object.description += f"\nLast Modified By {request.user.get_full_name()} ({request.user.username}) On {date_now}. Modification:\n✔️ Status Changed to {status_value}\n"
     request_object.request_status = status_value
     request_object.save()
     request_object_serializer = RequestsSerializer(request_object)
@@ -38,7 +38,7 @@ def post_reason_on_hold(request):
     id = request.data["id"]
     desc_value = request.data["reson_for_hold"]
     request_object = Requests.objects.get(pk=id)
-    request_object.description = f"{request_object.description} \n\nWas put On-Hold by {user_full_name} on {date_now}.\nReason : {desc_value}"
+    request_object.description = f"{request_object.description} \n\nWas put On-Hold by {user_full_name} on {date_now}.\nReason :\n✔️ {desc_value}"
     request_object.save()
     request_object_serializer = RequestsSerializer(request_object)
     return Response(request_object_serializer.data)

@@ -275,7 +275,7 @@ input[type=number] {
     margin: auto;
     margin-top: 4rem;
     width: 90%;
-    height: 80%;
+    height: 90%;
     grid-column: 1;
     padding: 3rem;
     gap: 2rem;
@@ -302,7 +302,7 @@ input[type=number] {
     color: #23232ed0;
     font-weight: 900;
     width: 100%;
-    height: 20rem;
+    height: 100%;
     padding: 2rem;
 
 }
@@ -325,29 +325,6 @@ input[type=number] {
 /* *****************
 * Detail Card
 *******************/
-.detail-card {
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    border-radius: 10px;
-    margin: 2rem;
-    grid-column: 2;
-    padding: 3rem;
-    display: grid;
-    grid-template-columns: 4fr 1fr 4fr;
-    grid-template-rows: inherit
-}
-
-
-
-.detail-card-colon {
-    grid-column: 2;
-    align-items: center;
-}
-
-.detail-card-info {
-    grid-column: 3;
-    padding-left: 3rem;
-
-}
 
 // ////////////////////
 // // Drop Effect
@@ -542,7 +519,7 @@ select {
     margin: auto;
     margin-top: 4rem;
     width: 90%;
-    height: 80%;
+    height: 90%;
     border-radius: 10px;
     max-width: 34vw;
     min-width: 30vw;
@@ -558,14 +535,13 @@ select {
     & .summary-ticket {
         list-style: none;
         display: grid;
-        grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
-        grid-template-columns: .2fr .6fr .1fr 1fr .2fr .6fr .1fr 1fr;
+        grid-template-columns: .3fr 1.1fr .01fr 1.5fr;
         gap: 1rem;
-        align-content: stretch;
         align-items: center;
         justify-items: start;
-        height: 100%;
-        width: 100%;
+        margin: auto;
+        font-size: 1.4rem;
+        margin-bottom: 4rem;
 
         & .summary-tat-heading,
         & .summary-ticket-heading {
@@ -573,59 +549,39 @@ select {
             justify-self: center;
             font-size: 1.4rem;
             font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        & .summary-tat-heading {
+            margin-top: 3rem;
         }
 
 
-        & .summary-ticket-image {
+        & .summary-ticket-image,
+        & .summary-tat-image {
             height: 2rem;
             grid-column: 1/2;
+            justify-self: end;
         }
 
 
 
-        & .summary-ticket-label {
+        & .summary-ticket-label,
+        & .summary-tat-label {
             grid-column: 2/3;
         }
 
-        & .summary-ticket-colon {
+        & .summary-ticket-colon,
+        & .summary-tat-colon {
             grid-column: 3/4;
         }
 
-        & .summary-ticket-detail {
-            grid-column: 4/5;
-        }
-
-        /////
-        // TAT
-        /////
-        & .summary-tat-heading {
-            grid-column: 5/9;
-            grid-row: 1/2;
-
-        }
-
-        & .summary-tat-image {
-            height: 2rem;
-            grid-column: 5/6;
-
-        }
-
-        & .summary-tat-label {
-            grid-column: 6/7;
-
-        }
-
-        & .summary-tat-colon {
-            grid-column: 7/8;
-
-        }
-
+        & .summary-ticket-detail,
         & .summary-tat-detail {
-            grid-column: 8/9;
-
-
-
+            grid-column: 4/5;
+            margin-left: 5rem;
         }
+
     }
 
 

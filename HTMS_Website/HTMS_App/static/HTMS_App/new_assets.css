@@ -247,7 +247,7 @@ input[type=number] {
   margin: auto;
   margin-top: 4rem;
   width: 90%;
-  height: 80%;
+  height: 90%;
   grid-column: 1;
   padding: 3rem;
   gap: 2rem;
@@ -271,7 +271,7 @@ input[type=number] {
   color: rgba(35, 35, 46, 0.8156862745);
   font-weight: 900;
   width: 100%;
-  height: 20rem;
+  height: 100%;
   padding: 2rem;
 }
 
@@ -292,27 +292,6 @@ input[type=number] {
 /* *****************
 * Detail Card
 *******************/
-.detail-card {
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-  border-radius: 10px;
-  margin: 2rem;
-  grid-column: 2;
-  padding: 3rem;
-  display: grid;
-  grid-template-columns: 4fr 1fr 4fr;
-  grid-template-rows: inherit;
-}
-
-.detail-card-colon {
-  grid-column: 2;
-  align-items: center;
-}
-
-.detail-card-info {
-  grid-column: 3;
-  padding-left: 3rem;
-}
-
 select {
   padding: 1.3rem;
   color: rgba(35, 35, 46, 0.8156862745);
@@ -354,7 +333,7 @@ select option {
   margin: auto;
   margin-top: 4rem;
   width: 90%;
-  height: 80%;
+  height: 90%;
   border-radius: 10px;
   max-width: 34vw;
   min-width: 30vw;
@@ -369,50 +348,38 @@ select option {
 .summary-card .summary-ticket {
   list-style: none;
   display: grid;
-  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
-  grid-template-columns: 0.2fr 0.6fr 0.1fr 1fr 0.2fr 0.6fr 0.1fr 1fr;
+  grid-template-columns: 0.3fr 1.1fr 0.01fr 1.5fr;
   gap: 1rem;
-  align-content: stretch;
   align-items: center;
   justify-items: start;
-  height: 100%;
-  width: 100%;
+  margin: auto;
+  font-size: 1.4rem;
+  margin-bottom: 4rem;
 }
 .summary-card .summary-ticket .summary-tat-heading, .summary-card .summary-ticket .summary-ticket-heading {
   grid-column: 1/5;
   justify-self: center;
   font-size: 1.4rem;
   font-weight: 600;
-}
-.summary-card .summary-ticket .summary-ticket-image {
-  height: 2rem;
-  grid-column: 1/2;
-}
-.summary-card .summary-ticket .summary-ticket-label {
-  grid-column: 2/3;
-}
-.summary-card .summary-ticket .summary-ticket-colon {
-  grid-column: 3/4;
-}
-.summary-card .summary-ticket .summary-ticket-detail {
-  grid-column: 4/5;
+  margin-bottom: 1rem;
 }
 .summary-card .summary-ticket .summary-tat-heading {
-  grid-column: 5/9;
-  grid-row: 1/2;
+  margin-top: 3rem;
 }
-.summary-card .summary-ticket .summary-tat-image {
+.summary-card .summary-ticket .summary-ticket-image, .summary-card .summary-ticket .summary-tat-image {
   height: 2rem;
-  grid-column: 5/6;
+  grid-column: 1/2;
+  justify-self: end;
 }
-.summary-card .summary-ticket .summary-tat-label {
-  grid-column: 6/7;
+.summary-card .summary-ticket .summary-ticket-label, .summary-card .summary-ticket .summary-tat-label {
+  grid-column: 2/3;
 }
-.summary-card .summary-ticket .summary-tat-colon {
-  grid-column: 7/8;
+.summary-card .summary-ticket .summary-ticket-colon, .summary-card .summary-ticket .summary-tat-colon {
+  grid-column: 3/4;
 }
-.summary-card .summary-ticket .summary-tat-detail {
-  grid-column: 8/9;
+.summary-card .summary-ticket .summary-ticket-detail, .summary-card .summary-ticket .summary-tat-detail {
+  grid-column: 4/5;
+  margin-left: 5rem;
 }
 
 body {

@@ -39,7 +39,6 @@ def login_page(request):
     if request.method == "GET":
         return render(request, "HTMS_App/login_page.html", context)
     if request.method == "POST":
-
         # Login User
         user = authenticate(
             request,
@@ -98,7 +97,6 @@ def update_incident(request, pk):
         context["non_it"] = True
 
     if request.method == "GET":
-
         return render(request, "HTMS_App/new_incident.html", context)
 
     if request.method == "POST":
@@ -109,7 +107,6 @@ def update_incident(request, pk):
 @login_required(login_url="login_page")
 @allowed_users(allowed_group="Helpdesk")
 def home(request):
-
     if request.method == "GET":
         sup = Support()
         filters = {
@@ -144,9 +141,7 @@ def home(request):
 
 @login_required(login_url="login_page")
 def home_non_it(request):
-
     if request.method == "GET":
-
         sup = Support()
         filters = {
             "resolved": sup.tickets_resolved,
@@ -184,7 +179,6 @@ def home_non_it(request):
 @login_required(login_url="login_page")
 @allowed_users(allowed_group="Helpdesk")
 def inventory(request):
-
     if request.method == "GET":
         sup = Support()
         filters = {
@@ -225,7 +219,6 @@ def new_assets(request):
                 return render(request, "HTMS_App/new_assets.html", context)
 
     if request.method == "POST":
-
         sup = Support()
         submit_type = {
             "create_asset": sup.create_new_asset_type,
@@ -244,7 +237,6 @@ def update_asset(request, pk):
     sup = Support()
     context = sup.update_asset(request, pk)
     if request.method == "GET":
-
         return render(request, "HTMS_App/new_assets.html", context)
 
     if request.method == "POST":
