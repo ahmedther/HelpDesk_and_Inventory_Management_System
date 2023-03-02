@@ -5,6 +5,8 @@
 {% load static %} 
 <link rel='stylesheet' href={% static 'HTMS_App/new_assets.css' %}>
 
+
+{% if create_assest or add_quantity %}
 <form class= 'new-incident-form' method="post">
   {% csrf_token %}
 
@@ -115,6 +117,15 @@
         value="{{ asset_details_objects.date_of_purchase|date:"Y-m-d"   }}" disabled 
         {% else %}
         value="{% now "Y-m-d" %}"
+        {% endif%}
+        />
+      </li>
+
+      <li class='requester-input'>
+        <label for="expiration_date">Expiration Date</label>
+        <input type="date" id="expiration_date" name="expiration_date" 
+        {% if asset_details_objects.expiration_date %} class='disabled'
+        value="{{ asset_details_objects.expiration_date|date:"Y-m-d"   }}" disabled 
         {% endif%}
         />
       </li>
@@ -236,7 +247,7 @@
         
         <li class="requester-input">
           <label for="requester_phone_number">Phone Number</label>
-          <input type="number" name="requester_phone_number" id="requester_phone_number" placeholder="9800000000" pattern="\d{10}" 
+          <input type="text" name="requester_phone_number" id="requester_phone_number" placeholder="9800000000" pattern="\d{10}" 
           {% if asset_details_objects.asset_user.technician.mobile_number %} class='disabled'
           value="{{ asset_details_objects.asset_user.technician.mobile_number }}" readonly 
           {% endif%}
@@ -449,7 +460,7 @@
         
         <li class='requester-input'>
           <label for="request_technician">Technician</label>
-          <select {% if asset_details_objects.assign_to_ticket.request_technician %} disabled class="select disabled" {% endif %} class="select" name="request_technician" id="request_technician">
+          <select {% if asset_details_objects.assign_to_ticket.request_technician or  asset_details_objects.assign_to_ticket %} disabled class="select disabled" {% endif %} class="select" name="request_technician" id="request_technician">
             {% if asset_details_objects.assign_to_ticket.request_technician %}
             <option
             value="{{ asset_details_objects.assign_to_ticket.request_technician.id }}"  selected hidden
@@ -493,6 +504,96 @@
   {% endif %}
 
 </form>
+{%endif%}
+
+{% if bulk_add_quantity %}
+<form class ="new-incident-form" action="{% url 'new_assets' %}" method='post' enctype='multipart/form-data'>
+  {%csrf_token%}
+  <div class="new-incident-header">
+    <span for="header">
+      {% if asset_header %}
+      {{ asset_header }}
+      {%endif%}
+    </span>
+  </div>
+  
+  <input type="hidden" name="bulk_add_qty_asset" value="bulk_add_qty_asset">
+      
+  {% comment %} {{form.file}} {% endcomment %}
+  <label for="id_file" class="bulk-card">
+      <img src="{% static "HTMS_App/excel.png" %}" alt="Upload Image" class="upload-file-image-excel">
+      <div class="btn-container">
+        <img src="{% static "HTMS_App/upload.png" %}" alt="Upload Image" class="upload-file-image">
+        <header class="upload-file-header">Upload Excel</header>
+      </div>
+      {{form.file}}
+    </label>
+
+    <button type='submit' class='bulk-submit-button hidden'>
+      <span class='btn--add btn--text bulk-sbmt-btn'>Submit</span>
+    </button>
+
+    
+  </div>
+
+
+
+
+  
+
+</form>
+
+
+<script>
+
+
+  const displaySubmitBtn = function () {
+    const inputEL = document.querySelector("#id_file")
+    const submitBtn = document.querySelector(".bulk-submit-button")
+    inputEL.addEventListener("change", function (e) {
+      submitBtn.classList.remove("hidden")
+      overlayAndSpinner()
+    }
+    );
+  
+  }
+
+  const overlayAndSpinner = function () {   
+    const searchEl = document.querySelector(".bulk-sbmt-btn");
+    console.log(searchEl)
+    searchEl.addEventListener('click', function (e) {
+      const overlay = getOverlaySpinner()
+      document.body.insertBefore(overlay, document.querySelector('header'))
+      console.log(overlay)
+    })
+  
+  }
+  
+  const getOverlaySpinner = function () {
+    const overlay = document.createElement('div');
+    const spinnerHtml = '<div class="loader">Loading...</div>'
+    overlay.classList.add('overlay');
+    overlay.style.position = 'fixed';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'black';
+    overlay.style.opacity = '0.5';
+    overlay.style.zIndex = 999;
+    overlay.innerHTML += spinnerHtml
+  
+    // document.body.insertBefore(overlay);
+    return overlay
+  
+  }
+  
+  displaySubmitBtn()
+  overlayAndSpinner()
+
+</script>
+  {% endif %}
+
+
+
 {% endblock new_assets %}
 
 

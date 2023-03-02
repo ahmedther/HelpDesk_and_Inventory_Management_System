@@ -22,7 +22,7 @@ class Technician(models.Model):
         max_length=6, choices=[("Male", "Male"), ("Female", "Female")], blank=True
     )
     mobile_number = models.CharField(
-        max_length=10,
+        max_length=50,
         blank=True,
         null=True,
         db_index=True,
@@ -219,9 +219,19 @@ class AssetDetails(models.Model):
         max_length=100, null=True, db_index=True, blank=True
     )
     date_of_purchase = models.DateTimeField(
-        auto_now_add=False, db_index=True, blank=True
+        auto_now_add=False, db_index=True, blank=True, null=True
     )
     date_added = models.DateTimeField(auto_now_add=False, db_index=True, blank=True)
+    added_by = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="added_by",
+        db_index=True,
+        blank=True,
+    )
+    expiration_date = models.DateTimeField(
+        auto_now_add=False, db_index=True, blank=True, null=True
+    )
     current_status = models.CharField(
         null=False, default="In Stock", db_index=True, blank=True, max_length=50
     )
@@ -237,6 +247,7 @@ class AssetDetails(models.Model):
         related_name="facilities",
         db_index=True,
         blank=True,
+        null=True,
     )
     asset_user = models.ForeignKey(
         User,

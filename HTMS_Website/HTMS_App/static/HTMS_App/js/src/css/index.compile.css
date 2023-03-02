@@ -5,11 +5,13 @@
   --bg-primary: #23232e;
   --bg-secondary: #141418;
   --amber-primary: #ffc107;
-  --transition-time: 800ms; }
+  --transition-time: 800ms;
+}
 
 body {
   color: black;
-  background-color: white; }
+  background-color: white;
+}
 
 /* body::-webkit-scrollbar {
   width: 0.3rem;
@@ -28,7 +30,7 @@ body::-webkit-scrollbar-thumb {
   );
 } */
 /* .greyscale {
- 
+
 } */
 /* Navigation CSS starts here */
 .navbar {
@@ -37,7 +39,8 @@ body::-webkit-scrollbar-thumb {
   position: fixed;
   background-color: var(--bg-primary);
   transition: var(--transition-time);
-  z-index: 99; }
+  z-index: 99;
+}
 
 .navbar-nav {
   height: 100%;
@@ -46,13 +49,16 @@ body::-webkit-scrollbar-thumb {
   margin: 0;
   display: flex;
   flex-direction: column;
-  align-items: center; }
+  align-items: center;
+}
 
 .nav-item {
-  width: 100%; }
+  width: 100%;
+}
 
 .nav-item:last-child {
-  margin-top: auto; }
+  margin-top: auto;
+}
 
 .nav-link {
   display: flex;
@@ -67,32 +73,39 @@ body::-webkit-scrollbar-thumb {
   ); */
   color: #49d4fb;
   text-decoration: none;
-  filter: grayscale(100%) opacity(0.5); }
+  filter: grayscale(100%) opacity(0.5);
+}
 
 .nav-link:hover {
   transition: var(--transition-time) opacity(1);
   filter: grayscale(0%);
-  background: var(--bg-secondary); }
+  background: var(--bg-secondary);
+}
 
 .link-text {
-  display: none; }
+  display: none;
+}
 
 .nav-item img {
   min-width: 4rem;
   max-width: 5rem;
-  margin: 0 2rem; }
+  margin: 0 2rem;
+}
 
 .logo img {
   min-width: 4rem;
   max-width: 5rem;
-  margin: 0 2rem; }
+  margin: 0 2rem;
+}
 
 .navbar:hover {
-  width: 25.6rem; }
+  width: 25.6rem;
+}
 
 .navbar:hover .link-text {
   display: block;
-  font-size: 1.7rem; }
+  font-size: 1.7rem;
+}
 
 .logo {
   width: 100%;
@@ -103,21 +116,25 @@ body::-webkit-scrollbar-thumb {
   color: var(--text-secondary);
   background: var(--bg-secondary);
   font-size: 2.4rem;
-  letter-spacing: 0.3ch; }
+  letter-spacing: 0.5ch;
+}
 
 .logo img {
   min-width: 4rem;
   max-width: 5rem;
   transform: rotate(odeg);
-  transition: transform var(--transition-time); }
+  transition: transform var(--transition-time);
+}
 
 .navbar:hover .logo img {
-  transform: rotate(-540deg); }
+  transform: rotate(-540deg);
+}
 
 /* Navigation CSS ends here */
 /* Scroller Animation starts here */
 ::-webkit-scrollbar {
-  width: 0; }
+  width: 0;
+}
 
 .scrollPath {
   position: fixed;
@@ -125,7 +142,8 @@ body::-webkit-scrollbar-thumb {
   right: 0;
   width: 10px;
   height: 100%;
-  background: rgba(255, 255, 255, 0.05); }
+  background: rgba(255, 255, 255, 0.05);
+}
 
 .progressbar {
   position: fixed;
@@ -134,15 +152,17 @@ body::-webkit-scrollbar-thumb {
   width: 10px;
   height: 100%;
   background: linear-gradient(to top, #008aff, #00ffe7);
-  animation: animate 5s linear infinite; }
+  animation: animate 5s linear infinite;
+}
 
 @keyframes animate {
-  0%,
-  100% {
-    filter: hue-rotate(0deg); }
+  0%, 100% {
+    filter: hue-rotate(0deg);
+  }
   50% {
-    filter: hue-rotate(360deg); } }
-
+    filter: hue-rotate(360deg);
+  }
+}
 #progressbar:before {
   content: "";
   position: absolute;
@@ -151,7 +171,8 @@ body::-webkit-scrollbar-thumb {
   width: 100%;
   height: 100%;
   background: linear-gradient(to top, #008aff, #00ffe7);
-  filter: blur(10px); }
+  filter: blur(10px);
+}
 
 #progressbar:after {
   content: "";
@@ -161,15 +182,18 @@ body::-webkit-scrollbar-thumb {
   width: 100%;
   height: 100%;
   background: linear-gradient(to top, #008aff, #00ffe7);
-  filter: blur(30px); }
+  filter: blur(30px);
+}
 
 /* Scroller Animation ends here */
 main {
-  margin-left: 8rem; }
+  margin-left: 8rem;
+}
 
 /* Footer */
 footer {
   margin-top: auto;
+  margin-left: 38rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -178,6 +202,25 @@ footer {
   text-align-last: left;
   flex-direction: column;
   background: var(--pagebackground);
-  color: #7968688f; }
+  color: rgba(121, 104, 104, 0.5607843137);
+}
+footer .company {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.3rem;
+}
+footer .profile {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.2rem;
+}
+footer .profile a, footer .profile:link, footer .profile:visited {
+  text-decoration: none;
+  color: rgba(121, 104, 104, 0.5607843137);
+}
 
 /* Footer END */
+
+/*# sourceMappingURL=index.compile.css.map */

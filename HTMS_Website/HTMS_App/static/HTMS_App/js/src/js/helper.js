@@ -508,6 +508,10 @@ const submitButtonPosition = function (targetClass) {
 
 
 
+
+
+
+
 // export function paginationBtnClick() {
 //   const search_box = document.getElementById('search-box-id')
 //   const pagi_btn = document.querySelectorAll('.pagi-link')

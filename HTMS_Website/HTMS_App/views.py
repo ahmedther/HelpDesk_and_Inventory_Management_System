@@ -85,7 +85,9 @@ def new_incident(request):
         return render(request, "HTMS_App/new_incident.html", context)
 
     if request.method == "POST":
-        sup.post_to_database(request)
+        context = sup.post_to_database(request)
+        if context != None:
+            return render(request, "HTMS_App/new_incident.html", context)
         return redirect("home")
 
 
@@ -210,7 +212,7 @@ def new_assets(request):
         filters = {
             "asset_creation": sup.get_assets_creation_context,
             "quantity_addition": sup.add_quantity_to_asset,
-            # "search_user":
+            "bulk_quantity_addition": sup.bulk_add_quantity,
         }
 
         for filter_name, filter_func in filters.items():
@@ -220,6 +222,11 @@ def new_assets(request):
 
     if request.method == "POST":
         sup = Support()
+        if request.POST.get("bulk_add_qty_asset") == "bulk_add_qty_asset":
+            context = sup.post_bulk_assest_quantity_addition(request)
+            if context:
+                return render(request, "HTMS_App/new_assets.html", context)
+
         submit_type = {
             "create_asset": sup.create_new_asset_type,
             "add_qty_asset": sup.post_assest_quantity_addition,
@@ -228,7 +235,6 @@ def new_assets(request):
         for submit_name, submit_func in submit_type.items():
             if request.POST.get(submit_name):
                 submit_func(request)
-
         return redirect("inventory")
 
 

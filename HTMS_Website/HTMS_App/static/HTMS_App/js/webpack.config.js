@@ -1,7 +1,9 @@
 const path = require('path');
 
 module.exports = {
-    mode: 'development',
+    // mode: 'development',
+    mode: 'production',
+
     watch: true,
     entry: {
         controller: path.resolve(__dirname, "src/js/controller.js"),

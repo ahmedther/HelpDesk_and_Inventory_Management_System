@@ -128,7 +128,7 @@
         
         <li class="requester-input">
           <label for="requester_phone_number">Phone Number</label>
-          <input type="number" name="requester_phone_number" id="requester_phone_number" placeholder="9800000000" 
+          <input type="text" name="requester_phone_number" id="requester_phone_number" placeholder="9800000000" 
           {% if ticket_edit_objects.requester_phone_number %}
           value="{{ ticket_edit_objects.requester_phone_number }}" class="disabled" disabled 
           {% endif%}

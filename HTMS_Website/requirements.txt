@@ -3,3 +3,7 @@ django
 djangorestframework
 black
 requests
+pandas
+openpyxl
+SQLAlchemy
+cx-Oracle

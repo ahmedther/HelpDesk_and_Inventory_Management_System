@@ -1,3 +1,10 @@
+import pandas as pd
+import random
+import requests
+import itertools
+import time
+import re
+
 from HTMS_App.models import *
 from django.db.models import Q
 from django.contrib.auth.models import User, Group
@@ -6,10 +13,8 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth.hashers import make_password
 from datetime import date, timedelta
 from HTMS_App.sms_sender import SendSms
-import random
-import requests
-import itertools
-import time
+from .forms import UploadFileForm
+from .sqlalchemy_con import SqlAlchemyConnection
 
 
 class Support:
@@ -17,45 +22,46 @@ class Support:
         pass
 
     def post_to_database(self, request):
-        date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        technician, status, req_asin_time = self.get_technician_and_status(
-            request, date_now
-        )
-        search_user_selection = request.POST.get("search_user_selection", -1)
-        if int(search_user_selection) > 0:
-            req_user = Technician.objects.get(
-                user=User.objects.get(id=search_user_selection)
+        try:
+            date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            technician, status, req_asin_time = self.get_technician_and_status(
+                request, date_now
             )
-        else:
-            self.create_new_user(request)
-            req_user = Technician.objects.get(
-                pr_number=request.POST["requester_pr_number"]
-            )
+            search_user_selection = request.POST.get("search_user_selection", -1)
+            if int(search_user_selection) > 0:
+                req_user = Technician.objects.get(
+                    user=User.objects.get(id=search_user_selection)
+                )
+            else:
+                self.create_new_user(request)
+                req_user = Technician.objects.get(
+                    pr_number=request.POST["requester_pr_number"]
+                )
 
-        new_serv_req = Requests(
-            requester_name=req_user.user.get_full_name(),
-            requester_pr_number=req_user.pr_number,
-            requester_designation=req_user.designation,
-            requester_department=req_user.department,
-            requester_email=req_user.user.email,
-            requester_extension=req_user.extension_number,
-            requester_phone_number=req_user.mobile_number,
-            request_type=request.POST["request_type"],
-            request_status=status,
-            request_mode=request.POST["request_mode"],
-            request_priority=request.POST["request_priority"],
-            request_category=request.POST["request_category"],
-            request_technician=technician,
-            subject=request.POST["subject"],
-            description=request.POST["description"],
-            request_creation_date=date_now,
-            request_submitter=request.user,
-            last_modified_by=request.user,
-            last_modified_date=date_now,
-            request_assigned_time=req_asin_time,
-            location=request.POST["location"],
-        )
-        new_serv_req.save()
+            new_serv_req = Requests(
+                requester_name=req_user.user.get_full_name(),
+                requester_pr_number=req_user.pr_number,
+                requester_designation=req_user.designation,
+                requester_department=req_user.department,
+                requester_email=req_user.user.email,
+                requester_extension=req_user.extension_number,
+                requester_phone_number=req_user.mobile_number,
+                request_type=request.POST["request_type"],
+                request_status=status,
+                request_mode=request.POST["request_mode"],
+                request_priority=request.POST["request_priority"],
+                request_category=request.POST["request_category"],
+                request_technician=technician,
+                subject=request.POST["subject"],
+                description=request.POST["description"],
+                request_creation_date=date_now,
+                request_submitter=request.user,
+                last_modified_by=request.user,
+                last_modified_date=date_now,
+                request_assigned_time=req_asin_time,
+                location=request.POST["location"],
+            )
+            new_serv_req.save()
         # new_serv_req = Requests(
         # requester_name=request.POST["requester_name"],
         # requester_pr_number=request.POST["requester_pr_number"],
@@ -64,60 +70,87 @@ class Support:
         # requester_email=request.POST["requester_email"],
         # requester_extension=request.POST["requester_extension"],
         # requester_phone_number=request.POST["requester_phone_number"],
+        except Exception as e:
+            context = {}
+            context["error"] = [f"❌ Unsuccessful", f"Reason : {e}"]
+            return context
 
     def create_new_user(self, request):
-        name = request.POST.get("requester_name", "")
-        if not name:
-            first_name = request.POST.get("user_first_name", "")
-            last_name = request.POST.get("user_last_name", "")
-        else:
-            first_name, *rest = name.split(" ")
-            last_name = " ".join(rest)
-
-        gender = request.POST.get("user_gender", "")
-        pr_num = request.POST.get("requester_pr_number", "")
-        email = request.POST.get("requester_email", "")
-        department = request.POST.get("requester_department", "")
-        designation = request.POST.get("requester_designation", "")
-        mobile_number = request.POST.get("requester_phone_number", "")
-        extension_number = request.POST.get("requester_extension", "")
-        password = make_password(pr_num)
-
-        user, created = User.objects.get_or_create(
-            username=pr_num,
-            defaults={
-                "password": password,
-                "first_name": first_name,
-                "last_name": last_name,
-                "email": email,
-            },
-        )
-
-        if created:
-            employe_data = Technician(
-                user=User.objects.get(pk=user.id),
-                department=department,
-                designation=designation,
-                pr_number=pr_num,
-                gender=gender,
-                mobile_number=mobile_number,
-                extension_number=extension_number,
+        try:
+            name = request.POST.get("requester_name", "")
+            if not name:
+                first_name = request.POST.get("user_first_name", "")
+                last_name = request.POST.get("user_last_name", "")
+                name = first_name + " " + last_name
+            else:
+                first_name, *rest = name.split(" ")
+                last_name = " ".join(rest)
+            employee_data = self.get_employees_details_with_pr_number(
+                request.POST.get("requester_pr_number", ""), name
             )
-            employe_data.save()
+            if employee_data:
+                rows = {
+                    "department": request.POST.get("requester_department", ""),
+                    "user_designation": request.POST.get("requester_designation", ""),
+                    "user_extension": request.POST.get("requester_extension", ""),
+                }
 
-            facility_id = request.POST.get("user_facility", "")
-            if facility_id:
-                employe_data.facility.set(
-                    [FacilityDropdown.objects.get(pk=request.POST["user_facility"])]
+                self.create_or_get_user_without_request(employee_data, rows)
+            if not employee_data:
+                raise Exception("No Data was found when searched with SQLAlchemy")
+        except:
+            name = request.POST.get("requester_name", "")
+            if not name:
+                first_name = request.POST.get("user_first_name", "")
+                last_name = request.POST.get("user_last_name", "")
+            else:
+                first_name, *rest = name.split(" ")
+                last_name = " ".join(rest)
+
+            gender = request.POST.get("user_gender", "")
+            pr_num = request.POST.get("requester_pr_number", "")
+            email = request.POST.get("requester_email", "")
+            department = request.POST.get("requester_department", "")
+            designation = request.POST.get("requester_designation", "")
+            mobile_number = request.POST.get("requester_phone_number", "")
+            extension_number = request.POST.get("requester_extension", "")
+            password = make_password(pr_num)
+
+            user, created = User.objects.get_or_create(
+                username=pr_num,
+                defaults={
+                    "password": password,
+                    "first_name": first_name,
+                    "last_name": last_name,
+                    "email": email,
+                },
+            )
+
+            if created:
+                employe_data = Technician(
+                    user=User.objects.get(pk=user.id),
+                    department=department,
+                    designation=designation,
+                    pr_number=pr_num,
+                    gender=gender,
+                    mobile_number=mobile_number,
+                    extension_number=extension_number,
                 )
+                employe_data.save()
 
-            return {
-                "error": "✅ Your Account Has Been Created Successfully!!! ✅. 📢 Your Username & Password is your PR Number. 📢"
-            }
-        else:
-            return {
-                "error": f"⚠️ Your Already Have An Account !!! ⚠️. 📢 Enter Your PR Number {pr_num} as Username & Password to Login. 📢"
-            }
+                facility_id = request.POST.get("user_facility", "")
+                if facility_id:
+                    employe_data.facility.set(
+                        [FacilityDropdown.objects.get(pk=request.POST["user_facility"])]
+                    )
+
+                return {
+                    "error": "✅ Your Account Has Been Created Successfully!!! ✅. 📢 Your Username & Password is your PR Number. 📢"
+                }
+            else:
+                return {
+                    "error": f"⚠️ Your Already Have An Account !!! ⚠️. 📢 Enter Your PR Number {pr_num} as Username & Password to Login. 📢"
+                }
 
     # return technician, status, req_asin_time
 
@@ -160,7 +193,9 @@ class Support:
             try:
                 setattr(update_request_inci, field, request.POST[value])
                 if request.POST[value] != "" and field != "requester_pr_number":
-                    update_values.update({field.split("_")[-1]: request.POST[value]})
+                    update_values.update(
+                        {field.split("_")[-1].title(): request.POST[value]}
+                    )
 
             except KeyError:
                 pass
@@ -245,16 +280,20 @@ class Support:
         search_ticket = request.GET.get("search_ticket")
         context["search_ticket"] = search_ticket
         context["page_href"] = f"search_ticket={search_ticket}"
-        ticket_objects = Requests.objects.distinct().filter(
-            Q(id__icontains=search_ticket)
-            | Q(requester_name__icontains=search_ticket)
-            | Q(request_status__icontains=search_ticket)
-            | Q(request_priority__icontains=search_ticket)
-            | Q(request_category__icontains=search_ticket)
-            | Q(request_technician__username__icontains=search_ticket)
-            | Q(subject__icontains=search_ticket)
-            | Q(request_creation_date__icontains=search_ticket)
-            | Q(location=search_ticket)
+        ticket_objects = (
+            Requests.objects.distinct()
+            .filter(
+                Q(id__icontains=search_ticket)
+                | Q(requester_name__icontains=search_ticket)
+                | Q(request_status__icontains=search_ticket)
+                | Q(request_priority__icontains=search_ticket)
+                | Q(request_category__icontains=search_ticket)
+                | Q(request_technician__username__icontains=search_ticket)
+                | Q(subject__icontains=search_ticket)
+                | Q(request_creation_date__icontains=search_ticket)
+                | Q(location=search_ticket)
+            )
+            .order_by("-id")
         )
 
         if non_it:
@@ -289,8 +328,10 @@ class Support:
             ]
             return context, None
 
-        ticket_objects = Requests.objects.distinct().filter(
-            Q(request_status__icontains=tickets_to_handle)
+        ticket_objects = (
+            Requests.objects.distinct()
+            .filter(Q(request_status__icontains=tickets_to_handle))
+            .order_by("-id")
         )
 
         if not ticket_objects:
@@ -313,13 +354,22 @@ class Support:
 
         if non_it:
             technician = Technician.objects.get(user=request.user)
-            ticket_objects = Requests.objects.distinct().filter(
-                request_status__icontains=my_open_ticket,
-                requester_pr_number=technician.pr_number,
+            ticket_objects = (
+                Requests.objects.distinct()
+                .filter(
+                    request_status__icontains=my_open_ticket,
+                    requester_pr_number=technician.pr_number,
+                )
+                .order_by("-id")
             )
         else:
-            ticket_objects = Requests.objects.distinct().filter(
-                request_status__icontains=my_open_ticket, request_submitter__id=user_pk
+            ticket_objects = (
+                Requests.objects.distinct()
+                .filter(
+                    request_status__icontains=my_open_ticket,
+                    request_submitter__id=user_pk,
+                )
+                .order_by("-id")
             )
         if not ticket_objects:
             context["error"] = ["You don't have any Open Tickets."]
@@ -341,14 +391,22 @@ class Support:
         svn_day = today - timedelta(days=7)
         if non_it:
             technician = Technician.objects.get(user=request.user)
-            ticket_objects = Requests.objects.distinct().filter(
-                requester_pr_number=technician.pr_number,
-                request_creation_date__range=[svn_day, today],
+            ticket_objects = (
+                Requests.objects.distinct()
+                .filter(
+                    requester_pr_number=technician.pr_number,
+                    request_creation_date__range=[svn_day, today],
+                )
+                .order_by("-id")
             )
         else:
-            ticket_objects = Requests.objects.distinct().filter(
-                request_submitter__id=request.user.id,
-                request_creation_date__range=[svn_day, today],
+            ticket_objects = (
+                Requests.objects.distinct()
+                .filter(
+                    request_submitter__id=request.user.id,
+                    request_creation_date__range=[svn_day, today],
+                )
+                .order_by("-id")
             )
 
         if not ticket_objects:
@@ -370,8 +428,10 @@ class Support:
         }
         tickets_open = request.GET.get("open")
         context["page_href"] = f"open={tickets_open}"
-        ticket_objects = Requests.objects.distinct().filter(
-            Q(request_status__icontains="open")
+        ticket_objects = (
+            Requests.objects.distinct()
+            .filter(Q(request_status__icontains="open"))
+            .order_by("-id")
         )
 
         if not ticket_objects:
@@ -392,8 +452,10 @@ class Support:
             "page_href": f"assigned={tickets_assigned}",
         }
 
-        ticket_objects = Requests.objects.distinct().filter(
-            Q(request_status__icontains="assigned")
+        ticket_objects = (
+            Requests.objects.distinct()
+            .filter(Q(request_status__icontains="assigned"))
+            .order_by("-id")
         )
         if non_it:
             ticket_objects = self.non_it_filter(ticket_objects, request)
@@ -416,8 +478,10 @@ class Support:
             "link_active_status_closed": "link--active",
             "page_href": f"closed={tickets_closed}",
         }
-        ticket_objects = Requests.objects.distinct().filter(
-            Q(request_status__icontains="Closed")
+        ticket_objects = (
+            Requests.objects.distinct()
+            .filter(Q(request_status__icontains="Closed"))
+            .order_by("-id")
         )
         if non_it:
             ticket_objects = self.non_it_filter(ticket_objects, request)
@@ -440,7 +504,7 @@ class Support:
         }
 
         ticket_objects = Requests.objects.distinct().filter(
-            Q(request_status__icontains="On Hold")
+            Q(request_status__icontains="On Hold").order_by("-id")
         )
         if non_it:
             ticket_objects = self.non_it_filter(ticket_objects, request)
@@ -462,8 +526,10 @@ class Support:
             "page_href": f"wait_for_fback={wait_for_fback}",
         }
 
-        ticket_objects = Requests.objects.distinct().filter(
-            Q(request_status__icontains="Waiting for user feedback")
+        ticket_objects = (
+            Requests.objects.distinct()
+            .filter(Q(request_status__icontains="Waiting for user feedback"))
+            .order_by("-id")
         )
 
         if non_it:
@@ -487,8 +553,10 @@ class Support:
             "page_href": f"resolved={tick_resolved}",
         }
 
-        ticket_objects = Requests.objects.distinct().filter(
-            Q(request_status__icontains="Resolved")
+        ticket_objects = (
+            Requests.objects.distinct()
+            .filter(Q(request_status__icontains="Resolved"))
+            .order_by("-id")
         )
 
         if non_it:
@@ -672,7 +740,9 @@ class Support:
         return response.json()
 
     def get_asset_head_objects(self, context):
-        all_assets_heads = Assets.objects.all().order_by("asset_name").values()
+        all_assets_heads = (
+            Assets.objects.all().order_by("asset_name").values().order_by("asset_name")
+        )
         context["all_assets_heads"] = all_assets_heads
         return context
 
@@ -716,29 +786,47 @@ class Support:
             first_name, *rest = name.split(" ")
             last_name = " ".join(rest)
             password = make_password(pr_num)
-            user, created = User.objects.get_or_create(
-                username=pr_num,
-                defaults={
-                    "password": password,
-                    "first_name": first_name,
-                    "last_name": last_name,
-                    "email": request.POST.get("requester_email"),
-                },
-            )
 
-            if created:
-                user = User.objects.get(pk=user.id)
-                employe_data = Technician(
-                    user=user,
-                    department=request.POST.get("requester_department"),
-                    designation=request.POST.get("requester_designation"),
-                    pr_number=pr_num,
-                    mobile_number=request.POST.get("requester_phone_number")[:10],
-                    extension_number=request.POST.get("requester_extension")[:10],
+            try:
+                employee_data = self.get_employees_details_with_pr_number(pr_num, name)
+                if employee_data:
+                    rows = {
+                        "department": request.POST.get("requester_department", ""),
+                        "user_designation": request.POST.get(
+                            "requester_designation", ""
+                        ),
+                        "user_extension": request.POST.get("requester_extension", ""),
+                    }
+
+                    user = self.create_or_get_user_without_request(employee_data, rows)
+                if not employee_data:
+                    raise Exception("No Data was found when searched with SQLAlchemy")
+                else:
+                    return user
+            except:
+                user, created = User.objects.get_or_create(
+                    username=pr_num,
+                    defaults={
+                        "password": password,
+                        "first_name": first_name,
+                        "last_name": last_name,
+                        "email": request.POST.get("requester_email"),
+                    },
                 )
-                employe_data.save()
 
-            return user
+                if created:
+                    user = User.objects.get(pk=user.id)
+                    employe_data = Technician(
+                        user=user,
+                        department=request.POST.get("requester_department"),
+                        designation=request.POST.get("requester_designation"),
+                        pr_number=pr_num,
+                        mobile_number=request.POST.get("requester_phone_number")[:10],
+                        extension_number=request.POST.get("requester_extension")[:10],
+                    )
+                    employe_data.save()
+
+                return user
 
     def search_ticket_or_create(self, request, user):
         search_ticket_selection = request.POST.get("search_ticket_selection", -1)
@@ -752,7 +840,6 @@ class Support:
             technician, status, req_asin_time = self.get_technician_and_status(
                 request, date_now
             )
-
             new_serv_req = Requests(
                 requester_name=f"{user.first_name} {user.last_name}",
                 requester_pr_number=user.technician.pr_number,
@@ -768,7 +855,6 @@ class Support:
                 request_category=request.POST["request_category"],
                 request_technician=technician,
                 subject=request.POST["subject"],
-                description=request.POST["description"],
                 request_creation_date=date_now,
                 request_submitter=request.user,
                 last_modified_by=request.user,
@@ -791,11 +877,15 @@ class Support:
                 request.POST.get("date_of_purchase"), r"%Y-%m-%d"
             ),
             date_added=date_now,
+            expiration_date=request.POST.get("expiration_date")
+            if request.POST.get("expiration_date") != ""
+            else None,
             current_status=request.POST.get("asset_current_status"),
             description=request.POST.get("description"),
             facility=FacilityDropdown.objects.get(
                 pk=request.POST.get("asset_facility")
             ),
+            added_by=request.user,
         )
         user = self.user_creation_or_updation(request)
         if user:
@@ -833,6 +923,7 @@ class Support:
             "current_status": "asset_current_status",
             "facility": facility_instance,
             "description": "description",
+            "expiration_date": "expiration_date",
         }
         update_values = {}
 
@@ -841,7 +932,7 @@ class Support:
                 if field == "facility":
                     if update_asset_details.facility != value:
                         setattr(update_asset_details, field, value)
-                        update_values.update({field: value})
+                        update_values.update({field.replace("_", " ").title(): value})
 
                 if field == "description":
                     setattr(update_asset_details, field, request.POST[value])
@@ -849,13 +940,17 @@ class Support:
                 if field == "current_status":
                     if update_asset_details.current_status != request.POST[value]:
                         setattr(update_asset_details, field, request.POST[value])
-                        update_values.update({field: request.POST[value]})
+                        update_values.update(
+                            {field.replace("_", " ").title(): request.POST[value]}
+                        )
                 else:
                     if request.POST[value] == "":
                         pass
                     else:
                         setattr(update_asset_details, field, request.POST[value])
-                        update_values.update({field: request.POST[value]})
+                        update_values.update(
+                            {field.replace("_", " ").title(): request.POST[value]}
+                        )
 
             except KeyError:
                 pass
@@ -864,10 +959,11 @@ class Support:
         update_asset_details.last_modified_date = date_now
         user = self.user_creation_or_updation(request)
         if user:
-            update_asset_details.asset_user = user
-            update_values.update(
-                {"User Changed To ": f"{user.get_full_name()} ({user.username})"}
-            )
+            if update_asset_details.asset_user != user:
+                update_asset_details.asset_user = user
+                update_values.update(
+                    {"User Changed To ": f"{user.get_full_name()} ({user.username})"}
+                )
 
             ticket_req_obj = self.search_ticket_or_create(request, user)
             if ticket_req_obj:
@@ -876,17 +972,18 @@ class Support:
                 )
                 {"Ticket Assigned To ": f"{user.get_full_name()} ({user.username})"}
         update_values_in_string = ""
+
         if update_values != {}:
             for key, value in update_values.items():
                 update_values_in_string += (
                     f"\n✔️ {key.capitalize()} Changed To {value} "
                 )
-        update_asset_details.description += f"\nLast Modified By {request.user.get_full_name()} ({request.user.username}) On {date_now}. Modification: {update_values_in_string}.\n\n"
+            update_asset_details.description += f"\nLast Modified By {request.user.get_full_name()} ({request.user.username}) On {date_now}. Modification: {update_values_in_string}.\n\n"
 
         update_asset_details.save()
 
     def search_assets(self, request):
-        search_asset = ""   
+        search_asset = ""
         context = {
             "user_fullname": request.user.get_full_name(),
             "header": "Search Results",
@@ -900,21 +997,25 @@ class Support:
 
         else:
             search_with_id = 0
-        asset_objects = AssetDetails.objects.distinct().filter(
-            Q(asset_name__asset_name__icontains=search_asset)
-            | Q(brand__icontains=search_asset)
-            | Q(model_name__icontains=search_asset)
-            | Q(model_number__icontains=search_asset)
-            | Q(serial_number__icontains=search_asset)
-            | Q(date_of_purchase__icontains=search_asset)
-            | Q(date_added__icontains=search_asset)
-            | Q(current_status__icontains=search_asset)
-            | Q(facility__facility_name__icontains=search_asset)
-            | Q(asset_user__username__icontains=search_asset)
-            | Q(asset_user__first_name__icontains=search_asset)
-            | Q(asset_user__last_name__icontains=search_asset)
-            | Q(asset_user__technician__pr_number__icontains=search_asset)
-            | Q(assign_to_ticket__id=search_with_id)
+        asset_objects = (
+            AssetDetails.objects.distinct()
+            .filter(
+                Q(asset_name__asset_name__icontains=search_asset)
+                | Q(brand__icontains=search_asset)
+                | Q(model_name__icontains=search_asset)
+                | Q(model_number__icontains=search_asset)
+                | Q(serial_number__icontains=search_asset)
+                | Q(date_of_purchase__icontains=search_asset)
+                | Q(date_added__icontains=search_asset)
+                | Q(current_status__icontains=search_asset)
+                | Q(facility__facility_name__icontains=search_asset)
+                | Q(asset_user__username__icontains=search_asset)
+                | Q(asset_user__first_name__icontains=search_asset)
+                | Q(asset_user__last_name__icontains=search_asset)
+                | Q(asset_user__technician__pr_number__icontains=search_asset)
+                | Q(assign_to_ticket__id=search_with_id)
+            )
+            .order_by("-id")
         )
 
         if not asset_objects:
@@ -933,7 +1034,11 @@ class Support:
 
         asset_id = request.GET.get("asset_id")
         context["page_href"] = f"asset_id={asset_id}"
-        asset_objects = AssetDetails.objects.distinct().filter(asset_name__id=asset_id)
+        asset_objects = (
+            AssetDetails.objects.distinct()
+            .filter(asset_name__id=asset_id)
+            .order_by("-id")
+        )
         context = self.get_asset_head_objects(context)
         if not asset_objects:
             context["error"] = ["No data found!!!", "Please refine your search."]
@@ -943,3 +1048,257 @@ class Support:
             context["header"] = f"{asset_objects[0].asset_name}"
             context["active_link"] = f"{asset_objects[0].asset_name.asset_name}"
         return context, asset_objects
+
+    def bulk_add_quantity(self, request):
+        context = {
+            "asset_header": "Bulk Add Quantity",
+            "bulk_add_quantity": True,
+            "user_fullname": request.user.get_full_name(),
+            "form": UploadFileForm(),
+        }
+        return context
+
+    def post_bulk_assest_quantity_addition(self, request):
+        strt_tm = time.perf_counter()
+        df = pd.read_excel(request.FILES["file"], index_col=None)
+        for rows in df.iterrows():
+            rows = rows[1]
+            # try:
+            date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+            expiry_date = self.null_check(rows["expiration_date"], date_check=True)
+
+            date_of_purcase = self.null_check(rows["date_of_purchase"], date_check=True)
+
+            asset_name_type = Assets.objects.get(asset_name=rows["asset_name"])
+
+            try:
+                facility_object = FacilityDropdown.objects.get(
+                    Q(facility_name__icontains=rows["facility"])
+                    | Q(facility_code=rows["facility"])
+                )
+            except Exception as e:
+                context = {
+                    "error": [
+                        f"Bulk Add Asset Was Unsuccessful !!!  ❌ Reason : {e}",
+                        "Please Ensure Correct Data is Provided in the Excel File",
+                    ]
+                }
+                return context
+            assest_user_obj = None
+            current_status = self.null_check(rows["current_status"])
+            if self.null_check(rows["asset_user"]):
+                current_status = "In Use"
+                employee_data = self.get_employee_data(
+                    self.null_check(rows["asset_user"])
+                )
+                if employee_data:
+                    assest_user_obj = self.create_or_get_user_without_request(
+                        employee_data, rows
+                    )
+                    ticket_obj = self.bulk_search_ticket_or_create(
+                        rows, assest_user_obj, request
+                    )
+
+            asset_details = AssetDetails()
+            asset_details.asset_name = asset_name_type
+            asset_details.brand = self.null_check(rows["brand"])
+            asset_details.model_name = self.null_check(rows["model_name"])
+            asset_details.model_number = self.null_check(rows["model_number"])
+            asset_details.serial_number = self.null_check(rows["serial_number"])
+            asset_details.date_of_purchase = date_of_purcase
+            asset_details.date_added = date_now
+            asset_details.expiration_date = expiry_date
+            asset_details.current_status = current_status
+            asset_details.description = self.null_check(rows["description"])
+            asset_details.facility = facility_object if facility_object else None
+            asset_details.added_by = request.user
+
+            if assest_user_obj:
+                asset_details.asset_user = assest_user_obj
+                asset_details.assign_to_ticket = ticket_obj
+
+            asset_details.save()
+        # except Exception as e:
+        #     context = {
+        #         "error": [
+        #             f"Bulk Add Asset Was Unsuccessful !!!  ❌ Reason : {e}",
+        #             "Please Ensure Correct Data is Provided in the Excel File",
+        #         ]
+        #     }
+        #     return context
+        print(time.perf_counter() - strt_tm)
+
+    def null_check(self, pd_row, date_check=False, int_check=False):
+        if date_check:
+            if pd.notna(pd_row):
+                if isinstance(pd_row, datetime):
+                    return pd_row
+                else:
+                    try:
+                        return datetime.strptime(pd_row, r"%d-%m-%Y")
+                    except:
+                        return datetime.strptime(pd_row, r"%d/%m/%Y")
+            else:
+                return None
+
+        if int_check:
+            if pd.notna(pd_row):
+                return int(pd_row)
+            else:
+                return ""
+
+        if pd.notna(pd_row):
+            return pd_row
+        else:
+            return ""
+
+    def get_employee_data(self, employee_name):
+        sq = SqlAlchemyConnection()
+        search_query = employee_name.split(" ")
+        search_string = ""
+        for i in range(0, len(search_query)):
+            search_string = re.sub(r"[^a-zA-Z\s%]+", "", search_string)
+            search_string += f"%{search_query[i]}%"
+        employee_data = sq.get_employees_details_with_name(
+            search_string.replace(" ", "")
+        )
+        return employee_data
+
+    def get_employees_details_with_pr_number(self, pr_number, employee_name):
+        sq = SqlAlchemyConnection()
+        search_query = employee_name.split(" ")
+        search_string = ""
+        for i in range(0, len(search_query)):
+            search_string = re.sub(r"[^a-zA-Z\s%]+", "", search_string)
+            search_string += f"%{search_query[i]}%"
+        pr_number = re.sub(r"[^0-9]+", "", pr_number)
+        employee_data = sq.get_employees_details_with_pr_num_name(
+            pr_number, search_string
+        )
+
+        return employee_data
+
+    def check_for_NoneType(self, object, index, slice_values):
+        try:
+            num = object[index][slice_values:]
+            if num:
+                num = re.sub(r"\D", "", num)
+        except:
+            num = None
+        return num
+
+    def create_or_get_user_without_request(self, employee_data, rows):
+        num1 = self.check_for_NoneType(employee_data, 3, -10)
+        num2 = self.check_for_NoneType(employee_data, 2, -10)
+        full_name = employee_data[0].split()  # Split the string into words
+        first_name = full_name[1:2]  # Get the first two words
+        first_name = " ".join(first_name)
+        last_name = full_name[2:]  # Get the remaining words
+        last_name = " ".join(last_name)  # Join the remaining words with a space
+        password = make_password(employee_data[1])
+        email = employee_data[4].lower() if employee_data[4] != None else ""
+        user, created = User.objects.get_or_create(
+            username=employee_data[1],
+            defaults={
+                "password": password,
+                "first_name": first_name,
+                "last_name": last_name,
+                "email": email,
+            },
+        )
+
+        if created:
+            employe_data = Technician(
+                user=user,
+                department=self.null_check(rows["department"]),
+                designation=self.null_check(rows["user_designation"]),
+                pr_number=employee_data[1],
+                mobile_number=f"{num1}, {num2}",
+                extension_number=self.null_check(
+                    rows["user_extension"], int_check=True
+                ),
+            )
+            employe_data.save()
+        if user:
+            if user.first_name == None:
+                user.first_name = first_name
+            if user.last_name == None:
+                user.last_name = last_name
+            if user.email == None:
+                user.email = employee_data[4].lower()
+            user.save()
+            tech = Technician.objects.get(user=user.id)
+            if tech.department == None:
+                tech.department = self.null_check(rows["department"])
+            if tech.designation == None:
+                tech.designation = self.null_check(rows["user_designation"])
+            if tech.pr_number == None:
+                tech.pr_number = employee_data[1]
+            if tech.mobile_number == None:
+                tech.mobile_number = f"{num1},{num2}"
+            if tech.extension_number == None:
+                tech.extension_number = self.null_check(
+                    rows["user_extension"], int_check=True
+                )
+            tech.save()
+
+        return user
+
+    def bulk_search_ticket_or_create(self, row, user: User, request):
+        ticket = self.null_check(row["assign_to_ticket"])
+        if ticket:
+            search_ticket_obj = Requests.objects.get(pk=ticket)
+            return search_ticket_obj
+
+        else:
+            date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            technician, status, req_asin_time = self.bulk_get_technician_and_status(
+                date_now, row
+            )
+            new_serv_req = Requests(
+                requester_name=f"{user.first_name} {user.last_name}",
+                requester_pr_number=user.technician.pr_number,
+                requester_designation=user.technician.designation,
+                requester_department=user.technician.department,
+                requester_email=user.email,
+                requester_extension=user.technician.extension_number,
+                requester_phone_number=user.technician.mobile_number,
+                request_type="Service Request",
+                request_status=status,
+                request_mode="Bulk",
+                request_priority="Medium",
+                request_category="Hardware - Others",
+                request_technician=technician,
+                subject="✔️ Created with Bulk Asset Creation",
+                request_creation_date=date_now,
+                request_submitter=request.user,
+                last_modified_by=request.user,
+                last_modified_date=date_now,
+                request_assigned_time=req_asin_time,
+            )
+            new_serv_req.location = self.null_check(row["location"])
+            new_serv_req.save()
+            return new_serv_req
+
+    def bulk_get_technician_and_status(self, date_now, row):
+        user_techi = self.null_check(row["technician"])
+        if user_techi and user_techi.isalnum():
+            technician = User.objects.filter(
+                Q(username=user_techi)
+                | Q(first_name__icontains=user_techi)
+                | Q(last_name__icontains=user_techi)
+            ).first()
+
+            if (
+                technician is not None
+                and Group.objects.filter(user=technician, name="Technicians").exists()
+            ):
+                status = "Assigned"
+                req_asin_time = date_now
+        else:
+            technician = None
+            status = "Open"
+            req_asin_time = date_now
+
+        return technician, status, req_asin_time

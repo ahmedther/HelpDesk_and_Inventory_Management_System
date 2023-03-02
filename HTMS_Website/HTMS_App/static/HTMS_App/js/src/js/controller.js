@@ -14,6 +14,7 @@ helper.disableNonEssElements() // on Add Asset Page
 helper.searchUsersAndTickets()
 
 
+
 // helper.paginationBtnClick()
 
 // function readCookie(name) {
