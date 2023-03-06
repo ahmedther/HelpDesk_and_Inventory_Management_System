@@ -3,9 +3,9 @@ services:
     build: .
     image: htms_docker_image
     container_name: htms_docker_container
-    command: python manage.py runserver 0.0.0.0:8000
+    command: gunicorn --workers 3 --timeout 86400 --bind 0.0.0.0:8003 HTMS_Website.wsgi:application
     ports:
-      - 8000:8000
+      - 8003:8003
     volumes:
       - .:/htms_website
   #   depends_on:

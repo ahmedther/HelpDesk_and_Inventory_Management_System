@@ -1,0 +1,15 @@
+# Git
+.git
+.gitignore
+
+# Docker
+.docker
+
+# Python
+HTMS_App/__pycache__/
+HTMS_App/*/__pycache__/
+HTMS_App/*/*/__pycache__/
+HTMS_App/*/*/*/__pycache__/
+.env/
+.venv/
+venv/
