@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,9 +24,37 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-%mpjik#3zfe+0bdmb@24ej8f6w+v$)ko$!jb%smu0*%@g+n=#7"
 
 # SECURITY WARNING: don't run with debug turned on in production!
+
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# DEBUG = False
+
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "172.20.100.81",
+    "http://localhost:8001",
+    "http://172.20.100.81:8001",
+    "http://localhost:8002",
+    "http://172.20.100.81:8002",
+    "172.20.200.40",
+    "http://172.20.200.40:8001",
+    "www.kdahlinux.com:8001",
+]
+
+
+CSRF_TRUSTED_ORIGINS = [
+    "127.0.0.1",
+    "localhost",
+    "172.20.100.81",
+    "http://localhost:8001",
+    "http://172.20.100.81:8001",
+    "http://localhost:8002",
+    "http://172.20.100.81:8002",
+    "172.20.200.40",
+    "http://172.20.200.40:8001",
+    "www.kdahlinux.com:8001",
+]
 
 
 # Application definition
@@ -44,6 +73,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -57,7 +87,7 @@ ROOT_URLCONF = "HTMS_Website.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -131,7 +161,15 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = "static/"
+# STATIC_URL = "static/"
+# STATIC_ROOT = os.path.join(BASE_DIR, "static")
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'static'),
+# ]
+STATIC_URL = "/static/"
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

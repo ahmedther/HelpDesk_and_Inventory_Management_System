@@ -18,3 +18,6 @@ docker-compose up --build -d                                                    
 docker-compose down
 
 
+docker execute 
+
+docker-compose run --rm app sh -c "cd .. && ls"   # to run commands direclty on docker image 

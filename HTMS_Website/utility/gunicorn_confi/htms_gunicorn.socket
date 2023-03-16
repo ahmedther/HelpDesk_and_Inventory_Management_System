@@ -1,0 +1,15 @@
+[Unit]
+
+Description=HTMS gunicorn socket
+
+
+
+[Socket]
+
+ListenStream=/run/htms_gunicorn.sock
+
+
+
+[Install]
+
+WantedBy=sockets.target

@@ -1,28 +1,31 @@
 FROM python:3.11.2-slim
 
+ENV PYTHONUNBUFFERED 1
 
 
 WORKDIR /htms_website
 
-COPY ./requirements.txt ./
+COPY ./ ./
 
 
 
 RUN apt-get update \
-    && apt-get -y install libpq-dev gcc \
-    && pip install psycopg2 
+    && apt upgrade \
+    && apt  -  -y install libpq-dev gcc \
+    && pip install psycopg2 \
+    && pip install --no-cache-dir -r requirements.txt \
+    && pip install --upgrade pip  \
+    && chmod -R 777 *
 
 # RUN apt-get update \
 #     && apt-get install -y libpq-dev \
 #     && pip install psycopg2
 
-RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ./ ./
 
-EXPOSE 8003
+EXPOSE 8004
 
-CMD ["gunicorn", "--workers", "3", "--timeout", "86400", "--bind", "0.0.0.0:8003", "HTMS_Website.wsgi:application"]
+CMD ["gunicorn", "--workers", "3", "--timeout", "86400", "--bind", "0.0.0.0:8004", "HTMS_Website.wsgi:application"]
 # CMD ["python", "manage.py", "runserver", "0.0.0.0:8000" ]
 
 

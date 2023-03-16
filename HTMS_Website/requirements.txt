@@ -8,5 +8,6 @@ openpyxl
 SQLAlchemy
 cx-Oracle
 gunicorn
-
+uwsgi
+whitenoise
 

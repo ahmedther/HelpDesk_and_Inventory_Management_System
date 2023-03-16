@@ -1,0 +1,589 @@
+@mixin main-header {
+
+    text-align: center;
+    padding: 2rem;
+    border: solid 0.1rem #23232e6c;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #23232ed0;
+    height: 6rem;
+
+    & span {
+        font: inherit;
+        font-size: 2rem;
+        font-weight: 600;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        color: transparent;
+    }
+
+
+}
+
+@mixin submit_button_mix {
+    background: var(--primary-gradient);
+    transition: all 500ms;
+    box-shadow: 0px 0px 0.7rem 0.1rem #b1c2c3;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    cursor: pointer;
+    border-radius: 2rem;
+    width: 14rem;
+    height: 3.5rem;
+    justify-content: space-evenly;
+    text-decoration: none;
+    align-items: center;
+    animation: 500ms ease-in moveUpFromBottom;
+
+    &:hover {
+        transform: translateY(-.5rem);
+        background: var(--primary-gradient-reverse);
+        box-shadow: 0px 0px 0.7rem 0.1rem #f969c1;
+    }
+
+    &:active {
+        transform: translateY(.1rem);
+        box-shadow: 0px 0px 0.5rem 0.1rem #f969c286;
+    }
+
+    &::after {
+        content: "";
+        display: inline-block;
+        height: 100%;
+        width: 100%;
+        background: var(--primary-gradient);
+        border-radius: 2rem;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        transition: all 500ms;
+    }
+
+    &:hover::after {
+        transform: scaleX(1.5) scaleY(1.6);
+        opacity: 0;
+    }
+
+    & span {
+        padding: 0;
+    }
+
+}
+
+.ticket-main-header,
+.ticket-display,
+.ticket-display-header,
+.ticket-link-container {
+    display: none;
+    visibility: hidden;
+    width: 0%;
+}
+
+
+.link--active {
+    filter: grayscale(100%) opacity(1);
+}
+
+
+.link--active>.ticket-links {
+    color: #5f5f5f;
+    font-weight: 400;
+    font-size: 1.6rem;
+}
+
+
+.new-incident-header {
+    @include main-header;
+    grid-column: 1/-1
+}
+
+.new-incident-form {
+    grid-area: 1;
+    width: 100%;
+}
+
+.new-incident-container {
+    grid-column: 1/-1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 4rem .5rem;
+}
+
+/********************************
+/* Requester Details FOrm */
+/********************************/
+
+
+.requester-form {
+    grid-column: 1/2;
+    list-style: none;
+    padding: 5rem;
+    margin: auto;
+    width: 90%;
+    height: 100%;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    max-width: 34vw;
+    min-width: 30vw;
+}
+
+
+
+.requester-form header {
+    font-size: 1.8rem;
+    color: #45f3ff;
+    text-align: center;
+    padding-bottom: 3rem;
+    font-weight: 600;
+}
+
+.requester-input {
+    padding: 1rem 0rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.requester-input label {
+    font-size: 1.6rem;
+    color: #23232ed0;
+    font-weight: 400
+}
+
+.requester-input input {
+    padding: 1.3rem;
+    color: #23232ed0;
+    font-size: 1.6rem;
+    font-weight: 600;
+    font-size: 1.6rem;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: .1rem solid var(--text-color-primary)
+}
+
+.required-field {
+    color: red;
+}
+
+.requester-input input::placeholder {
+    font-weight: 600;
+    font-size: 1.4rem;
+    opacity: .3;
+    color: #23232ed0;
+
+}
+
+.requester-input input:focus {
+    outline: none;
+    color: #23232ed0;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: .1rem solid var(--text-color-seconday)
+}
+
+.requester-input input:hover {
+    outline: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: .1rem solid var(--text-color-seconday)
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/*******************
+* Search User Search Box
+********************/
+.search-box {
+    padding: 1rem 0rem;
+
+    & .magnify-btn {
+        z-index: 2;
+        position: absolute;
+        margin-right: auto
+    }
+
+    & .enter-btn {
+        z-index: 2;
+        position: absolute;
+        display: flex;
+        justify-self: end
+    }
+}
+
+/*******************
+* Incident FOrm
+********************/
+.incident-form {
+    grid-column: 2/3;
+    list-style: none;
+    padding: 5rem;
+    margin: auto;
+    width: 90%;
+    height: 100%;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    max-width: 34vw;
+    min-width: 30vw;
+}
+
+.incident-form li .incident-header {
+    font-size: 1.8rem;
+    text-align: center;
+    padding-bottom: 3rem;
+    font-weight: 600;
+    color: var(--text-color-seconday);
+}
+
+
+.incident-form .incident-input {
+    border-bottom: .1rem solid var(--text-color-seconday)
+}
+
+.incident-form .incident-input:focus,
+.incident-form .incident-input:hover {
+    border-bottom: .1rem solid var(--text-color-primary)
+}
+
+.submit-button {
+    @include submit_button_mix()
+}
+
+/*******************
+* Description text Box. Textarea attributes are in home.scss
+********************/
+.incident-description {
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    margin-top: 4rem;
+    width: 90%;
+    height: 90%;
+    grid-column: 1;
+    padding: 3rem;
+    gap: 2rem;
+    max-width: 34vw;
+    min-width: 30vw;
+
+}
+
+.incident-description-header {
+
+    font-size: 1.8rem;
+    color: #45f3ff;
+    text-align: center;
+    font-weight: 600;
+
+}
+
+.incident-description-textarea {
+    border-top: .1rem solid var(--text-color-primary);
+    border-left: .1rem solid var(--text-color-primary);
+    border-right: .1rem solid var(--text-color-seconday);
+    border-bottom: .1rem solid var(--text-color-seconday);
+    font-size: 1.8rem;
+    color: #23232ed0;
+    font-weight: 900;
+    width: 100%;
+    height: 100%;
+    padding: 2rem;
+
+}
+
+.incident-description-textarea:hover,
+.incident-description-textarea:active,
+.incident-description-textarea:focus {
+    outline: none;
+    border-top: .1rem solid var(--text-color-primary);
+    border-left: .1rem solid var(--text-color-primary);
+    border-right: .1rem solid var(--text-color-seconday);
+    border-bottom: .1rem solid var(--text-color-seconday);
+
+}
+
+.incident-description-textarea::selection {
+    background: var(--text-color-seconday);
+}
+
+/* *****************
+* Detail Card
+*******************/
+
+// ////////////////////
+// // Drop Effect
+// ///////////////////
+// .drop-body {
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     background: #fbfbfd;
+//     grid-column: 2;
+//     user-select: none;
+// }
+
+// .drop-contrainer {
+//     position: relative;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+
+//     & .drop-effect {
+//         position: relative;
+//         padding-top: 4rem;
+//         width: 55rem;
+//         height: 30rem;
+//         box-shadow: inset 2rem 2rem 2rem rgba(0, 0, 0, 0.05),
+//             2.5rem 3.5rem 2rem rgba(0, 0, 0, 0.05),
+//             2.5rem 3rem 3rem rgba(0, 0, 0, 0.05),
+//             inset -2rem -2rem 2.5rem rgba(255, 255, 255, 0.9);
+//         transition: 0.5s;
+//         display: flex;
+//         flex-direction: column;
+//         gap: 2rem;
+//         align-items: center;
+//         border-radius: 52% 48% 33% 67% / 38% 45% 55% 62%;
+//         transition: all 400ms;
+
+//         &:hover {
+//             border-radius: 50%;
+//         }
+
+//         &::before {
+//             content: "";
+//             position: absolute;
+//             top: 5rem;
+//             left: 7.5rem;
+//             width: 3.5rem;
+//             height: 3.5rem;
+//             border-radius: 50%;
+//             background: #fff;
+//             opacity: 0.9;
+//         }
+
+//         &::after {
+//             content: "";
+//             position: absolute;
+//             top: 9.5rem;
+//             left: 11rem;
+//             width: 1.5rem;
+//             height: 1.5rem;
+//             border-radius: 50%;
+//             background: #fff;
+//             opacity: 0.9;
+//         }
+
+//     }
+
+// }
+
+// .detail-card-header {
+//     grid-column: 1/-1;
+//     font-size: 1.8rem;
+//     color: var(--text-color-seconday);
+//     text-align: center;
+//     font-weight: 600;
+
+// }
+
+// .detail-card-format {
+//     display: flex;
+//     flex-direction: column;
+//     list-style: none;
+//     font-size: 1.6rem;
+//     color: #23232ed0;
+//     font-weight: 600;
+//     gap: 2rem;
+
+
+// }
+
+// @mixin textBackgroundGradient {
+//     background: linear-gradient(138deg, #00000069 0%, #00000086 100%);
+//     color: transparent;
+//     -webkit-background-clip: text;
+// }
+
+
+// .detail-card-head {
+//     grid-column: 1;
+//     padding-left: 7rem;
+
+// }
+
+// .detail-card---listing {
+//     display: flex;
+//     gap: 1rem;
+//     list-style: none;
+//     color: #DFE0DF;
+
+//     & .detail-card--label {
+//         width: 14rem;
+
+//     }
+
+//     & .detail-card--colon {
+//         padding-left: 3rem;
+//         width: .5rem;
+
+//     }
+
+//     & .detail-card--info {
+//         padding-left: 3rem;
+
+//     }
+// }
+
+// .pad-lef-0rem {
+//     padding-left: 0rem;
+// }
+
+////////////////////////////////////////////////////////////////
+/// Select 
+/// //////////////////////////////////////////////////////////////////
+
+
+select {
+    padding: 1.3rem;
+    color: #23232ed0;
+    font-size: 1.6rem;
+    font-weight: 600;
+    font-size: 1.6rem;
+    border-radius: 1rem;
+    border: .1rem solid var(--text-color-seconday);
+    background: transparent;
+
+
+
+    &:hover,
+    &:focus,
+    &::selection {
+        background: #0000ff10;
+        outline: none;
+        border: .1rem solid var(--text-color-primary);
+        color: #23232ed0;
+
+    }
+
+    & option {
+        background: #45f3ff;
+        color: #f969c1;
+        font-size: 1.6rem;
+        font-weight: 600;
+        border: none;
+        color: #535368;
+        text-decoration-color: #00ff4c;
+
+
+    }
+
+}
+
+
+////////////////////////////////////////////////////////////////
+/// Disabled 
+/// //////////////////////////////////////////////////////////////////
+
+.disabled,
+.disabled:hover {
+    cursor: not-allowed;
+    color: #0000005b !important;
+    background: #00000010 !important;
+    border-color: #00000038 !important;
+}
+
+
+//////////////////////////
+/// /// Summary Card
+/// //////////////////////
+.summary-card {
+    grid-column: 2/3;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    padding: 3rem 2rem;
+    margin: auto;
+    margin-top: 4rem;
+    width: 90%;
+    height: 90%;
+    border-radius: 10px;
+    max-width: 34vw;
+    min-width: 30vw;
+
+    & .summary-heading {
+        font-size: 1.8rem;
+        color: #f969c1;
+        font-weight: 600;
+        padding-bottom: 3rem;
+        text-align: center;
+    }
+
+    & .summary-ticket {
+        list-style: none;
+        display: grid;
+        grid-template-columns: .3fr 1.1fr .01fr 1.5fr;
+        gap: 1rem;
+        align-items: center;
+        justify-items: start;
+        margin: auto;
+        font-size: 1.4rem;
+        margin-bottom: 4rem;
+
+        & .summary-tat-heading,
+        & .summary-ticket-heading {
+            grid-column: 1/5;
+            justify-self: center;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        & .summary-tat-heading {
+            margin-top: 3rem;
+        }
+
+
+        & .summary-ticket-image,
+        & .summary-tat-image {
+            height: 2rem;
+            grid-column: 1/2;
+            justify-self: end;
+        }
+
+
+
+        & .summary-ticket-label,
+        & .summary-tat-label {
+            grid-column: 2/3;
+        }
+
+        & .summary-ticket-colon,
+        & .summary-tat-colon {
+            grid-column: 3/4;
+        }
+
+        & .summary-ticket-detail,
+        & .summary-tat-detail {
+            grid-column: 4/5;
+            margin-left: 5rem;
+        }
+
+    }
+
+
+
+}

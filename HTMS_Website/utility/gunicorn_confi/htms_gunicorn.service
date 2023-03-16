@@ -1,0 +1,22 @@
+[Unit]
+
+Description=HTMS gunicorn daemon
+
+Requires=htms_gunicorn.socket
+
+After=network.target
+
+[Service]
+
+User=ahmed
+
+Group=www-data
+
+WorkingDirectory=/home/ahmed/Desktop/AHMED/Django_Websites/HTMS_Website
+
+ExecStart=/usr/local/bin/docker-compose -f /home/ahmed/Desktop/AHMED/Django_Websites/HTMS_Website/docker-compose.yml up --force-recreate --remove-orphans app
+
+
+[Install]
+
+WantedBy=multi-user.target
