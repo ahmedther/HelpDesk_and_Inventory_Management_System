@@ -1,13 +1,27 @@
+
 services:
   app:
     build: .
+    restart: always
     image: htms_docker_image
     container_name: htms_docker_container
-    command: gunicorn --workers 3 --timeout 86400 --bind 0.0.0.0:8004 HTMS_Website.wsgi:application
+    # command: gunicorn --workers 3 --timeout 86400 --bind 0.0.0.0:8004 HTMS_Website.wsgi:application
+    volumes:
+      - .:/htms_website
+    depends_on:
+      - nginx
+
+  nginx:
+    build: 
+      context: ./nginx
+    restart: always
     ports:
       - 8004:8004
     volumes:
       - .:/htms_website
+
+
+
   #   depends_on:
   #     - node
 
@@ -18,7 +32,7 @@ services:
 
   #   volumes:
   #     - .:/htms_website
-
+ 
   #   working_dir: /htms_website/HTMS_App/static/HTMS_App/js
 
   #   command: sh -c "npm install && npm run start"

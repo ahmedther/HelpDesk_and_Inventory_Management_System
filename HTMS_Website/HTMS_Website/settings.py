@@ -25,21 +25,21 @@ SECRET_KEY = "django-insecure-%mpjik#3zfe+0bdmb@24ej8f6w+v$)ko$!jb%smu0*%@g+n=#7
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = True
+# DEBUG = True
 
-# DEBUG = False
+DEBUG = False
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
     "172.20.100.81",
-    "http://localhost:8001",
-    "http://172.20.100.81:8001",
-    "http://localhost:8002",
-    "http://172.20.100.81:8002",
+    "http://localhost:8004",
+    "http://172.20.100.81:8004",
+    "http://localhost:9004",
+    "http://172.20.100.81:9004",
     "172.20.200.40",
-    "http://172.20.200.40:8001",
-    "www.kdahlinux.com:8001",
+    "http://172.20.200.40:8004",
+    "www.kdahlinux.com:8004",
 ]
 
 
@@ -47,13 +47,13 @@ CSRF_TRUSTED_ORIGINS = [
     "127.0.0.1",
     "localhost",
     "172.20.100.81",
-    "http://localhost:8001",
-    "http://172.20.100.81:8001",
-    "http://localhost:8002",
-    "http://172.20.100.81:8002",
+    "http://localhost:8004",
+    "http://172.20.100.81:8004",
+    "http://localhost:9004",
+    "http://172.20.100.81:9004",
     "172.20.200.40",
-    "http://172.20.200.40:8001",
-    "www.kdahlinux.com:8001",
+    "http://172.20.200.40:8004",
+    "www.kdahlinux.com:8004",
 ]
 
 
@@ -157,6 +157,12 @@ USE_L10N = True
 
 USE_TZ = False
 
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -167,11 +173,7 @@ USE_TZ = False
 # STATICFILES_DIRS = [
 #     os.path.join(BASE_DIR, 'static'),
 # ]
-STATIC_URL = "/static/"
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
