@@ -37,7 +37,7 @@
     "compress7:css": "sass ./src/css/sign_up.prefix.css ../sign_up.css --style compressed",
     "compress:css": "npm-run-all --parallel compress1:css compress2:css compress3:css compress4:css compress5:css compress6:css compress7:css",
     "build:css": "npm-run-all compile:sass prefix:css compress:css",
-    "start": "npm-run-all --parallel start:js start:sass"
+    "start": "npm-run-all --parallel build:js build:css"
   },
   "author": "Ahmed Qureshi",
   "license": "ISC",

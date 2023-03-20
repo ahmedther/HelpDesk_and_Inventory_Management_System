@@ -2,18 +2,46 @@ const path = require('path');
 
 module.exports = {
     // mode: 'development',
-    mode: 'production',
 
-    watch: true,
+    // watch: true,
+    // entry: {
+    //     controller: path.resolve(__dirname, "src/js/controller.js"),
+    // },
+    // output: {
+    //     path: path.resolve(__dirname, "../"),
+    //     filename: "index.js",
+    //     clean: true,
+    // },
+    // devtool: 'source-map',
+    // module: {
+    //     rules: [
+    //         {
+    //             test: /\.js$/,
+    //             exclude: /node_modules/,
+    //             use: {
+    //                 loader: 'babel-loader',
+    //                 options: {
+    //                     presets: ['@babel/preset-env'],
+    //                 },
+    //             }
+    //         }]
+    // },
+
+
+
+    mode: 'production',
     entry: {
         controller: path.resolve(__dirname, "src/js/controller.js"),
+        login: path.resolve(__dirname, "src/js/login_page.js"),
     },
     output: {
         path: path.resolve(__dirname, "../"),
-        filename: "index.js",
-        // clean: true,
+        filename: "[name].js",
+        chunkFilename: "[id].[name].js",
+        publicPath: "/",
     },
-    devtool: 'source-map',
+
+    devtool: false,
     module: {
         rules: [
             {
@@ -25,13 +53,17 @@ module.exports = {
                         presets: ['@babel/preset-env'],
                     },
                 }
-            }]
+            }
+        ]
     },
+    optimization: {
+        minimize: true,
+    }
 
 
     ///////////////////////////////////
     // add assets
-    //////////////////////////////  
+    //////////////////////////////
 
     // module.exports = {
     //     mode: 'development',

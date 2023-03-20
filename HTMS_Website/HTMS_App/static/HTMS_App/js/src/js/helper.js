@@ -85,7 +85,7 @@ function readCookie(name) {
 
 
 export const status_update = async function () {
-  await fetch('http://127.0.0.1:8000/api/get_status/?format=json').then(function (response) {
+  await fetch('http://172.20.100.81:8004/api/get_status/?format=json').then(function (response) {
     return response.json()
   }).then((data) => status_working(data))
 
@@ -161,7 +161,7 @@ const post_format = async function (e, el, status_element, csrftoken, slugify) {
 
 async function post_to_databae(el_id, el, status_element, csrftoken, slugify) {
 
-  await fetch("http://127.0.0.1:8000/api/post_status/", {
+  await fetch("http://172.20.100.81:8004/api/post_status/", {
 
     // Adding method type
     method: "POST",
@@ -241,7 +241,7 @@ const onHoldReason = function (el_id, el, status_element, csrftoken, slugify) {
 const postReasonToDb = function (e, textvalueEl, holdCont, el_id, el, status_element, csrftoken, slugify) {
   e.preventDefault()
   if (textvalueEl.value)
-    fetch("http://127.0.0.1:8000/api/post_reason_on_hold/", {
+    fetch("http://172.20.100.81:8004/api/post_reason_on_hold/", {
 
       // Adding method type
       method: "POST",
@@ -285,14 +285,14 @@ export const searchUsersAndTickets = function () {
       'name': 'user',
       'search_box': '.user-search-box',
       'search_btn': 'user-search--btn',
-      'url': 'http://127.0.0.1:8000/api/get_users/?search_value=',
+      'url': 'http://172.20.100.81:8004/api/get_users/?search_value=',
       'selectHtmlTagID': '#search_user_selection',
     },
     {
       'name': 'ticket',
       'search_box': '.ticket-search-box',
       'search_btn': 'ticket-search--btn',
-      'url': 'http://127.0.0.1:8000/api/get_tickets/?search_value=',
+      'url': 'http://172.20.100.81:8004/api/get_tickets/?search_value=',
       'selectHtmlTagID': '#search_ticket_selection',
     },
   ]
@@ -554,7 +554,7 @@ const submitButtonPosition = function (targetClass) {
 // })
 // let test
 // const status_update = async function () {
-//   await fetch('http://127.0.0.1:8000/api/get_status/?format=json').then(function (response) {
+//   await fetch('http://172.20.100.81:8004/api/get_status/?format=json').then(function (response) {
 //     return response.json()
 //   }).then(function (data) {
 
