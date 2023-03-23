@@ -7,19 +7,21 @@ services:
     container_name: htms_docker_container
     # command: gunicorn --workers 3 --timeout 86400 --bind 0.0.0.0:8004 HTMS_Website.wsgi:application
     volumes:
-      - .:/htms_website
+      - .:/htms_website/
+      - ./static:/htms_website/static
     depends_on:
       - nginx
 
   nginx:
     build: 
       context: ./nginx
+    image: htms_nginx_image
+    container_name: htms_nginx_container
     restart: always
     ports:
       - 8004:8004
     volumes:
-      - .:/htms_website
-
+      - ./static:/htms_website/static
 
 
   #   depends_on:

@@ -38,7 +38,6 @@ ALLOWED_HOSTS = [
     "http://localhost:9004",
     "http://172.20.100.81:9004",
     "172.20.200.40",
-    "http://172.20.200.40:8004",
     "www.kdahlinux.com:8004",
 ]
 
@@ -52,7 +51,6 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:9004",
     "http://172.20.100.81:9004",
     "172.20.200.40",
-    "http://172.20.200.40:8004",
     "www.kdahlinux.com:8004",
 ]
 
