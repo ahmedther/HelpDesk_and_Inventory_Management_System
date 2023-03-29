@@ -6,9 +6,9 @@ class SqlAlchemyConnection:
     def __init__(self):
         username = "ibaehis"
         password = "ib123"
-        host = "khdb-scan"
+        host = "172.20.200.11"
         port = "1521"
-        sid = "newdb1"
+        sid = "NEWDB1"
 
         # Construct the database URL
         url = f"oracle://{username}:{password}@{host}:{port}/{sid}"

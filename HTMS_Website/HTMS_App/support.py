@@ -22,46 +22,46 @@ class Support:
         pass
 
     def post_to_database(self, request):
-        try:
-            date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            technician, status, req_asin_time = self.get_technician_and_status(
-                request, date_now
+        # try:
+        date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        technician, status, req_asin_time = self.get_technician_and_status(
+            request, date_now
+        )
+        search_user_selection = request.POST.get("search_user_selection", -1)
+        if int(search_user_selection) > 0:
+            req_user = Technician.objects.get(
+                user=User.objects.get(id=search_user_selection)
             )
-            search_user_selection = request.POST.get("search_user_selection", -1)
-            if int(search_user_selection) > 0:
-                req_user = Technician.objects.get(
-                    user=User.objects.get(id=search_user_selection)
-                )
-            else:
-                self.create_new_user(request)
-                req_user = Technician.objects.get(
-                    pr_number=request.POST["requester_pr_number"]
-                )
+        else:
+            self.create_new_user(request)
+            req_user = Technician.objects.get(
+                pr_number=request.POST["requester_pr_number"]
+            )
 
-            new_serv_req = Requests(
-                requester_name=req_user.user.get_full_name(),
-                requester_pr_number=req_user.pr_number,
-                requester_designation=req_user.designation,
-                requester_department=req_user.department,
-                requester_email=req_user.user.email,
-                requester_extension=req_user.extension_number,
-                requester_phone_number=req_user.mobile_number,
-                request_type=request.POST["request_type"],
-                request_status=status,
-                request_mode=request.POST["request_mode"],
-                request_priority=request.POST["request_priority"],
-                request_category=request.POST["request_category"],
-                request_technician=technician,
-                subject=request.POST["subject"],
-                description=request.POST["description"],
-                request_creation_date=date_now,
-                request_submitter=request.user,
-                last_modified_by=request.user,
-                last_modified_date=date_now,
-                request_assigned_time=req_asin_time,
-                location=request.POST["location"],
-            )
-            new_serv_req.save()
+        new_serv_req = Requests(
+            requester_name=req_user.user.get_full_name(),
+            requester_pr_number=req_user.pr_number,
+            requester_designation=req_user.designation,
+            requester_department=req_user.department,
+            requester_email=req_user.user.email,
+            requester_extension=req_user.extension_number,
+            requester_phone_number=req_user.mobile_number,
+            request_type=request.POST["request_type"],
+            request_status=status,
+            request_mode=request.POST["request_mode"],
+            request_priority=request.POST["request_priority"],
+            request_category=request.POST["request_category"],
+            request_technician=technician,
+            subject=request.POST["subject"],
+            description=request.POST["description"],
+            request_creation_date=date_now,
+            request_submitter=request.user,
+            last_modified_by=request.user,
+            last_modified_date=date_now,
+            request_assigned_time=req_asin_time,
+            location=request.POST["location"],
+        )
+        new_serv_req.save()
         # new_serv_req = Requests(
         # requester_name=request.POST["requester_name"],
         # requester_pr_number=request.POST["requester_pr_number"],
@@ -70,10 +70,10 @@ class Support:
         # requester_email=request.POST["requester_email"],
         # requester_extension=request.POST["requester_extension"],
         # requester_phone_number=request.POST["requester_phone_number"],
-        except Exception as e:
-            context = {}
-            context["error"] = [f"❌ Unsuccessful", f"Reason : {e}"]
-            return context
+        # except Exception as e:
+        #     context = {}
+        #     context["error"] = [f"❌ Unsuccessful", f"Reason : {e}"]
+        #     return context
 
     def create_new_user(self, request):
         try:
@@ -675,14 +675,15 @@ class Support:
             req_asin_time = None
             status = "Open"
         if technician != None:
-            if not ticket_edit_objects:
+            if ticket_edit_objects:
+                status = ticket_edit_objects.request_status
+            if ticket_edit_objects !=None and ticket_edit_objects.request_technician:
                 status = "Assigned"
             else:
-                status = ticket_edit_objects.request_status
+                status = "Assigned"
             get_num = Technician.objects.get(user_id=technician.id)
             req_asin_time = date_now
             SendSms(number=get_num.mobile_number)
-
         return technician, status, req_asin_time
 
     def non_it_filter(self, ticket_objects, request):
