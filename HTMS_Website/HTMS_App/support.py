@@ -12,7 +12,7 @@ from datetime import datetime
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth.hashers import make_password
 from datetime import date, timedelta
-from HTMS_App.sms_sender import SendSms
+from HTMS_App.sms_sender import SendSms, default_message
 from .forms import UploadFileForm
 from .sqlalchemy_con import SqlAlchemyConnection
 
@@ -62,6 +62,9 @@ class Support:
             location=request.POST["location"],
         )
         new_serv_req.save()
+        if new_serv_req.request_status != "Open":
+            self.send_sms_to_technician(technician, new_serv_req)
+
         # new_serv_req = Requests(
         # requester_name=request.POST["requester_name"],
         # requester_pr_number=request.POST["requester_pr_number"],
@@ -228,6 +231,8 @@ class Support:
             update_request_inci.description += f"\nLast Modified By {request.user.get_full_name()} ({request.user.username}) On {date_now}. Modification: {update_values_in_string}.\n\n"
 
         update_request_inci.save()
+        if update_request_inci.request_status != "Open":
+            self.send_sms_to_technician(technician, update_request_inci)
         self.user_update(request)
 
     def incident_context(self, user_full_name, context):
@@ -677,13 +682,12 @@ class Support:
         if technician != None:
             if ticket_edit_objects:
                 status = ticket_edit_objects.request_status
-            if ticket_edit_objects !=None and ticket_edit_objects.request_technician:
+            if ticket_edit_objects != None and ticket_edit_objects.request_technician:
                 status = "Assigned"
             else:
                 status = "Assigned"
-            get_num = Technician.objects.get(user_id=technician.id)
             req_asin_time = date_now
-            SendSms(number=get_num.mobile_number)
+
         return technician, status, req_asin_time
 
     def non_it_filter(self, ticket_objects, request):
@@ -1009,6 +1013,7 @@ class Support:
                 | Q(date_of_purchase__icontains=search_asset)
                 | Q(date_added__icontains=search_asset)
                 | Q(current_status__icontains=search_asset)
+                | Q(description__icontains=search_asset)
                 | Q(facility__facility_name__icontains=search_asset)
                 | Q(asset_user__username__icontains=search_asset)
                 | Q(asset_user__first_name__icontains=search_asset)
@@ -1303,3 +1308,26 @@ class Support:
             req_asin_time = date_now
 
         return technician, status, req_asin_time
+
+    def send_sms_to_technician(self, technician, requester):
+        problem = requester.request_category + " . " + requester.subject
+        name = (
+            technician.first_name
+            + " "
+            + technician.last_name
+            + " ( "
+            + technician.username
+            + " )"
+        )
+        message = default_message.format(
+            technician_name=name,
+            department=requester.requester_department,
+            floor=requester.location,
+            requester_name=requester.requester_name,
+            phone_number=requester.requester_phone_number,
+            extension=requester.requester_extension,
+            ticket_id=requester.id,
+            problem=problem,
+        )
+        print(message)
+        SendSms(message=message, number=technician.technician.mobile_number)

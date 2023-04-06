@@ -4,7 +4,16 @@ import urllib, urllib.request, urllib.parse
 class SendSms:
     def __init__(
         self,
-        message="Total Bill amount of f as on date 10-Jan-2022 is Rs 100 balance deposit is Rs 0 Kokilaben Dhirubhai Ambani Hospital KINDLY SUBMIT THE PAN CARD NUMBER OF THE PATIENT BEFORE DISCHARGE,IN THE ABSENCE OF THE PAN CARD NUMBER FORM 60 TO BE FILLED MANDATORY.",
+        message="""
+        Hi Ikram,
+
+        A new service request has been assigned to you for the I.T department located on Mezzanine Floor. The requester's name is Aasif, phone number  9975163969, extension 33033. The ticket number for this request is 1.
+
+        The reported problem is: Dick is not working
+
+        Kokilaben Hospital.
+
+        """,
         number="8767861216,9004579961,8080513540",
     ):
         url = "http://www.smscountry.com/smscwebservice_bulk.aspx"
@@ -25,11 +34,20 @@ class SendSms:
         # print (response.read().decode('utf-8'))
 
 
-message = "Total Bill amount of f as on date 10-Jan-2022 is Rs 100 balance deposit is Rs 0 Kokilaben Dhirubhai Ambani Hospital KINDLY SUBMIT THE PAN CARD NUMBER OF THE PATIENT BEFORE DISCHARGE,IN THE ABSENCE OF THE PAN CARD NUMBER FORM 60 TO BE FILLED MANDATORY."
+default_message = """
+Hi {technician_name},
 
-number = "8767861216,9004579961,8080513540"
+A new service request has been assigned to you for the {department} department located on {floor}. The requester's name is {requester_name}, phone number  {phone_number}, extension {extension}. The ticket number for this request is {ticket_id}.
+
+The reported problem is: {problem}
+
+
+Kokilaben Hospital.
+
+"""
+
+number = "8767861216"
 
 if __name__ == "__main__":
-
-    test = SendSms(message, number)
+    test = SendSms(default_message, number)
     print(test)

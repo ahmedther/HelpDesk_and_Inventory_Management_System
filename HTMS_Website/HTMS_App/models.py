@@ -12,7 +12,9 @@ class FacilityDropdown(models.Model):
 
 
 class Technician(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name="technician"
+    )
     department = models.CharField(max_length=100, blank=True, null=True, db_index=True)
     designation = models.CharField(max_length=100, blank=True, null=True, db_index=True)
     # facility = models.ForeignKey(FacilityDropdown, on_delete=models.CASCADE)

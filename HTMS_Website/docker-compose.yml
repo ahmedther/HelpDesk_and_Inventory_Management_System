@@ -9,8 +9,7 @@ services:
     volumes:
       - .:/htms_website/
       - ./static:/htms_website/static
-    depends_on:
-      - nginx
+
 
   nginx:
     build: 

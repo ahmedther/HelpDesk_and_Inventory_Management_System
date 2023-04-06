@@ -44,7 +44,7 @@ ENV PATH="/htms_website/scripts:/py/bin:$PATH"
 
 EXPOSE 8004
 
-CMD ["py_run.sh"]
+CMD ["./scripts/py_run.sh"]
 
 
 # CMD ["python", "manage.py", "runserver", "0.0.0.0:8000" ]CMD ["gunicorn", "--workers", "3", "--timeout", "86400", "--bind", "0.0.0.0:8004", "HTMS_Website.wsgi:application"]
