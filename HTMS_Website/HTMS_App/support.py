@@ -5,6 +5,8 @@ import itertools
 import time
 import re
 
+from openpyxl import Workbook
+from openpyxl.styles import Font
 from HTMS_App.models import *
 from django.db.models import Q
 from django.contrib.auth.models import User, Group
@@ -15,6 +17,9 @@ from datetime import date, timedelta
 from HTMS_App.sms_sender import SendSms, default_message
 from .forms import UploadFileForm
 from .sqlalchemy_con import SqlAlchemyConnection
+
+from django.http import HttpResponse
+from HTMS_App.models import AssetDetails
 
 
 class Support:
@@ -508,8 +513,10 @@ class Support:
             "page_href": f"on_hold={tickets_on_hold}",
         }
 
-        ticket_objects = Requests.objects.distinct().filter(
-            Q(request_status__icontains="On Hold").order_by("-id")
+        ticket_objects = (
+            Requests.objects.distinct()
+            .filter(Q(request_status__icontains="On Hold"))
+            .order_by("-id")
         )
         if non_it:
             ticket_objects = self.non_it_filter(ticket_objects, request)
@@ -1331,3 +1338,133 @@ class Support:
         )
         print(message)
         SendSms(message=message, number=technician.technician.mobile_number)
+
+    def bulk_asset_scrap(self, request):
+        context = {
+            "asset_header": "Mark Assets As Scrap In Bulk",
+            "bulk_asset_scrap": True,
+            "user_fullname": request.user.get_full_name(),
+        }
+        return context
+
+    def post_bulk_asset_scrap(self, request):
+        date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        serial_numbers = request.POST.get("bulk_text_area")
+        serial_numbers = [serial.strip() for serial in serial_numbers.split("\n")]
+        serial_numbers = [serial for serial in serial_numbers if serial]
+        status = request.POST.get("current_status_select")
+        assets = AssetDetails.objects.filter(serial_number__in=serial_numbers)
+        for asset in assets:
+            asset.current_status = status
+            asset.description += f"Last Modified By {request.user.get_full_name()} ({request.user.username}) On {date_now}. Modification: \n✔️ Changed Current Status Changed To  {status}.\n\n"
+            asset.save()
+
+    def reports_tat(request):
+        context = {
+            "user_fullname": request.user.get_full_name(),
+            "header": "TAT Reports",
+            "tat_report_page": True,
+        }
+        ticket_objects = None
+        return context, ticket_objects
+
+    def get_tat_report(request):
+        # Retrieve POST data
+        from_date = datetime.strptime(request.POST.get("from_date"), "%Y-%m-%d").date()
+        to_date = datetime.strptime(request.POST.get("to_date"), "%Y-%m-%d").date()
+        # Query AssetDetails instances with date_added between from_date and to_date
+        queryset = Requests.objects.filter(
+            request_creation_date__range=[from_date, to_date + timedelta(days=1)]
+        )
+        # Create an Excel workbook and sheet
+        wb = Workbook()
+
+        # Select the active worksheet
+        ws = wb.active
+
+        # Define column headers
+        headers = [
+            "Requester Name",
+            "PR Number",
+            "Designation",
+            "Department",
+            "Email",
+            "Extension",
+            "Phone Number",
+            "Request Type",
+            "Request Status",
+            "Request Mode",
+            "Request Priority",
+            "Request Category",
+            "Technician",
+            "Submitter",
+            "Subject",
+            "Description",
+            "Creation Date",
+            "Last Modified By",
+            "Last Modified Date",
+            "Assigned Time",
+            "Resolved Time",
+            "Closed Time",
+            "Closed User",
+            "Location",
+        ]
+
+        # Write headers to worksheet
+        for col_num, header_title in enumerate(headers, 1):
+            cell = ws.cell(row=1, column=col_num)
+            cell.value = header_title
+            cell.font = Font(bold=True)
+
+        # Write data to worksheet
+        for row_num, request in enumerate(queryset, 2):
+            row = [
+                request.requester_name,
+                request.requester_pr_number,
+                request.requester_designation,
+                request.requester_department,
+                request.requester_email,
+                request.requester_extension,
+                request.requester_phone_number,
+                request.request_type,
+                request.request_status,
+                request.request_mode,
+                request.request_priority,
+                request.request_category,
+                request.request_technician.get_full_name()
+                if request.request_technician
+                else "",
+                request.request_submitter.get_full_name()
+                if request.request_submitter
+                else "",
+                request.subject,
+                request.description,
+                request.request_creation_date,
+                request.last_modified_by.get_full_name()
+                if request.last_modified_by
+                else "",
+                request.last_modified_date,
+                request.request_assigned_time,
+                request.request_resolved_time,
+                request.request_closed_time,
+                request.request_closed_user.get_full_name()
+                if request.request_closed_user
+                else "",
+                request.location,
+            ]
+            for col_num, cell_value in enumerate(row, 1):
+                cell = ws.cell(row=row_num, column=col_num)
+                cell.value = cell_value
+
+        # Create response object with appropriate content type
+        response = HttpResponse(
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+
+        # Set content disposition header to trigger a file download
+        response["Content-Disposition"] = "attachment; filename=TAT_Report.xlsx"
+
+        # Save workbook data to response
+        wb.save(response)
+
+        return response

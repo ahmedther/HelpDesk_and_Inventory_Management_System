@@ -101,6 +101,13 @@
           </a>
         </li>
 
+        <li class='ticket-heading'><span>Reports</span></li>
+          <li class="ticket-links-listing">
+            <img src="{% static 'HTMS_App/report.png' %}" alt="Reports icon logo">
+            <a class='ticket-links' href="?reports_tat=True"
+              <span>TAT Report</span>
+            </a>
+          </li>
       
         <li class='ticket-heading'><span>STATUSES</span></li>
 
@@ -339,11 +346,37 @@
       </div>
 
       {% endif %}
+      
 
+      {% if "tat_report_page" %}
 
+        <form method='POST' action="" class='tat-report-form '>
+          {%csrf_token%}
+          <input type="hidden" name="tat_report" value="True">
+          <div class="from_date-cont">
+            <div class="from_date-cont-from">
+              <label class='background-clip' for="from_date">From Date &#x3a;</label>
+              <input class='background-clip select-date' type="date" id="from_date" name="from_date">
+            </div>
+            
+            <div class="from_date-cont-to">
+              <label class='background-clip' for="to_date">To Date &#x3a;</label>
+              <input class='background-clip' type="date" id="to_date" name="to_date">
+            </div>
+          </div>
+
+          
+          <button class="date-submit-btn" type='submit'>Submit</button>       
+
+        </form>
+        
+
+      {% endif %}
+
+    
     </div>
 
-
+    
 
   </section>
 

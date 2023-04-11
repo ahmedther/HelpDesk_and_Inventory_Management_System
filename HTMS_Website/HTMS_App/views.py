@@ -122,6 +122,7 @@ def home(request):
             "my_open_ticket": Support.my_open_ticket,
             "tickets_to_handle": Support.tickets_to_handle,
             "search_ticket": Support.search_ticket,
+            "reports_tat": Support.reports_tat,
         }
 
         for filter_name, filter_func in filters.items():
@@ -138,6 +139,10 @@ def home(request):
         return render(request, "HTMS_App/home.html", context)
 
     if request.method == "POST":
+        check_tat_report = request.POST.get("tat_report")
+        if check_tat_report:
+            response = Support.get_tat_report(request)
+            return response
         return render(request, "HTMS_App/home.html", context)
 
 
@@ -213,6 +218,7 @@ def new_assets(request):
             "asset_creation": sup.get_assets_creation_context,
             "quantity_addition": sup.add_quantity_to_asset,
             "bulk_quantity_addition": sup.bulk_add_quantity,
+            "bulk_asset_scrap": sup.bulk_asset_scrap,
         }
 
         for filter_name, filter_func in filters.items():
@@ -230,6 +236,7 @@ def new_assets(request):
         submit_type = {
             "create_asset": sup.create_new_asset_type,
             "add_qty_asset": sup.post_assest_quantity_addition,
+            "bulk_asset_scrap": sup.post_bulk_asset_scrap,
         }
 
         for submit_name, submit_func in submit_type.items():

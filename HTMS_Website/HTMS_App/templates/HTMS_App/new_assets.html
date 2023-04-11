@@ -594,6 +594,50 @@
 
 
 
+{% if bulk_asset_scrap %}
+  <form class ="new-incident-form" action="{% url 'new_assets' %}" method='post' enctype='multipart/form-data'>
+    {%csrf_token%}
+    <div class="new-incident-header">
+      <span for="header">
+        {% if asset_header %}
+        {{ asset_header }}
+        {%endif%}
+      </span>
+    </div>
+    
+    <input type="hidden" name="bulk_asset_scrap" value="bulk_asset_scrap">
+
+    <label for="id_file" class="bulk-card">
+      <label  class='bulk_text_area_label' for='bulk_text_area'>Asset Serial Numbers To Scrap</label>
+      <textarea  class='bulk_text_area' rows="5" cols="5" type="text" name="bulk_text_area" id="bulk_text_area"
+        placeholder="Please Enter the Serial Numbers of Assets" required></textarea>
+      <div class='current_status_dropdown'>
+        <label  class='current_status_label' for='current_status_select'>New Status :</label>
+        <select  name="current_status_select" class="current_status_select" id="current_status_select" required>
+          <option class="select-hidden" disabled selected hidden value=""> -- Select Current Status -- </option>
+          <option value="Returned To Vendor">Returned To Vendor</option>
+          <option value="Scrapped">Scrapped</option>
+        </select>
+      </div>
+    </label>
+
+    <button type='submit' class='bulk-submit-button'>
+      <span class='btn--add btn--text bulk-sbmt-btn'>Submit</span>
+    </button>
+
+    
+  </div>
+
+
+
+
+  
+
+</form>
+        
+{% endif %}
+
+
 {% endblock new_assets %}
 
 

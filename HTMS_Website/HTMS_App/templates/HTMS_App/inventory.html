@@ -84,8 +84,13 @@
                 <span>Add Quantity In Bulk</span>
               </a>
             </li>
-    
-           
+
+            <li class="ticket-links-listing" > 
+              <img src="{% static 'HTMS_App/scrap.png' %}" alt="Add Assest logo">
+              <a class='ticket-links' href="{% url 'new_assets' %}?arg=bulk_asset_scrap">
+                <span>Mark Assets As Scrap In Bulk</span>
+              </a>
+            </li>
     
     
             {% if all_assets_heads %}
