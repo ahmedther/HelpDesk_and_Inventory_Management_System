@@ -348,8 +348,7 @@
       {% endif %}
       
 
-      {% if "tat_report_page" %}
-
+      {% if tat_report_page %}
         <form method='POST' action="" class='tat-report-form '>
           {%csrf_token%}
           <input type="hidden" name="tat_report" value="True">

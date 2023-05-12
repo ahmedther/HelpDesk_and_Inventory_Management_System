@@ -9,4 +9,3 @@ SQLAlchemy
 cx-Oracle
 uWSGI
 whitenoise
-

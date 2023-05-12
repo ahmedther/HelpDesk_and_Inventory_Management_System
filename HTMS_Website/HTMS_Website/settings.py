@@ -25,34 +25,34 @@ SECRET_KEY = "django-insecure-%mpjik#3zfe+0bdmb@24ej8f6w+v$)ko$!jb%smu0*%@g+n=#7
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-# DEBUG = True
+DEBUG = True
 
-DEBUG = False
+# DEBUG = False
 
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-    "172.20.100.81",
-    "http://localhost:8004",
-    "http://172.20.100.81:8004",
-    "http://localhost:9004",
-    "http://172.20.100.81:9004",
-    "172.20.200.40",
-    "www.kdahlinux.com:8004",
-]
+# ALLOWED_HOSTS = [
+#     "127.0.0.1",
+#     "localhost",
+#     "172.20.100.81",
+#     "http://localhost:8004",
+#     "http://172.20.100.81:8004",
+#     "http://localhost:9004",
+#     "http://172.20.100.81:9004",
+#     "172.20.200.40",
+#     "www.kdahlinux.com:8004",
+# ]
 
 
-CSRF_TRUSTED_ORIGINS = [
-    "127.0.0.1",
-    "localhost",
-    "172.20.100.81",
-    "http://localhost:8004",
-    "http://172.20.100.81:8004",
-    "http://localhost:9004",
-    "http://172.20.100.81:9004",
-    "172.20.200.40",
-    "www.kdahlinux.com:8004",
-]
+# CSRF_TRUSTED_ORIGINS = [
+#     "127.0.0.1",
+#     "localhost",
+#     "172.20.100.81",
+#     "http://localhost:8004",
+#     "http://172.20.100.81:8004",
+#     "http://localhost:9004",
+#     "http://172.20.100.81:9004",
+#     "172.20.200.40",
+#     "www.kdahlinux.com:8004",
+# ]
 
 
 # Application definition

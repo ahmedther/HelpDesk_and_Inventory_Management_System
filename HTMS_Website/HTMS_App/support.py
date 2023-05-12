@@ -1376,6 +1376,7 @@ class Support:
         queryset = Requests.objects.filter(
             request_creation_date__range=[from_date, to_date + timedelta(days=1)]
         )
+        
         # Create an Excel workbook and sheet
         wb = Workbook()
 
@@ -1384,6 +1385,7 @@ class Support:
 
         # Define column headers
         headers = [
+            "Ticket Number",
             "Requester Name",
             "PR Number",
             "Designation",
@@ -1419,6 +1421,7 @@ class Support:
         # Write data to worksheet
         for row_num, request in enumerate(queryset, 2):
             row = [
+                request.id,
                 request.requester_name,
                 request.requester_pr_number,
                 request.requester_designation,

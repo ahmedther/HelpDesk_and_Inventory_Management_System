@@ -1,5 +1,7 @@
 *.exe
-activate
-activate.bat
-Activate.ps1
-deactivate.bat
+**/__pycache__/
+**/*.exe
+**/*.bat
+**/*.ps1
+**/*.cmd
+
