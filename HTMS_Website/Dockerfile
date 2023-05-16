@@ -11,11 +11,11 @@ COPY ./ ./
 
 RUN apt update -y --no-install-recommends \
     && apt upgrade -y --no-install-recommends \
-    && apt install libpq-dev gcc curl unzip libaio1 -y \ 
+    && apt install libpq-dev gcc curl unzip libaio1 cron -y \ 
     && python3 -m venv /py \
     && /py/bin/pip install --upgrade pip \
     && /py/bin/pip install --no-cache --no-cache-dir -r ./requirements.txt  \
-    && chmod -R 777 /htms_website/ \
+    && chmod -R 777 /htms_website \
     && mkdir /var/log/uwsgi \
     && touch /var/log/uwsgi/HTMS_Website.log  \ 
     && mkdir -p /cx_oracle \
@@ -26,8 +26,8 @@ RUN apt update -y --no-install-recommends \
     && echo /cx_oracle/instantclient_21_9 > /etc/ld.so.conf.d/oracle-instantclient.conf \
     && ldconfig \
     && apt-get purge -y \
-        curl \
-        unzip \
+    curl \
+    unzip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && apt autoremove -y  

@@ -190,6 +190,11 @@
             >
             {{ ticket_edit_objects.request_status }}
             </option>
+            {% elif techs%}
+            <option 
+            value="Assigned"  selected hidden>
+            Assigned
+            </option>
             {% else %}
             <option 
              disabled selected hidden value="">
@@ -359,12 +364,29 @@
               </option>
             </select>
           {% endif %} 
-          <select {% if ticket_edit_objects.request_technician %} disabled class="select disabled"{% endif %} 
-          {% if non_it %} disabled {% endif%} name="request_technician" class="select" id="request_technician">
+          
+          {% if techs %}
+            <select hidden name="request_technician" class="select" id="request_technician">
+              <option
+                value="{{ technician.0.id }}"  selected  >
+                {{ technician.0.first_name }} {{ technician.0.last_name }} ({{ technician.0.username }} )
+              </option>
+            </select>
+          {% endif %} 
+
+          <select 
+          {% if ticket_edit_objects.request_technician or techs %} disabled class="select disabled"{% endif %} 
+          {% if non_it %} disabled {% endif%} 
+          name="request_technician" class="select" id="request_technician">
+
             {% if ticket_edit_objects.request_technician %}
             <option
             value="{{ ticket_edit_objects.request_technician.id }}"  selected  >
             {{ ticket_edit_objects.request_technician.first_name }} {{ ticket_edit_objects.request_technician.last_name }} ({{ ticket_edit_objects.request_technician.username }} )
+            </option>
+            {% elif techs %}
+            <option value={{technician.0.id}}>
+              {{ technician.0.first_name }} {{ technician.0.last_name }} ({{ technician.0.username }})
             </option>
             {% else %}
             <option

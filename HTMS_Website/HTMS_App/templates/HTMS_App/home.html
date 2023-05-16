@@ -11,7 +11,7 @@
       <div class="tick-header">
         <h2>Tickets</h2>
         
-          <a class='new-ticket-btn' href="{% url 'new_incident'%}{% if non_it %}?non_it=True{% endif %}" >
+          <a class='new-ticket-btn' href="{% url 'new_incident'%}{% if non_it %}?non_it=True{% endif %}{% if techs %}?techs=True{% endif %}" >
               <span class='btn--add btn--text'>Add Tickets</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -32,9 +32,12 @@
         
       </div>
 
+
       <form id='search-box-id' class = 'search-box' method='get' 
       {% if non_it %}
-      action= "{% url 'home_non_it' %}"
+        action= "{% url 'home_non_it' %}"
+      {% elif techs %}
+        action="{% url 'home_techs' %}"
       {% else %}
         action= "{% url 'home' %}"
       {% endif %}
@@ -168,13 +171,13 @@
         </li>
 
         <li class="ticket-links-listing
-        {% if link_active_status_resolved %}
-        {{  link_active_status_resolved }}
+        {% if link_active_status_unresolved %}
+        {{  link_active_status_unresolved }}
         {% endif %}
         ">
-          <img src="{% static 'HTMS_App/solved_icon.png' %}" alt="Resolved Sign icon logo">
-          <a class='ticket-links' href="?resolved=true">
-            <span>Resolved</span>
+          <img src="{% static 'HTMS_App/unresolved.png' %}" alt="Unresolved Sign icon logo">
+          <a class='ticket-links' href="?unresolved=true">
+            <span>Unresolved</span>
           </a>
         </li>
 
@@ -252,7 +255,7 @@
       
       {% for tickets in ticket_objects %}
       
-      <a href="{% url 'update_incident' tickets.id %}{% if non_it %}?non_it=True{% endif %}" data-id="{{ tickets.id }}" class="ticket-main-row">
+      <a href="{% url 'update_incident' tickets.id %}{% if non_it %}?non_it=True{% endif %}{%if techs%}?techs=True{%endif%}" data-id="{{ tickets.id }}" class="ticket-main-row">
         <div class='requester-profile-container'>
           <div class="requester-profile-photo">
             <div class="requester-profile-text">

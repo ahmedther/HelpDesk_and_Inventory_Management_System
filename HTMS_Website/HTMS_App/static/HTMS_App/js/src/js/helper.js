@@ -116,6 +116,7 @@ const status_html = function (status, slugify) {
 const status_instert = function (el, html, csrftoken, slugify) {
   if (el.previousElementSibling.firstElementChild.innerHTML == 'None'
     || el.querySelector('.display-status-text').innerHTML == 'Closed'
+    || el.querySelector('.display-status-text').innerHTML == 'Unresolved'
     || el.classList.contains("non_it")) {
 
     return
@@ -129,7 +130,7 @@ function statusEvent(e, el, html, csrftoken, slugify) {
   e.preventDefault();
   deleteTextArea()
   delete_dropDown()
-  if (el.querySelector('.display-status-text').innerHTML == 'Closed') {
+  if (el.querySelector('.display-status-text').innerHTML == 'Closed' || el.querySelector('.display-status-text').innerHTML == 'Unresolved') {
     return
   }
   el.insertAdjacentHTML('beforebegin', `<div class="change-status--container">` + html.join("") + `</div>`
@@ -152,11 +153,11 @@ const status_post_request = function (el, status_element, csrftoken, slugify) {
 const post_format = async function (e, el, status_element, csrftoken, slugify) {
   e.preventDefault();
   const el_id = el.closest('.ticket-main-row')
-  if (el.dataset.statusValue == 'On Hold') {
+  if (el.dataset.statusValue == 'On Hold' || el.dataset.statusValue == 'Unresolved') {
     onHoldReason(el_id, el, status_element, csrftoken, slugify)
   }
 
-  if (el.dataset.statusValue != 'On Hold') post_to_databae(el_id, el, status_element, csrftoken, slugify)
+  if (el.dataset.statusValue != 'On Hold' && el.dataset.statusValue != 'Unresolved') post_to_databae(el_id, el, status_element, csrftoken, slugify)
 }
 
 async function post_to_databae(el_id, el, status_element, csrftoken, slugify) {
@@ -216,9 +217,9 @@ const removefunc = function (el) {
 
 const onHoldReason = function (el_id, el, status_element, csrftoken, slugify) {
   const onHoldHtml = `<div class="on-hold--post">
-  <label  class='on-hold--label' for='description'>Reason for The Hold</label>
+  <label  class='on-hold--label' for='description'>Reason for The ${el.dataset.statusValue} Status</label>
   <textarea autofocus class='on-hold--post-textarea' rows="5" cols="33" type="text" name="description" id="description"
-    placeholder="Why is this issue put on hold?"></textarea>
+    placeholder="Why is this issue put ${el.dataset.statusValue}?"></textarea>
   <button type='submit' class='on-hold--submit-button'>
       <span class='btn--add btn--text'>Submit</span>
   </button>

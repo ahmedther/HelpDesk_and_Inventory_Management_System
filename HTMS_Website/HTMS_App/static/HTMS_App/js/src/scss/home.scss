@@ -725,13 +725,13 @@ body {
     @include statusbutton()
 }
 
-.display-status-resolved {
+.display-status-unresolved {
     // background: linear-gradient(138deg, #2cb06a90 0%, #2cb06a 100%);
-    background: linear-gradient(138deg, #26a65b 0%, #26a65b 100%);
+    background: linear-gradient(138deg, #00000090 0 0%, #000000 100%);
     width: 9rem;
     height: 3rem;
-    border-radius: 100px;
-    @include statusbutton()
+    padding: 0 5rem;
+    @include statusbutton();
 }
 
 .display-status-on-hold {
@@ -766,12 +766,12 @@ body {
 
 .display-status-assigned {
     // background: #353535; 
-    background: linear-gradient(138deg, #00000090 0 0%, #000000 100%);
-    ;
+
+    background: linear-gradient(138deg, #26a65b 0%, #26a65b 100%);
     width: 9rem;
     height: 3rem;
-    @include statusbutton();
-
+    border-radius: 100px;
+    @include statusbutton()
 }
 
 .display-status-waiting-for-user-feedback {

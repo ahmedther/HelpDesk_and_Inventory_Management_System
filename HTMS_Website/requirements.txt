@@ -9,3 +9,4 @@ SQLAlchemy
 cx-Oracle
 uWSGI
 whitenoise
+xlsxwriter

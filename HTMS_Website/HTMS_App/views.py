@@ -82,6 +82,10 @@ def new_incident(request):
         if request.GET.get("non_it", False):
             context["non_it"] = True
             context["user_data"] = Technician.objects.get(user=request.user)
+        if request.GET.get("techs", False):
+            context["techs"] = True
+            context["technician"] = context["technician"].filter(id=request.user.id)
+
         return render(request, "HTMS_App/new_incident.html", context)
 
     if request.method == "POST":
@@ -102,6 +106,7 @@ def update_incident(request, pk):
         return render(request, "HTMS_App/new_incident.html", context)
 
     if request.method == "POST":
+        print(request.POST)
         sup.send_edit_request_to_db(request)
         return redirect("home")
 
@@ -112,7 +117,7 @@ def home(request):
     if request.method == "GET":
         sup = Support()
         filters = {
-            "resolved": sup.tickets_resolved,
+            "unresolved": sup.tickets_unresolved,
             "wait_for_fback": sup.wait_for_feedback,
             "on_hold": sup.tickets_on_hold,
             "closed": sup.tickets_closed,
@@ -136,6 +141,8 @@ def home(request):
         # If no filter is present in the request, display all data
         context = Support.display_all_data(request)
         context = Support.paginator(request, context)
+        # from .task import automated_techinicans_report
+        # automated_techinicans_report()
         return render(request, "HTMS_App/home.html", context)
 
     if request.method == "POST":
@@ -151,7 +158,7 @@ def home_non_it(request):
     if request.method == "GET":
         sup = Support()
         filters = {
-            "resolved": sup.tickets_resolved,
+            "unresolved": sup.tickets_unresolved,
             "wait_for_fback": sup.wait_for_feedback,
             "on_hold": sup.tickets_on_hold,
             "closed": sup.tickets_closed,
@@ -182,6 +189,42 @@ def home_non_it(request):
     elif request.method == "POST":
         return render(request, "HTMS_App/home.html")
 
+@login_required(login_url="login_page")
+@allowed_users(allowed_group="Technicians")
+def home_techs(request):
+    if request.method == "GET":
+        sup = Support()
+        filters = {
+            "unresolved": sup.tickets_unresolved,
+            "wait_for_fback": sup.wait_for_feedback,
+            "on_hold": sup.tickets_on_hold,
+            "closed": sup.tickets_closed,
+            "assigned": sup.tickets_assigned,
+            "open": Support.my_open_ticket,
+            "my_tick_svn_days": Support.my_tick_seven_days,
+            "my_open_ticket": Support.my_open_ticket,
+            "tickets_to_handle": Support.tickets_to_handle,
+            "search_ticket": Support.search_ticket,
+        }
+
+        for filter_name, filter_func in filters.items():
+            if request.GET.get(filter_name):
+                context, ticket_objects = filter_func(request, techs=True)
+                if not ticket_objects:
+                    context["home_techs"] = True
+                    return render(request, "HTMS_App/home.html", context)
+                context = Support.paginator(request, context)
+                context["home_techs"] = True
+                return render(request, "HTMS_App/home.html", context)
+
+        # If no filter is present in the request, display all data
+        context = Support.techs_home_content(request)
+        context = Support.paginator(request, context)
+        context["home_techs"] = True
+        return render(request, "HTMS_App/home.html", context)
+
+    elif request.method == "POST":
+        return render(request, "HTMS_App/home.html")
 
 @login_required(login_url="login_page")
 @allowed_users(allowed_group="Helpdesk")

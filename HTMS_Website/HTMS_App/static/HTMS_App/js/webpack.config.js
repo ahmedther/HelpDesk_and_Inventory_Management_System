@@ -1,47 +1,18 @@
 const path = require('path');
 
 module.exports = {
-    // mode: 'development',
+    mode: 'development',
 
-    // watch: true,
-    // entry: {
-    //     controller: path.resolve(__dirname, "src/js/controller.js"),
-    // },
-    // output: {
-    //     path: path.resolve(__dirname, "../"),
-    //     filename: "index.js",
-    //     clean: true,
-    // },
-    // devtool: 'source-map',
-    // module: {
-    //     rules: [
-    //         {
-    //             test: /\.js$/,
-    //             exclude: /node_modules/,
-    //             use: {
-    //                 loader: 'babel-loader',
-    //                 options: {
-    //                     presets: ['@babel/preset-env'],
-    //                 },
-    //             }
-    //         }]
-    // },
-
-
-
-    mode: 'production',
+    watch: true,
     entry: {
         controller: path.resolve(__dirname, "src/js/controller.js"),
-        login: path.resolve(__dirname, "src/js/login_page.js"),
     },
     output: {
         path: path.resolve(__dirname, "../"),
-        filename: "[name].js",
-        chunkFilename: "[id].[name].js",
-        publicPath: "/",
-    },
+        filename: "index.js",
 
-    devtool: false,
+    },
+    devtool: 'source-map',
     module: {
         rules: [
             {
@@ -53,12 +24,41 @@ module.exports = {
                         presets: ['@babel/preset-env'],
                     },
                 }
-            }
-        ]
+            }]
     },
-    optimization: {
-        minimize: true,
-    }
+
+
+
+    // mode: 'production',
+    // entry: {
+    //     controller: path.resolve(__dirname, "src/js/controller.js"),
+    //     login: path.resolve(__dirname, "src/js/login_page.js"),
+    // },
+    // output: {
+    //     path: path.resolve(__dirname, "../"),
+    //     filename: "[name].js",
+    //     chunkFilename: "[id].[name].js",
+    //     publicPath: "/",
+    // },
+
+    // devtool: false,
+    // module: {
+    //     rules: [
+    //         {
+    //             test: /\.js$/,
+    //             exclude: /node_modules/,
+    //             use: {
+    //                 loader: 'babel-loader',
+    //                 options: {
+    //                     presets: ['@babel/preset-env'],
+    //                 },
+    //             }
+    //         }
+    //     ]
+    // },
+    // optimization: {
+    //     minimize: true,
+    // }
 
 
     ///////////////////////////////////

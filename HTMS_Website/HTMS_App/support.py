@@ -278,8 +278,23 @@ class Support:
             "non_it": True,
         }
         return context
+    
+    def techs_home_content(request):
+        user_full_name = request.user.get_full_name()
+        technician = Technician.objects.get(user=request.user)
+        ticket_objects = Requests.objects.filter(
+            request_technician__technician__pr_number=technician.pr_number
+        )
+        context = {
+            "user_fullname": user_full_name,
+            "ticket_objects": ticket_objects,
+            "header": f"All Requests Assigned to {user_full_name}",
+            "link_active_status_all_tickets": "link--active",
+            "techs": True,
+        }
+        return context
 
-    def search_ticket(request, non_it=False):
+    def search_ticket(request, non_it=False,techs=False):
         search_ticket = ""
         user_full_name = request.user.get_full_name()
 
@@ -312,6 +327,14 @@ class Support:
                 Q(requester_pr_number=technician.pr_number)
             )
 
+        
+
+        if techs:
+            technician = Technician.objects.get(user=request.user)
+            ticket_objects = ticket_objects.filter(
+                Q(request_technician__technician__pr_number=technician.pr_number)
+            )
+
         if not ticket_objects:
             context["error"] = ["No data found!!!", "Please refine your search."]
 
@@ -320,7 +343,7 @@ class Support:
 
         return context, ticket_objects
 
-    def tickets_to_handle(request, non_it=False):
+    def tickets_to_handle(request, non_it=False,techs=False):
         tickets_to_handle = ""
         user_full_name = request.user.get_full_name()
 
@@ -352,7 +375,7 @@ class Support:
 
         return context, ticket_objects
 
-    def my_open_ticket(request, non_it=False):
+    def my_open_ticket(request, non_it=False,techs=False):
         my_open_ticket = request.GET.get("my_open_ticket", "open")
         user_pk = request.user.id
         context = {
@@ -388,7 +411,7 @@ class Support:
 
         return context, ticket_objects
 
-    def my_tick_seven_days(request, non_it=False):
+    def my_tick_seven_days(request, non_it=False,techs=False):
         my_tick_svn_days = request.GET.get("my_tick_svn_days")
         context = {
             "user_fullname": request.user.get_full_name(),
@@ -452,7 +475,8 @@ class Support:
 
         return context, ticket_objects
 
-    def tickets_assigned(self, request, non_it=False):
+    def tickets_assigned(self, request, non_it=False,techs=False):
+        
         tickets_assigned = request.GET.get("assigned")
 
         context = {
@@ -469,6 +493,9 @@ class Support:
         )
         if non_it:
             ticket_objects = self.non_it_filter(ticket_objects, request)
+        
+        if techs:
+            ticket_objects = self.techs_filter(ticket_objects, request)
 
         if not ticket_objects:
             context["error"] = ["No Assigned Tickets to Anyone."]
@@ -478,7 +505,7 @@ class Support:
 
         return context, ticket_objects
 
-    def tickets_closed(self, request, non_it=False):
+    def tickets_closed(self, request, non_it=False,techs=False):
         tickets_closed = request.GET.get("closed")
         user_full_name = request.user.get_full_name()
 
@@ -495,6 +522,9 @@ class Support:
         )
         if non_it:
             ticket_objects = self.non_it_filter(ticket_objects, request)
+            
+        if techs:
+            ticket_objects = self.techs_filter(ticket_objects, request)
 
         if not ticket_objects:
             context["error"] = ["No Closed Tickets Found."]
@@ -504,7 +534,7 @@ class Support:
 
         return context, ticket_objects
 
-    def tickets_on_hold(self, request, non_it=False):
+    def tickets_on_hold(self, request, non_it=False,techs=False):
         tickets_on_hold = request.GET.get("on_hold")
         context = {
             "user_fullname": request.user.get_full_name(),
@@ -520,7 +550,8 @@ class Support:
         )
         if non_it:
             ticket_objects = self.non_it_filter(ticket_objects, request)
-
+        if techs:
+            ticket_objects = self.techs_filter(ticket_objects, request)
         if not ticket_objects:
             context["error"] = ["No Tickets On Hold."]
 
@@ -529,7 +560,7 @@ class Support:
 
         return context, ticket_objects
 
-    def wait_for_feedback(self, request, non_it=False):
+    def wait_for_feedback(self, request, non_it=False,techs=False):
         wait_for_fback = request.GET.get("wait_for_fback")
         context = {
             "user_fullname": request.user.get_full_name(),
@@ -546,7 +577,8 @@ class Support:
 
         if non_it:
             ticket_objects = self.non_it_filter(ticket_objects, request)
-
+        if techs:
+            ticket_objects = self.techs_filter(ticket_objects, request)
         if not ticket_objects:
             context["error"] = ["No Waiting For Feedback Tickets Found!!!."]
 
@@ -555,27 +587,28 @@ class Support:
 
         return context, ticket_objects
 
-    def tickets_resolved(self, request, non_it=False):
-        tick_resolved = request.GET.get("resolved")
+    def tickets_unresolved(self, request, non_it=False,techs=False):
+        tick_unresolved = request.GET.get("unresolved")
 
         context = {
             "user_fullname": request.user.get_full_name(),
-            "header": "Resolved Tickets",
-            "link_active_status_resolved": "link--active",
-            "page_href": f"resolved={tick_resolved}",
+            "header": "Unresolved Tickets",
+            "link_active_status_unresolved": "link--active",
+            "page_href": f"Unresolved={tick_unresolved}",
         }
 
         ticket_objects = (
             Requests.objects.distinct()
-            .filter(Q(request_status__icontains="Resolved"))
+            .filter(Q(request_status__icontains="Unresolved"))
             .order_by("-id")
         )
 
         if non_it:
             ticket_objects = self.non_it_filter(ticket_objects, request)
-
+        if techs:
+            ticket_objects = self.techs_filter(ticket_objects, request)
         if not ticket_objects:
-            context["error"] = ["No Resolved Tickets Found!!!."]
+            context["error"] = ["No Unresolved Tickets Found!!!."]
 
         else:
             context["ticket_objects"] = ticket_objects
@@ -680,26 +713,27 @@ class Support:
         return context
 
     def get_technician_and_status(self, request, date_now, ticket_edit_objects=None):
-        try:
-            technician = User.objects.get(pk=request.POST["request_technician"])
-        except:
-            technician = None
-            req_asin_time = None
-            status = "Open"
-        if technician != None:
-            if ticket_edit_objects:
+        technician_id = request.POST.get("request_technician")
+        technician = User.objects.filter(pk=technician_id).first()
+        status = "Open"
+        req_asin_time = None
+        if technician:
+            status = "Assigned"
+            if ticket_edit_objects and ticket_edit_objects.request_technician:
                 status = ticket_edit_objects.request_status
-            if ticket_edit_objects != None and ticket_edit_objects.request_technician:
-                status = "Assigned"
-            else:
-                status = "Assigned"
             req_asin_time = date_now
 
         return technician, status, req_asin_time
 
+
     def non_it_filter(self, ticket_objects, request):
         technician = Technician.objects.get(user=request.user)
         ticket_objects = ticket_objects.filter(requester_pr_number=technician.pr_number)
+        return ticket_objects
+    
+    def techs_filter(self, ticket_objects, request):
+        technician = Technician.objects.get(user=request.user)
+        ticket_objects = ticket_objects.filter(request_technician__technician__pr_number=technician.pr_number)
         return ticket_objects
 
     def get_assets_creation_context(self, request):
@@ -1072,7 +1106,6 @@ class Support:
         return context
 
     def post_bulk_assest_quantity_addition(self, request):
-        strt_tm = time.perf_counter()
         df = pd.read_excel(request.FILES["file"], index_col=None)
         for rows in df.iterrows():
             rows = rows[1]
@@ -1140,7 +1173,6 @@ class Support:
         #         ]
         #     }
         #     return context
-        print(time.perf_counter() - strt_tm)
 
     def null_check(self, pd_row, date_check=False, int_check=False):
         if date_check:
@@ -1336,7 +1368,6 @@ class Support:
             ticket_id=requester.id,
             problem=problem,
         )
-        print(message)
         SendSms(message=message, number=technician.technician.mobile_number)
 
     def bulk_asset_scrap(self, request):

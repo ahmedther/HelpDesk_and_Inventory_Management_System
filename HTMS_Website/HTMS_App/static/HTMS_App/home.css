@@ -477,11 +477,11 @@ body {
   align-items: center;
 }
 
-.display-status-resolved {
-  background: linear-gradient(138deg, #26a65b 0%, #26a65b 100%);
+.display-status-unresolved {
+  background: linear-gradient(138deg, rgba(0, 0, 0, 0.5647058824) 0 0%, #000000 100%);
   width: 9rem;
   height: 3rem;
-  border-radius: 100px;
+  padding: 0 5rem;
   border-radius: 100px;
   display: grid;
   justify-content: center;
@@ -517,9 +517,10 @@ body {
 }
 
 .display-status-assigned {
-  background: linear-gradient(138deg, rgba(0, 0, 0, 0.5647058824) 0 0%, #000000 100%);
+  background: linear-gradient(138deg, #26a65b 0%, #26a65b 100%);
   width: 9rem;
   height: 3rem;
+  border-radius: 100px;
   border-radius: 100px;
   display: grid;
   justify-content: center;
