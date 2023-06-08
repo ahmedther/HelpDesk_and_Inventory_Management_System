@@ -2,12 +2,15 @@
 
 set -e
 
+touch /htms_website/logs/cron.log 
+touch /etc/cron.d/htms_cronjob 
+
 
 python manage.py collectstatic --noinput
 
 while true; do
   # Check if PostgreSQL server is available
-  /py/bin/python /feedback_and_streamlit/scripts/check_postgres.py
+  /py/bin/python /htms_website/scripts/check_postgres.py
 
   if [ $? -eq 0 ]; then
     break  # Break the loop if connection successful

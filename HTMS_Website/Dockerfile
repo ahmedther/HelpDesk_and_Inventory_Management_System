@@ -23,11 +23,16 @@ RUN apt update -y \
 
 FROM python:3.11.3-slim
 
+LABEL maintainer='ahmed'
+
 ENV PYTHONUNBUFFERED 1
 
 COPY --from=builder /py /py
 
 COPY ./ ./
+
+WORKDIR /htms_website
+
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq5 curl unzip libaio1 cron \
@@ -41,17 +46,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && ln -snf /usr/share/zoneinfo/Asia/Kolkata /etc/localtime && echo Asia/Kolkata > /etc/timezone \
     && mkdir /var/log/uwsgi \
     && touch /var/log/uwsgi/feedback_and_streamlit.log \
-    && touch /htms_website/logs/cron.log \
-    && touch /etc/cron.d/htms_cronjob \
     && apt-get purge -y curl  unzip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && apt autoremove -y  
 
 
-LABEL maintainer='ahmed'
-
-WORKDIR /htms_website
 
 ENV LD_LIBRARY_PATH=/cx_oracle/instantclient_21_9
 
