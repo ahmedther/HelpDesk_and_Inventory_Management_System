@@ -26,36 +26,11 @@ SECRET_KEY = "django-insecure-%mpjik#3zfe+0bdmb@24ej8f6w+v$)ko$!jb%smu0*%@g+n=#7
 
 # DEBUG = True
 
-DEBUG = False
+DEBUG = bool(os.getenv("DEBUG", False))
 
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-    "172.20.100.81",
-    "http://127.0.0.1",
-    "http://localhost",
-    "http://172.20.100.81",
-    "http://localhost:8004",
-    "http://172.20.100.81:8004",
-    "http://localhost:9004",
-    "http://172.20.100.81:9004",
-    "http://172.20.200.40",
-    "http://www.kdahlinux.com:8004",
-]
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(",")
 
-
-CSRF_TRUSTED_ORIGINS = [
-    "http://127.0.0.1",
-    "http://localhost",
-    "http://172.20.100.81",
-    "http://localhost:8004",
-    "http://172.20.100.81:8004",
-    "http://localhost:9004",
-    "http://172.20.100.81:9004",
-    "http://72.20.200.40",
-    "http://www.kdahlinux.com:8004",
-]
-
+CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "*").split(",")
 
 # Application definition
 
@@ -105,11 +80,11 @@ WSGI_APPLICATION = "HTMS_Website.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "HTMS_database",
-        "USER": "postgres",
-        "PASSWORD": "ahmed",
-        "HOST": "172.20.100.81",
-        "PORT": "5432",
+        "NAME": os.environ.get("POSTGRES_DB"),
+        "USER": os.environ.get("POSTGRES_USER"),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
+        "HOST": os.environ.get("POSTGRES_HOST"),
+        "PORT": os.environ.get("POSTGRES_PORT"),
     }
 }
 
@@ -169,9 +144,19 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 STATIC_URL = "static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+
+
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+SESSION_COOKIE_AGE = 86400
+
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
+
+
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'static'),
+# ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

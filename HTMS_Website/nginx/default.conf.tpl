@@ -1,7 +1,7 @@
 
 
 upstream app_server {
-        server app:9004;
+        server app:${SERVE_DJANGO_ON};
     }
 
 server {

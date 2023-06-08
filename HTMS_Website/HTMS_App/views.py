@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 
@@ -114,187 +113,240 @@ def update_incident(request, pk):
 @login_required(login_url="login_page")
 @allowed_users(allowed_group="Helpdesk")
 def home(request):
+    context ={}
     if request.method == "GET":
-        sup = Support()
-        filters = {
-            "unresolved": sup.tickets_unresolved,
-            "wait_for_fback": sup.wait_for_feedback,
-            "on_hold": sup.tickets_on_hold,
-            "closed": sup.tickets_closed,
-            "assigned": sup.tickets_assigned,
-            "open": Support.tickets_open,
-            "my_tick_svn_days": Support.my_tick_seven_days,
-            "my_open_ticket": Support.my_open_ticket,
-            "tickets_to_handle": Support.tickets_to_handle,
-            "search_ticket": Support.search_ticket,
-            "reports_tat": Support.reports_tat,
-        }
+        try:
 
-        for filter_name, filter_func in filters.items():
-            if request.GET.get(filter_name):
-                context, ticket_objects = filter_func(request)
-                if not ticket_objects:
+            sup = Support()
+            filters = {
+                "unresolved": sup.tickets_unresolved,
+                "wait_for_fback": sup.wait_for_feedback,
+                "on_hold": sup.tickets_on_hold,
+                "closed": sup.tickets_closed,
+                "assigned": sup.tickets_assigned,
+                "open": Support.tickets_open,
+                "my_tick_svn_days": Support.my_tick_seven_days,
+                "my_open_ticket": Support.my_open_ticket,
+                "tickets_to_handle": Support.tickets_to_handle,
+                "search_ticket": Support.search_ticket,
+                "reports_tat": Support.reports_tat,
+            }
+
+            for filter_name, filter_func in filters.items():
+                if request.GET.get(filter_name):
+                    context, ticket_objects = filter_func(request)
+                    if not ticket_objects:
+                        return render(request, "HTMS_App/home.html", context)
+                    context = Support.paginator(request, context)
                     return render(request, "HTMS_App/home.html", context)
-                context = Support.paginator(request, context)
-                return render(request, "HTMS_App/home.html", context)
 
-        # If no filter is present in the request, display all data
-        context = Support.display_all_data(request)
-        context = Support.paginator(request, context)
-        # from .task import automated_techinicans_report
-        # automated_techinicans_report()
-        return render(request, "HTMS_App/home.html", context)
-
+            # If no filter is present in the request, display all data
+            context = Support.display_all_data(request)
+            context = Support.paginator(request, context)
+            # from .task import automated_techinicans_report
+            # automated_techinicans_report()
+            return render(request, "HTMS_App/home.html", context)
+        except Exception as e:
+            context["error"] = ["❌ An Error Has Occured !!!", f"Error : {e}"]
+            return render(request, "HTMS_App/home.html", context)
     if request.method == "POST":
-        check_tat_report = request.POST.get("tat_report")
-        if check_tat_report:
-            response = Support.get_tat_report(request)
-            return response
-        return render(request, "HTMS_App/home.html", context)
+        try:
+            check_tat_report = request.POST.get("tat_report")
+            if check_tat_report:
+                response = Support.get_tat_report(request)
+                return response
+            return render(request, "HTMS_App/home.html", context)
+        except Exception as e:
+            context["error"] = ["❌ An Error Has Occured !!!", f"Error : {e}"]
+            return render(request, "HTMS_App/home.html", context)
 
 
 @login_required(login_url="login_page")
 def home_non_it(request):
+    context ={}
     if request.method == "GET":
-        sup = Support()
-        filters = {
-            "unresolved": sup.tickets_unresolved,
-            "wait_for_fback": sup.wait_for_feedback,
-            "on_hold": sup.tickets_on_hold,
-            "closed": sup.tickets_closed,
-            "assigned": sup.tickets_assigned,
-            "open": Support.my_open_ticket,
-            "my_tick_svn_days": Support.my_tick_seven_days,
-            "my_open_ticket": Support.my_open_ticket,
-            "tickets_to_handle": Support.tickets_to_handle,
-            "search_ticket": Support.search_ticket,
-        }
+        try:
+            sup = Support()
+            filters = {
+                "unresolved": sup.tickets_unresolved,
+                "wait_for_fback": sup.wait_for_feedback,
+                "on_hold": sup.tickets_on_hold,
+                "closed": sup.tickets_closed,
+                "assigned": sup.tickets_assigned,
+                "open": Support.my_open_ticket,
+                "my_tick_svn_days": Support.my_tick_seven_days,
+                "my_open_ticket": Support.my_open_ticket,
+                "tickets_to_handle": Support.tickets_to_handle,
+                "search_ticket": Support.search_ticket,
+            }
 
-        for filter_name, filter_func in filters.items():
-            if request.GET.get(filter_name):
-                context, ticket_objects = filter_func(request, non_it=True)
-                if not ticket_objects:
+            for filter_name, filter_func in filters.items():
+                if request.GET.get(filter_name):
+                    context, ticket_objects = filter_func(request, non_it=True)
+                    if not ticket_objects:
+                        context["non_it"] = True
+                        return render(request, "HTMS_App/home.html", context)
+                    context = Support.paginator(request, context)
                     context["non_it"] = True
                     return render(request, "HTMS_App/home.html", context)
-                context = Support.paginator(request, context)
-                context["non_it"] = True
+
+            # If no filter is present in the request, display all data
+            context = Support.non_it_home_content(request)
+            context = Support.paginator(request, context)
+            context["non_it"] = True
+            return render(request, "HTMS_App/home.html", context)
+        
+        except Exception as e:
+                context["error"] = ["❌ An Error Has Occured !!!", f"Error : {e}"]
                 return render(request, "HTMS_App/home.html", context)
 
-        # If no filter is present in the request, display all data
-        context = Support.non_it_home_content(request)
-        context = Support.paginator(request, context)
-        context["non_it"] = True
-        return render(request, "HTMS_App/home.html", context)
-
     elif request.method == "POST":
-        return render(request, "HTMS_App/home.html")
+        try:
+            return render(request, "HTMS_App/home.html")
+        except Exception as e:
+                context["error"] = ["❌ An Error Has Occured !!!", f"Error : {e}"]
+                return render(request, "HTMS_App/home.html", context)
 
 @login_required(login_url="login_page")
 @allowed_users(allowed_group="Technicians")
 def home_techs(request):
+    context ={}
     if request.method == "GET":
-        sup = Support()
-        filters = {
-            "unresolved": sup.tickets_unresolved,
-            "wait_for_fback": sup.wait_for_feedback,
-            "on_hold": sup.tickets_on_hold,
-            "closed": sup.tickets_closed,
-            "assigned": sup.tickets_assigned,
-            "open": Support.my_open_ticket,
-            "my_tick_svn_days": Support.my_tick_seven_days,
-            "my_open_ticket": Support.my_open_ticket,
-            "tickets_to_handle": Support.tickets_to_handle,
-            "search_ticket": Support.search_ticket,
-        }
+        try:
+            sup = Support()
+            filters = {
+                "unresolved": sup.tickets_unresolved,
+                "wait_for_fback": sup.wait_for_feedback,
+                "on_hold": sup.tickets_on_hold,
+                "closed": sup.tickets_closed,
+                "assigned": sup.tickets_assigned,
+                "open": Support.my_open_ticket,
+                "my_tick_svn_days": Support.my_tick_seven_days,
+                "my_open_ticket": Support.my_open_ticket,
+                "tickets_to_handle": Support.tickets_to_handle,
+                "search_ticket": Support.search_ticket,
+            }
 
-        for filter_name, filter_func in filters.items():
-            if request.GET.get(filter_name):
-                context, ticket_objects = filter_func(request, techs=True)
-                if not ticket_objects:
+            for filter_name, filter_func in filters.items():
+                if request.GET.get(filter_name):
+                    context, ticket_objects = filter_func(request, techs=True)
+                    if not ticket_objects:
+                        context["home_techs"] = True
+                        return render(request, "HTMS_App/home.html", context)
+                    context = Support.paginator(request, context)
                     context["home_techs"] = True
                     return render(request, "HTMS_App/home.html", context)
-                context = Support.paginator(request, context)
-                context["home_techs"] = True
+
+            # If no filter is present in the request, display all data
+            context = Support.techs_home_content(request)
+            context = Support.paginator(request, context)
+            context["home_techs"] = True
+            return render(request, "HTMS_App/home.html", context)
+        except Exception as e:
+                context["error"] = ["❌ An Error Has Occured !!!", f"Error : {e}"]
                 return render(request, "HTMS_App/home.html", context)
 
-        # If no filter is present in the request, display all data
-        context = Support.techs_home_content(request)
-        context = Support.paginator(request, context)
-        context["home_techs"] = True
-        return render(request, "HTMS_App/home.html", context)
-
     elif request.method == "POST":
-        return render(request, "HTMS_App/home.html")
+        try:
+            return render(request, "HTMS_App/home.html")
+        except Exception as e:
+                    context["error"] = ["❌ An Error Has Occured !!!", f"Error : {e}"]
+                    return render(request, "HTMS_App/home.html", context)
+        
 
 @login_required(login_url="login_page")
 @allowed_users(allowed_group="Helpdesk")
 def inventory(request):
+    context ={}
     if request.method == "GET":
-        sup = Support()
-        filters = {
-            "search_asset": sup.search_assets,
-            "asset_id": sup.filter_by_asset_id,
-        }
-        for filter_name, filter_func in filters.items():
-            if request.GET.get(filter_name):
-                context, ticket_objects = filter_func(request)
-                if not ticket_objects:
+        try:
+            sup = Support()
+            filters = {
+                "search_asset": sup.search_assets,
+                "asset_id": sup.filter_by_asset_id,
+            }
+            for filter_name, filter_func in filters.items():
+                if request.GET.get(filter_name):
+                    context, ticket_objects = filter_func(request)
+                    if not ticket_objects:
+                        return render(request, "HTMS_App/inventory.html", context)
+                    context = Support.paginator(
+                        request, context, paginate_name="asset_objects"
+                    )
                     return render(request, "HTMS_App/inventory.html", context)
-                context = Support.paginator(
-                    request, context, paginate_name="asset_objects"
-                )
-                return render(request, "HTMS_App/inventory.html", context)
-        context = sup.get_inventory_home_context(request)
-        context = Support.paginator(request, context, paginate_name="asset_objects")
-        return render(request, "HTMS_App/inventory.html", context)
-
+            context = sup.get_inventory_home_context(request)
+            context = Support.paginator(request, context, paginate_name="asset_objects")
+            return render(request, "HTMS_App/inventory.html", context)
+        except Exception as e:
+                    context["error"] = ["❌ An Error Has Occured !!!", f"Error : {e}"]
+                    return render(request, "HTMS_App/inventory.html", context)
     if request.method == "POST":
-        return render(request, "HTMS_App/inventory.html", context)
+        try:
+            return render(request, "HTMS_App/inventory.html", context)
+        except Exception as e:
+                    context["error"] = ["❌ An Error Has Occured !!!", f"Error : {e}"]
+                    return render(request, "HTMS_App/inventory.html", context)
 
 
 @login_required(login_url="login_page")
 @allowed_users(allowed_group="Inventory")
 def new_assets(request):
     sup = Support()
+    context ={}
     if request.method == "GET":
-        filters = {
-            "asset_creation": sup.get_assets_creation_context,
-            "quantity_addition": sup.add_quantity_to_asset,
-            "bulk_quantity_addition": sup.bulk_add_quantity,
-            "bulk_asset_scrap": sup.bulk_asset_scrap,
-        }
+        try:
+            filters = {
+                "asset_creation": sup.get_assets_creation_context,
+                "quantity_addition": sup.add_quantity_to_asset,
+                "bulk_quantity_addition": sup.bulk_add_quantity,
+                "bulk_asset_scrap": sup.bulk_asset_scrap,
+            }
 
-        for filter_name, filter_func in filters.items():
-            if request.GET.get("arg") == filter_name:
-                context = filter_func(request)
-                return render(request, "HTMS_App/new_assets.html", context)
+            for filter_name, filter_func in filters.items():
+                if request.GET.get("arg") == filter_name:
+                    context = filter_func(request)
+                    return render(request, "HTMS_App/new_assets.html", context)
+
+        except Exception as e:
+                    context["error"] = ["❌ An Error Has Occured !!!", f"Error : {e}"]
+                    return render(request, "HTMS_App/home.html", context)
 
     if request.method == "POST":
-        sup = Support()
-        if request.POST.get("bulk_add_qty_asset") == "bulk_add_qty_asset":
-            context = sup.post_bulk_assest_quantity_addition(request)
-            if context:
-                return render(request, "HTMS_App/new_assets.html", context)
+        try:
+            sup = Support()
+            if request.POST.get("bulk_add_qty_asset") == "bulk_add_qty_asset":
+                context = sup.post_bulk_assest_quantity_addition(request)
+                if context:
+                    return render(request, "HTMS_App/new_assets.html", context)
 
-        submit_type = {
-            "create_asset": sup.create_new_asset_type,
-            "add_qty_asset": sup.post_assest_quantity_addition,
-            "bulk_asset_scrap": sup.post_bulk_asset_scrap,
-        }
+            submit_type = {
+                "create_asset": sup.create_new_asset_type,
+                "add_qty_asset": sup.post_assest_quantity_addition,
+                "bulk_asset_scrap": sup.post_bulk_asset_scrap,
+            }
 
-        for submit_name, submit_func in submit_type.items():
-            if request.POST.get(submit_name):
-                submit_func(request)
-        return redirect("inventory")
+            for submit_name, submit_func in submit_type.items():
+                if request.POST.get(submit_name):
+                    submit_func(request)
+            return redirect("inventory")
+        except Exception as e:
+                    context["error"] = ["❌ An Error Has Occured !!!", f"Error : {e}"]
+                    return render(request, "HTMS_App/home.html", context)
+        
 
 
 @login_required(login_url="login_page")
 def update_asset(request, pk):
     sup = Support()
     context = sup.update_asset(request, pk)
-    if request.method == "GET":
-        return render(request, "HTMS_App/new_assets.html", context)
+    try:
+        if request.method == "GET":
+            return render(request, "HTMS_App/new_assets.html", context)
 
-    if request.method == "POST":
-        sup.send_edit_request_to_db_asset(request)
-        return redirect("inventory")
+        if request.method == "POST":
+            sup.send_edit_request_to_db_asset(request)
+            return redirect("inventory")
+    except Exception as e:
+                    context["error"] = ["❌ An Error Has Occured !!!", f"Error : {e}"]
+                    return render(request, "HTMS_App/home.html", context)
+        

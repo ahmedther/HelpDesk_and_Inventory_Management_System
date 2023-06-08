@@ -5,9 +5,16 @@ set -e
 
 python manage.py collectstatic --noinput
 
-touch /htms_website/logs/cron.log
+while true; do
+  # Check if PostgreSQL server is available
+  /py/bin/python /feedback_and_streamlit/scripts/check_postgres.py
 
-touch /etc/cron.d/htms_cronjob
+  if [ $? -eq 0 ]; then
+    break  # Break the loop if connection successful
+  fi
+
+  sleep 1
+done
 
 # Define the cron job command
 CRON_COMMAND="/py/bin/python3 /htms_website/manage.py shell -c 'from HTMS_App.task import automated_techinicans_report; automated_techinicans_report()'"

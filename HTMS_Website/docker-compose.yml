@@ -8,8 +8,8 @@ services:
     # command: gunicorn --workers 3 --timeout 86400 --bind 0.0.0.0:8004 HTMS_Website.wsgi:application
     volumes:
       - .:/htms_website/
-      - ./static:/htms_website/static
-
+    env_file:
+      - .env
 
   nginx:
     build: 
@@ -17,13 +17,25 @@ services:
     image: htms_nginx_image
     container_name: htms_nginx_container
     restart: always
-    ports:
-      - 8004:8004
     volumes:
       - ./static:/htms_website/static
+    env_file:
+      - .env
+    ports:
+      - 8004:8004
 
 
-
+  postgres:
+    build:
+      context: ./postgresql
+    image: htms_postgresql_image
+    container_name: htms_postgresql_container
+    volumes:
+      - ./postgresql/data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    ports:
+      - 5432:5432
 
 
   #   depends_on:
