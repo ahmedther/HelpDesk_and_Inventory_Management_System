@@ -1221,7 +1221,6 @@ class Support:
         employee_data = sq.get_employees_details_with_pr_num_name(
             pr_number, search_string
         )
-
         return employee_data
 
     def check_for_NoneType(self, object, index, slice_values):
@@ -1234,15 +1233,17 @@ class Support:
         return num
 
     def create_or_get_user_without_request(self, employee_data, rows):
+
         num1 = self.check_for_NoneType(employee_data, 3, -10)
         num2 = self.check_for_NoneType(employee_data, 2, -10)
-        full_name = employee_data[0].split()  # Split the string into words
+        full_name = employee_data[0].split()
         first_name = full_name[1:2]  # Get the first two words
         first_name = " ".join(first_name)
         last_name = full_name[2:]  # Get the remaining words
         last_name = " ".join(last_name)  # Join the remaining words with a space
         password = make_password(employee_data[1])
         email = employee_data[4].lower() if employee_data[4] != None else ""
+
         user, created = User.objects.get_or_create(
             username=employee_data[1],
             defaults={
@@ -1252,7 +1253,7 @@ class Support:
                 "email": email,
             },
         )
-
+        
         if created:
             employe_data = Technician(
                 user=user,
@@ -1265,29 +1266,35 @@ class Support:
                 ),
             )
             employe_data.save()
-        if user:
-            if user.first_name == None:
-                user.first_name = first_name
-            if user.last_name == None:
-                user.last_name = last_name
-            if user.email == None:
-                user.email = employee_data[4].lower()
-            user.save()
-            tech = Technician.objects.get(user=user.id)
-            if tech.department == None:
-                tech.department = self.null_check(rows["department"])
-            if tech.designation == None:
-                tech.designation = self.null_check(rows["user_designation"])
-            if tech.pr_number == None:
-                tech.pr_number = employee_data[1]
-            if tech.mobile_number == None:
-                tech.mobile_number = f"{num1},{num2}"
-            if tech.extension_number == None:
-                tech.extension_number = self.null_check(
-                    rows["user_extension"], int_check=True
-                )
-            tech.save()
 
+        if user:
+            try:
+                if user.first_name == None:
+                    user.first_name = first_name
+                if user.last_name == None:
+                    user.last_name = last_name
+                if user.email == None:
+                    user.email = employee_data[4].lower()
+                user.save()
+
+                tech = Technician.objects.get(user=user)
+
+                if tech.department == None:
+                    tech.department = self.null_check(rows["department"])
+                if tech.designation == None:
+                    tech.designation = self.null_check(rows["user_designation"])
+                if tech.pr_number == None:
+                    tech.pr_number = employee_data[1]
+                if tech.mobile_number == None:
+                    tech.mobile_number = f"{num1},{num2}"
+                if tech.extension_number == None:
+                    tech.extension_number = self.null_check(
+                        rows["user_extension"], int_check=True
+                    )
+                tech.save()
+            except :
+                pass
+        
         return user
 
     def bulk_search_ticket_or_create(self, row, user: User, request):

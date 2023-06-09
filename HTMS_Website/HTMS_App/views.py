@@ -105,7 +105,6 @@ def update_incident(request, pk):
         return render(request, "HTMS_App/new_incident.html", context)
 
     if request.method == "POST":
-        print(request.POST)
         sup.send_edit_request_to_db(request)
         return redirect("home")
 
