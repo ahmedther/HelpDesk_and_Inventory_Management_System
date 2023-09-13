@@ -10,3 +10,4 @@ cx-Oracle
 uWSGI
 whitenoise
 xlsxwriter
+python-dotenv

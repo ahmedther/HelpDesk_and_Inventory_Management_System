@@ -29,9 +29,10 @@ ENV PYTHONUNBUFFERED 1
 
 COPY --from=builder /py /py
 
+WORKDIR /htms_website
+
 COPY ./ ./
 
-WORKDIR /htms_website
 
 
 RUN apt-get update && apt-get install -y --no-install-recommends \

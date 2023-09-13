@@ -28,56 +28,56 @@ class Support:
 
     def post_to_database(self, request):
         # try:
-        date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        technician, status, req_asin_time = self.get_technician_and_status(
-            request, date_now
-        )
-        search_user_selection = request.POST.get("search_user_selection", -1)
-        if int(search_user_selection) > 0:
-            req_user = Technician.objects.get(
-                user=User.objects.get(id=search_user_selection)
+            date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            technician, status, req_asin_time = self.get_technician_and_status(
+                request, date_now
             )
-        else:
-            self.create_new_user(request)
-            req_user = Technician.objects.get(
-                pr_number=request.POST["requester_pr_number"]
+            search_user_selection = request.POST.get("search_user_selection", -1)
+            if int(search_user_selection) > 0:
+                req_user = Technician.objects.get(
+                    user=User.objects.get(id=search_user_selection)
+                )
+            else:
+                self.create_new_user(request)
+                req_user = Technician.objects.get(
+                    pr_number=request.POST["requester_pr_number"]
+                )
+
+            new_serv_req = Requests(
+                requester_name=req_user.user.get_full_name(),
+                requester_pr_number=req_user.pr_number,
+                requester_designation=req_user.designation,
+                requester_department=req_user.department,
+                requester_email=req_user.user.email,
+                requester_extension=req_user.extension_number,
+                requester_phone_number=req_user.mobile_number,
+                request_type=request.POST["request_type"],
+                request_status=status,
+                request_mode=request.POST["request_mode"],
+                request_priority=request.POST["request_priority"],
+                request_category=request.POST["request_category"],
+                request_technician=technician,
+                subject=request.POST["subject"],
+                description=request.POST["description"],
+                request_creation_date=date_now,
+                request_submitter=request.user,
+                last_modified_by=request.user,
+                last_modified_date=date_now,
+                request_assigned_time=req_asin_time,
+                location=request.POST["location"],
             )
+            new_serv_req.save()
+            if new_serv_req.request_status != "Open":
+                self.send_sms_to_technician(technician, new_serv_req)
 
-        new_serv_req = Requests(
-            requester_name=req_user.user.get_full_name(),
-            requester_pr_number=req_user.pr_number,
-            requester_designation=req_user.designation,
-            requester_department=req_user.department,
-            requester_email=req_user.user.email,
-            requester_extension=req_user.extension_number,
-            requester_phone_number=req_user.mobile_number,
-            request_type=request.POST["request_type"],
-            request_status=status,
-            request_mode=request.POST["request_mode"],
-            request_priority=request.POST["request_priority"],
-            request_category=request.POST["request_category"],
-            request_technician=technician,
-            subject=request.POST["subject"],
-            description=request.POST["description"],
-            request_creation_date=date_now,
-            request_submitter=request.user,
-            last_modified_by=request.user,
-            last_modified_date=date_now,
-            request_assigned_time=req_asin_time,
-            location=request.POST["location"],
-        )
-        new_serv_req.save()
-        if new_serv_req.request_status != "Open":
-            self.send_sms_to_technician(technician, new_serv_req)
-
-        # new_serv_req = Requests(
-        # requester_name=request.POST["requester_name"],
-        # requester_pr_number=request.POST["requester_pr_number"],
-        # requester_designation=request.POST["requester_designation"],
-        # requester_department=request.POST["requester_department"],
-        # requester_email=request.POST["requester_email"],
-        # requester_extension=request.POST["requester_extension"],
-        # requester_phone_number=request.POST["requester_phone_number"],
+            # new_serv_req = Requests(
+            # requester_name=request.POST["requester_name"],
+            # requester_pr_number=request.POST["requester_pr_number"],
+            # requester_designation=request.POST["requester_designation"],
+            # requester_department=request.POST["requester_department"],
+            # requester_email=request.POST["requester_email"],
+            # requester_extension=request.POST["requester_extension"],
+            # requester_phone_number=request.POST["requester_phone_number"],
         # except Exception as e:
         #     context = {}
         #     context["error"] = [f"❌ Unsuccessful", f"Reason : {e}"]
@@ -123,7 +123,6 @@ class Support:
             mobile_number = request.POST.get("requester_phone_number", "")
             extension_number = request.POST.get("requester_extension", "")
             password = make_password(pr_num)
-
             user, created = User.objects.get_or_create(
                 username=pr_num,
                 defaults={
@@ -151,10 +150,23 @@ class Support:
                     employe_data.facility.set(
                         [FacilityDropdown.objects.get(pk=request.POST["user_facility"])]
                     )
-
+            
                 return {
                     "error": "✅ Your Account Has Been Created Successfully!!! ✅. 📢 Your Username & Password is your PR Number. 📢"
                 }
+            if user:
+                if user.first_name == None:
+                    user.first_name = first_name
+                if user.last_name == None:
+                    user.last_name = last_name
+                user.save()
+                try:
+                    tech = Technician.objects.get(user=user)
+                except:
+                    tech = Technician()
+                    tech.user =user
+                tech.pr_number = request.POST["requester_pr_number"]
+                tech.save()
             else:
                 return {
                     "error": f"⚠️ Your Already Have An Account !!! ⚠️. 📢 Enter Your PR Number {pr_num} as Username & Password to Login. 📢"
@@ -1268,32 +1280,32 @@ class Support:
             employe_data.save()
 
         if user:
+            if user.first_name == None:
+                user.first_name = first_name
+            if user.last_name == None:
+                user.last_name = last_name
+            if user.email == None:
+                user.email = employee_data[4].lower()
+            user.save()
             try:
-                if user.first_name == None:
-                    user.first_name = first_name
-                if user.last_name == None:
-                    user.last_name = last_name
-                if user.email == None:
-                    user.email = employee_data[4].lower()
-                user.save()
-
                 tech = Technician.objects.get(user=user)
+            except:
+                tech = Technician()
+                tech.user =user
+            if tech.department == None:
+                tech.department = self.null_check(rows["department"])
+            if tech.designation == None:
+                tech.designation = self.null_check(rows["user_designation"])
+            if tech.pr_number == None:
+                tech.pr_number = employee_data[1]
+            if tech.mobile_number == None:
+                tech.mobile_number = f"{num1},{num2}"
+            if tech.extension_number == None:
+                tech.extension_number = self.null_check(
+                    rows["user_extension"], int_check=True
+                )
+            tech.save()
 
-                if tech.department == None:
-                    tech.department = self.null_check(rows["department"])
-                if tech.designation == None:
-                    tech.designation = self.null_check(rows["user_designation"])
-                if tech.pr_number == None:
-                    tech.pr_number = employee_data[1]
-                if tech.mobile_number == None:
-                    tech.mobile_number = f"{num1},{num2}"
-                if tech.extension_number == None:
-                    tech.extension_number = self.null_check(
-                        rows["user_extension"], int_check=True
-                    )
-                tech.save()
-            except :
-                pass
         
         return user
 

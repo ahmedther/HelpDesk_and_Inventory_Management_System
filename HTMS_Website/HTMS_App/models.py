@@ -17,7 +17,7 @@ class Technician(models.Model):
     )
     department = models.CharField(max_length=100, blank=True, null=True, db_index=True)
     designation = models.CharField(max_length=100, blank=True, null=True, db_index=True)
-    # facility = models.ForeignKey(FacilityDropdown, on_delete=models.CASCADE)
+    # facility = models.ForeignKey(FacilityDropdown, on_delete=models.SET_NULL)
     facility = models.ManyToManyField(FacilityDropdown, blank=True, db_index=True)
     pr_number = models.CharField(max_length=100, null=False, db_index=True)
     gender = models.CharField(
@@ -78,10 +78,10 @@ class Requests(models.Model):
         max_length=100, null=True, db_index=True, blank=True
     )
     request_technician = models.ForeignKey(
-        User, null=True, related_name="assignee", on_delete=models.CASCADE, blank=True
+        User, null=True, related_name="assignee", on_delete=models.SET_NULL, blank=True
     )
     request_submitter = models.ForeignKey(
-        User, null=True, related_name="creator", on_delete=models.CASCADE, blank=True
+        User, null=True, related_name="creator", on_delete=models.SET_NULL, blank=True
     )
     subject = models.CharField(max_length=100, null=True, db_index=True, blank=True)
     description = models.TextField(
@@ -100,7 +100,7 @@ class Requests(models.Model):
         User,
         null=True,
         related_name="updater",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         blank=True,
     )
     last_modified_date = models.DateTimeField(
@@ -114,7 +114,7 @@ class Requests(models.Model):
         null=True,
         blank=True,
         related_name="request_closed_user",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
     )
     location = models.CharField(max_length=100, null=True, db_index=True, blank=True)
 
@@ -193,10 +193,11 @@ class Assets(models.Model):
     )
     asset_creator = models.ForeignKey(
         User,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name="asset_creator",
         db_index=True,
         blank=True,
+        null=True,
     )
     image_url = models.CharField(max_length=300, null=True, db_index=True)
 
@@ -207,10 +208,11 @@ class Assets(models.Model):
 class AssetDetails(models.Model):
     asset_name = models.ForeignKey(
         Assets,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name="asset_details",
         db_index=True,
         blank=True,
+        null=True
     )
     brand = models.CharField(max_length=100, null=True, db_index=True, blank=True)
     model_name = models.CharField(max_length=100, null=True, db_index=True, blank=True)
@@ -226,10 +228,11 @@ class AssetDetails(models.Model):
     date_added = models.DateTimeField(auto_now_add=False, db_index=True, blank=True)
     added_by = models.ForeignKey(
         User,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name="added_by",
         db_index=True,
         blank=True,
+        null=True
     )
     expiration_date = models.DateTimeField(
         auto_now_add=False, db_index=True, blank=True, null=True
@@ -245,7 +248,7 @@ class AssetDetails(models.Model):
     )
     facility = models.ForeignKey(
         FacilityDropdown,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name="facilities",
         db_index=True,
         blank=True,
@@ -253,7 +256,7 @@ class AssetDetails(models.Model):
     )
     asset_user = models.ForeignKey(
         User,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name="users",
         db_index=True,
         null=True,
@@ -261,7 +264,7 @@ class AssetDetails(models.Model):
     )
     assign_to_ticket = models.ForeignKey(
         Requests,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name="assign_to_ticket",
         db_index=True,
         null=True,
@@ -271,7 +274,7 @@ class AssetDetails(models.Model):
         User,
         null=True,
         related_name="last_modified_by",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         blank=True,
     )
     last_modified_date = models.DateTimeField(

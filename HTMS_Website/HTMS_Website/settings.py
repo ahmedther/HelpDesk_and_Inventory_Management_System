@@ -12,9 +12,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
-# from dotenv import load_dotenv
-
-# load_dotenv()
+from dotenv import load_dotenv
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -152,7 +151,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-SESSION_COOKIE_AGE = 864
+SESSION_COOKIE_AGE = 8640
 
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
